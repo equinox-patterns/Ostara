@@ -55,12 +55,14 @@
 #include "../vtools/undocommands/savepieceoptions.h"
 #include "../vtools/undocommands/savepiecepathoptions.h"
 #include "../vexception/vexception.h"
+#include "../widgets/ogradedalignwidget.h"
 #include "../vtheme/vtheme.h"
 #include "otranslation.h"
 
 #include <QAbstractButton>
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QSignalBlocker>
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDialog>
@@ -85,68 +87,6 @@
 
 namespace
 {
-// Graded alignment icons: regular (outline) for the normal state, fill for the checked state.
-// QCommonStyle renders a checked QPushButton icon in QIcon::On, unchecked in QIcon::Off.
-auto MakeAlignIcon(const QString &baseName, bool dark) -> QIcon
-{
-    const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
-    QIcon icon;
-    icon.addFile(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, baseName));                    // Off = regular
-    icon.addFile(QStringLiteral(":/icons/%1/%2-fill_%1.svg").arg(theme, baseName), QSize(),
-                 QIcon::Normal, QIcon::On);                                                       // On = fill
-    // Disabled = the greyed-out regular set. The row is always unchecked before it is disabled
-    // (forced alignment point, group member following its group), so Off is the only state needed.
-    icon.addFile(QStringLiteral(":/icons/%1/%2_disabled.svg").arg(theme, baseName), QSize(),
-                 QIcon::Disabled, QIcon::Off);
-    return icon;
-}
-
-// Hover icon: the button background turns accent on hover (QSS QPushButton:hover), and on an
-// accent background the icon must always be the Dark fill set (Icons.md "fond accent" rule),
-// whatever the active theme. Both states map to the same file.
-auto MakeAlignHoverIcon(const QString &baseName) -> QIcon
-{
-    const QString file = QStringLiteral(":/icons/dark/%1-fill_dark.svg").arg(baseName);
-    QIcon icon;
-    icon.addFile(file);                                    // Off = fill dark
-    icon.addFile(file, QSize(), QIcon::Normal, QIcon::On); // On = fill dark
-    return icon;
-}
-
-// alignValue 1/2/3 → Left/Center/Right horizontally, Top/Center/Bottom vertically.
-auto AlignIconBaseName(bool vertical, int value) -> QString
-{
-    switch (value)
-    {
-        case 1:
-            return vertical ? QStringLiteral("align-top-simple") : QStringLiteral("align-left-simple");
-        case 3:
-            return vertical ? QStringLiteral("align-bottom-simple") : QStringLiteral("align-right-simple");
-        default:
-            return vertical ? QStringLiteral("align-center-vertical-simple")
-                            : QStringLiteral("align-center-horizontal-simple");
-    }
-}
-
-struct AlignItem
-{
-    int value;
-    const char *text;
-};
-
-// Shared by the constructor and RetranslateUI() — QT_TRANSLATE_NOOP lets lupdate extract them.
-const AlignItem kAlignHItems[] = {
-    {1, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Left")},
-    {2, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Center")},
-    {3, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Right")},
-};
-
-const AlignItem kAlignVItems[] = {
-    {1, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Top")},
-    {2, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Center")},
-    {3, QT_TRANSLATE_NOOP("ODetailsPieceWidget", "Bottom")},
-};
-
 // Outer-tab indices of the piece options (order of addTab). Each tab hosts its own
 // node-picking workflow: passmarks (General), fold line (Grainline), custom seam
 // allowance + the "Internal outline" list (Seam Allowance).
@@ -227,90 +167,12 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         tab->setObjectName(QStringLiteral("detailsOptionsTabPage"));
         auto *layout = new QVBoxLayout(tab);
 
-        // Graded alignment
-        m_alignGroupBox = new QGroupBox(tr("Graded alignment"));
-        auto *alignLayout = new QVBoxLayout(m_alignGroupBox);
-
-        // Horizontal
-        m_alignHLabel = new QLabel(tr("Horizontal"));
-        auto *hLayout = new QHBoxLayout();
-        m_alignHGroup = new QButtonGroup(this);
-        m_alignHGroup->setExclusive(true);
-
-        for (int i = 0; i < 3; ++i)
-        {
-            auto *btn = new QPushButton(tr(kAlignHItems[i].text));
-            btn->setCheckable(true);
-            btn->setProperty("alignValue", kAlignHItems[i].value);
-            btn->installEventFilter(this); // hover icon swap
-            connect(btn, &QAbstractButton::toggled, this, [btn](bool checked) {
-                // A selected button has no hover: restore its theme rendering under the cursor.
-                if (not btn->underMouse())
-                {
-                    return;
-                }
-                const QVariant prop = checked ? btn->property("normalIcon") : btn->property("hoverIcon");
-                if (prop.isValid())
-                {
-                    btn->setIcon(prop.value<QIcon>());
-                }
-            });
-            m_alignHGroup->addButton(btn, kAlignHItems[i].value);
-            hLayout->addWidget(btn);
-            m_alignHBtns[i] = btn;
-        }
-        alignLayout->addWidget(m_alignHLabel);
-        alignLayout->addLayout(hLayout);
-
-        // Vertical
-        m_alignVLabel = new QLabel(tr("Vertical"));
-        auto *vLayout = new QHBoxLayout();
-        m_alignVGroup = new QButtonGroup(this);
-        m_alignVGroup->setExclusive(true);
-
-        for (int i = 0; i < 3; ++i)
-        {
-            auto *btn = new QPushButton(tr(kAlignVItems[i].text));
-            btn->setCheckable(true);
-            btn->setProperty("alignValue", kAlignVItems[i].value);
-            btn->installEventFilter(this); // hover icon swap
-            connect(btn, &QAbstractButton::toggled, this, [btn](bool checked) {
-                // A selected button has no hover: restore its theme rendering under the cursor.
-                if (not btn->underMouse())
-                {
-                    return;
-                }
-                const QVariant prop = checked ? btn->property("normalIcon") : btn->property("hoverIcon");
-                if (prop.isValid())
-                {
-                    btn->setIcon(prop.value<QIcon>());
-                }
-            });
-            m_alignVGroup->addButton(btn, kAlignVItems[i].value);
-            vLayout->addWidget(btn);
-            m_alignVBtns[i] = btn;
-        }
-        alignLayout->addWidget(m_alignVLabel);
-        alignLayout->addLayout(vLayout);
-
-        // Forced alignment point: overrides the horizontal row above with a main path node whose X
-        // is shared by every graded size. The vertical row keeps working.
-        auto *alignPointSep = new QFrame(m_alignGroupBox);
-        alignPointSep->setFrameShape(QFrame::HLine);
-        alignPointSep->setFrameShadow(QFrame::Sunken);
-        alignLayout->addWidget(alignPointSep);
-
-        m_alignPointBtn = new QPushButton(tr("Align on a point"));
-        alignLayout->addWidget(m_alignPointBtn);
-
-        m_removeAlignPointBtn = new QPushButton(tr("Remove point"));
-        m_removeAlignPointBtn->setVisible(false); // only once a point exists
-        alignLayout->addWidget(m_removeAlignPointBtn);
-
-        m_showAlignPointCheck = new QCheckBox(tr("Show alignment point"));
-        alignLayout->addWidget(m_showAlignPointCheck);
-
-        layout->addWidget(m_alignGroupBox);
+        // Graded alignment — the shared selector, exactly the one the group page and the creation
+        // dialog use. Each row carries three anchors and the piece's own forced point; the point's
+        // controls (remove, show) belong to the widget and appear under the row that owns them.
+        m_alignWidget = new OGradedAlignWidget();
+        m_alignWidget->SetAlignmentPointAvailable(true);
+        layout->addWidget(m_alignWidget);
 
         // Layout flags — flipping & grainline constraints. Same flags and texts as the piece
         // creation dialog step 2; this is where the choice made at creation can be changed.
@@ -461,8 +323,6 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
     mainLayout->addWidget(m_tabWidget);
 
     ConnectControls();
-
-    RefreshAlignIcons();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -474,31 +334,7 @@ void ODetailsPieceWidget::RetranslateUI()
         m_nameLabel->setText(tr("Name"));
     }
     m_pieceInfoWidget->RetranslateUI();
-    if (m_alignGroupBox)
-    {
-        m_alignGroupBox->setTitle(tr("Graded alignment"));
-    }
-    if (m_alignHLabel)
-    {
-        m_alignHLabel->setText(tr("Horizontal"));
-    }
-    if (m_alignVLabel)
-    {
-        m_alignVLabel->setText(tr("Vertical"));
-    }
-    for (int i = 0; i < 3; ++i)
-    {
-        m_alignHBtns[i]->setText(tr(kAlignHItems[i].text));
-        m_alignVBtns[i]->setText(tr(kAlignVItems[i].text));
-    }
-    if (m_alignPointBtn)
-    {
-        m_alignPointBtn->setText(m_alignPointSelectState == AlignPointSelectState::Selecting
-                                     ? tr("Cancel")
-                                     : tr("Align on a point"));
-        m_removeAlignPointBtn->setText(tr("Remove point"));
-        m_showAlignPointCheck->setText(tr("Show alignment point"));
-    }
+    // The graded alignment selector retranslates itself (see OGradedAlignWidget::changeEvent).
     m_manageMainPathBtn->setText(tr("Manage main path"));
     m_addPassmarksBtn->setText(m_passmarkSelectState == PassmarkSelectState::Adding ? tr("Cancel")
                                                                                      : tr("+ Add passmarks"));
@@ -653,35 +489,62 @@ void ODetailsPieceWidget::ConnectControls()
         CommitPending();
     });
 
-    connect(m_alignHGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled),
-            this, [this](QAbstractButton *button, bool checked)
+    // Graded alignment. The fourth value of a row means "this axis follows a point of the piece":
+    // there is no point stored yet, so the click arms the pick — and, clicked again, it is the way
+    // out. Any anchor value drops that axis's point: one source of truth per axis.
+    connect(m_alignWidget, &OGradedAlignWidget::AlignHChanged, this, [this](int v)
     {
-        if (!checked || m_updating)
+        if (m_updating || !m_currentTool)
         {
             return;
         }
-        const int v = button->property("alignValue").toInt();
-        ModifyPiece([v](VPiece &det) { det.SetGradedAlignH(v); });
+        if (v == OGradedAlignWidget::ValueOnPoint)
+        {
+            BeginAlignPointSelection(false);
+            return;
+        }
+        if (m_alignPointSelectState != AlignPointSelectState::Idle)
+        {
+            CancelAlignPointSelection();
+        }
+        ModifyPiece([v](VPiece &det)
+        {
+            det.SetGradedAlignH(v);
+            det.SetGradedAlignPointId(NULL_ID);
+        });
+        // Dropping the point hides its controls: the row is an anchor again.
+        ApplyAlignPointControls(m_pendingDet, m_currentTool->getData());
+        RefreshAlignPointHighlight();
     });
 
-    connect(m_alignVGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled),
-            this, [this](QAbstractButton *button, bool checked)
+    connect(m_alignWidget, &OGradedAlignWidget::AlignVChanged, this, [this](int v)
     {
-        if (!checked || m_updating)
+        if (m_updating || !m_currentTool)
         {
             return;
         }
-        const int v = button->property("alignValue").toInt();
-        ModifyPiece([v](VPiece &det) { det.SetGradedAlignV(v); });
+        if (v == OGradedAlignWidget::ValueOnPoint)
+        {
+            BeginAlignPointSelection(true);
+            return;
+        }
+        if (m_alignPointSelectState != AlignPointSelectState::Idle)
+        {
+            CancelAlignPointSelection();
+        }
+        ModifyPiece([v](VPiece &det)
+        {
+            det.SetGradedAlignV(v);
+            det.SetGradedAlignPointVId(NULL_ID);
+        });
+        ApplyAlignPointControls(m_pendingDet, m_currentTool->getData());
+        RefreshAlignPointHighlight();
     });
 
-    // Forced alignment point: pick it on the piece outline, or drop it.
-    connect(m_alignPointBtn, &QPushButton::clicked, this, &ODetailsPieceWidget::OnAlignPointClicked);
-    connect(m_removeAlignPointBtn, &QPushButton::clicked, this, &ODetailsPieceWidget::OnRemoveAlignPoint);
-    connect(m_showAlignPointCheck, &QCheckBox::toggled, this, &ODetailsPieceWidget::OnShowAlignPointToggled);
-
-    // Graded alignment icons follow the current theme (Light/Dark toggle).
-    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &ODetailsPieceWidget::RefreshAlignIcons);
+    connect(m_alignWidget, &OGradedAlignWidget::RemoveAlignPointRequested, this,
+            &ODetailsPieceWidget::OnRemoveAlignPoint);
+    connect(m_alignWidget, &OGradedAlignWidget::ShowAlignPointChanged, this,
+            &ODetailsPieceWidget::OnShowAlignPointToggled);
 
     // ── Layout flags (flipping & grainline) ──────────────────────
 
@@ -737,53 +600,6 @@ void ODetailsPieceWidget::ModifyPiece(std::function<void(IPieceInfo &)> func)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsPieceWidget::RefreshAlignIcons()
-{
-    const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
-    const QSize iconSize(16, 16);
-    for (int i = 0; i < 3; ++i)
-    {
-        const QIcon hNormal = MakeAlignIcon(AlignIconBaseName(false, i + 1), dark);
-        m_alignHBtns[i]->setIcon(hNormal);
-        m_alignHBtns[i]->setIconSize(iconSize);
-        m_alignHBtns[i]->setProperty("normalIcon", QVariant::fromValue(hNormal));
-        m_alignHBtns[i]->setProperty("hoverIcon",
-                                     QVariant::fromValue(MakeAlignHoverIcon(AlignIconBaseName(false, i + 1))));
-
-        const QIcon vNormal = MakeAlignIcon(AlignIconBaseName(true, i + 1), dark);
-        m_alignVBtns[i]->setIcon(vNormal);
-        m_alignVBtns[i]->setIconSize(iconSize);
-        m_alignVBtns[i]->setProperty("normalIcon", QVariant::fromValue(vNormal));
-        m_alignVBtns[i]->setProperty("hoverIcon",
-                                     QVariant::fromValue(MakeAlignHoverIcon(AlignIconBaseName(true, i + 1))));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-bool ODetailsPieceWidget::eventFilter(QObject *obj, QEvent *event)
-{
-    // Hover icon swap for the graded alignment buttons: an unselected button gets the dark-fill
-    // hover icon on enter (accent background), a selected button has no hover.
-    if (event->type() == QEvent::Enter)
-    {
-        auto *btn = qobject_cast<QPushButton *>(obj);
-        if (btn && btn->isEnabled() && not btn->isChecked() && btn->property("hoverIcon").isValid())
-        {
-            btn->setIcon(btn->property("hoverIcon").value<QIcon>());
-        }
-    }
-    else if (event->type() == QEvent::Leave)
-    {
-        auto *btn = qobject_cast<QPushButton *>(obj);
-        if (btn && btn->property("normalIcon").isValid())
-        {
-            btn->setIcon(btn->property("normalIcon").value<QIcon>());
-        }
-    }
-    return QWidget::eventFilter(obj, event);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto ODetailsPieceWidget::GrainlineCenter(const VPiece &det, const VContainer *data) -> std::optional<QPointF>
 {
     const QVector<VPointF> points = det.MainPathNodePoints(data);
@@ -827,7 +643,8 @@ void ODetailsPieceWidget::Show(VToolSeamAllowance *tool)
         m_infoSubTabs->setCurrentIndex(kPieceInfoSubTabIndex);
         m_pieceInfoWidget->ResetTabs(); // the cut tabs (Fabric / Interfacing / Lining) too
         m_alignPointSelectState = AlignPointSelectState::Idle; // never carry a pick across pieces
-        m_showAlignPointState = true;                          // the "show" checkbox opens checked
+        m_showAlignPointState[0] = true;                       // the "show" checkboxes open checked
+        m_showAlignPointState[1] = true;
     }
 
     m_updating = true;
@@ -891,7 +708,8 @@ void ODetailsPieceWidget::Clear()
     m_annotationsConfigWidget->Clear();
     m_thumbnailConfigWidget->Clear();
     m_alignPointSelectState = AlignPointSelectState::Idle;
-    m_showAlignPointState = true;
+    m_showAlignPointState[0] = true;
+    m_showAlignPointState[1] = true;
 
     // Nothing selected anymore — drop any canvas highlight.
     ClearAlignPointHighlight();
@@ -1297,7 +1115,7 @@ void ODetailsPieceWidget::CancelSASelection()
 //---------------------------------------------------------------------------------------------------------------------
 auto ODetailsPieceWidget::IsSelectingAlignPoint() const -> bool
 {
-    return m_alignPointSelectState == AlignPointSelectState::Selecting;
+    return m_alignPointSelectState != AlignPointSelectState::Idle;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1308,7 +1126,8 @@ void ODetailsPieceWidget::CancelAlignPointSelection()
         return;
     }
     m_alignPointSelectState = AlignPointSelectState::Idle;
-    m_alignPointBtn->setText(tr("Align on a point"));
+    // No point was stored: put the row back on the axis value it actually carries.
+    ApplyAlignPointControls(m_pendingDet, m_currentTool != nullptr ? m_currentTool->getData() : nullptr);
     emit ShowStatusTip(QString());
 }
 
@@ -1328,30 +1147,39 @@ void ODetailsPieceWidget::CancelThumbnailEdit()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsPieceWidget::OnAlignPointClicked()
+void ODetailsPieceWidget::BeginAlignPointSelection(bool vertical)
 {
     if (m_updating || !m_currentTool)
     {
         return;
     }
-    if (m_alignPointSelectState == AlignPointSelectState::Selecting)
+    if (m_alignPointSelectState != AlignPointSelectState::Idle)
     {
+        // The fourth button is its own way out: clicked again, it puts the pick away. Another axis'
+        // button switches the pick over to that axis instead.
+        const bool sameAxis = (m_alignPointSelectState == AlignPointSelectState::SelectingV) == vertical;
         CancelAlignPointSelection();
-        return;
+        if (sameAxis)
+        {
+            return;
+        }
     }
 
     // Passmarks are picked on this same tab: only one node-picking workflow may be armed at a time.
     CancelPassmarkSelection();
 
-    m_alignPointSelectState = AlignPointSelectState::Selecting;
-    m_alignPointBtn->setText(tr("Cancel"));
-    emit ShowStatusTip(tr("Click the point to align on, on the piece outline (Esc to cancel)"));
+    m_alignPointSelectState =
+        vertical ? AlignPointSelectState::SelectingV : AlignPointSelectState::SelectingH;
+    ApplyAlignPointControls(m_pendingDet, m_currentTool->getData());
+    emit ShowStatusTip(vertical
+                           ? tr("Click the point to align on vertically, on the piece outline (Esc to cancel)")
+                           : tr("Click the point to align on horizontally, on the piece outline (Esc to cancel)"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPieceWidget::OnNodeSelectedForAlignPoint(quint32 nodeId)
 {
-    if (m_alignPointSelectState != AlignPointSelectState::Selecting || m_updating || !m_currentTool)
+    if (m_alignPointSelectState == AlignPointSelectState::Idle || m_updating || !m_currentTool)
     {
         return;
     }
@@ -1364,11 +1192,22 @@ void ODetailsPieceWidget::OnNodeSelectedForAlignPoint(quint32 nodeId)
         return;
     }
 
+    const bool vertical = m_alignPointSelectState == AlignPointSelectState::SelectingV;
     CancelAlignPointSelection();
-    ModifyPiece([nodeId](VPiece &det) { det.SetGradedAlignPointId(nodeId); });
+    ModifyPiece([nodeId, vertical](VPiece &det)
+    {
+        if (vertical)
+        {
+            det.SetGradedAlignPointVId(nodeId);
+        }
+        else
+        {
+            det.SetGradedAlignPointId(nodeId);
+        }
+    });
 
     // A freshly chosen point is shown straight away: the checkbox is on by default.
-    m_showAlignPointState = true;
+    m_showAlignPointState[vertical ? 1 : 0] = true;
     ApplyAlignPointControls(m_pendingDet, m_currentTool->getData());
     RefreshAlignPointHighlight();
 
@@ -1385,59 +1224,84 @@ void ODetailsPieceWidget::RestoreGeneralTab()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsPieceWidget::OnRemoveAlignPoint()
+void ODetailsPieceWidget::OnRemoveAlignPoint(bool vertical)
 {
     if (m_updating || !m_currentTool)
     {
         return;
     }
     CancelAlignPointSelection();
-    ModifyPiece([](VPiece &det) { det.SetGradedAlignPointId(NULL_ID); });
+    // Dropping the point puts that axis back in the middle — its old anchor value is deliberately
+    // not restored: the user asked to be rid of the point, not to find the previous choice back.
+    ModifyPiece([vertical](VPiece &det)
+    {
+        if (vertical)
+        {
+            det.SetGradedAlignPointVId(NULL_ID);
+            det.SetGradedAlignV(2);
+        }
+        else
+        {
+            det.SetGradedAlignPointId(NULL_ID);
+            det.SetGradedAlignH(2);
+        }
+    });
     ApplyAlignPointControls(m_pendingDet, m_currentTool->getData());
     RefreshAlignPointHighlight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsPieceWidget::OnShowAlignPointToggled(bool checked)
+void ODetailsPieceWidget::OnShowAlignPointToggled(bool vertical, bool shown)
 {
     if (m_updating)
     {
         return;
     }
-    m_showAlignPointState = checked;
+    m_showAlignPointState[vertical ? 1 : 0] = shown;
     RefreshAlignPointHighlight();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPieceWidget::ClearAlignPointHighlight()
 {
-    if (m_alignPointHighlightId == NULL_ID)
+    if (m_alignPointHighlightId != NULL_ID)
     {
-        return;
+        emit HighlightNode(m_alignPointHighlightId, false);
+        m_alignPointHighlightId = NULL_ID;
     }
-    emit HighlightNode(m_alignPointHighlightId, false);
-    m_alignPointHighlightId = NULL_ID;
+    if (m_alignPointVHighlightId != NULL_ID)
+    {
+        emit HighlightNode(m_alignPointVHighlightId, false);
+        m_alignPointVHighlightId = NULL_ID;
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODetailsPieceWidget::RefreshAlignPointHighlight()
 {
-    // The point is owned by the General tab: it stays lit only while that tab is on screen, and
-    // while its checkbox is on.
-    const quint32 nodeId = m_pendingDet.GetGradedAlignPointId();
-    const bool lit = nodeId != NULL_ID && m_showAlignPointCheck->isChecked()
-                     && m_tabWidget->currentIndex() == kGeneralTabIndex;
+    // Each point is owned by the General tab: it stays lit only while that tab is on screen, and
+    // while its own checkbox is on. The two axes are lit independently.
+    const bool onGeneralTab = m_tabWidget->currentIndex() == kGeneralTabIndex;
+    const auto sync = [this, onGeneralTab](bool vertical) -> void
+    {
+        const quint32 nodeId = vertical ? m_pendingDet.GetGradedAlignPointVId()
+                                        : m_pendingDet.GetGradedAlignPointId();
+        const bool lit = nodeId != NULL_ID && onGeneralTab && m_showAlignPointState[vertical ? 1 : 0];
+        quint32 &highlighted = vertical ? m_alignPointVHighlightId : m_alignPointHighlightId;
 
-    if (m_alignPointHighlightId != NULL_ID && (!lit || m_alignPointHighlightId != nodeId))
-    {
-        emit HighlightNode(m_alignPointHighlightId, false);
-        m_alignPointHighlightId = NULL_ID;
-    }
-    if (lit)
-    {
-        emit HighlightNode(nodeId, true);
-        m_alignPointHighlightId = nodeId;
-    }
+        if (highlighted != NULL_ID && (!lit || highlighted != nodeId))
+        {
+            emit HighlightNode(highlighted, false);
+            highlighted = NULL_ID;
+        }
+        if (lit)
+        {
+            emit HighlightNode(nodeId, true);
+            highlighted = nodeId;
+        }
+    };
+    sync(false);
+    sync(true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1459,75 +1323,42 @@ auto ODetailsPieceWidget::IsMemberOfGroup(const VContainer *data) const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsPieceWidget::SetAlignRowsEnabled(bool horizontal, bool vertical)
-{
-    // Qt refuses to uncheck the checked button of an exclusive group: release the exclusivity,
-    // uncheck, then restore it. Without this, a disabled row would keep a stale checked button.
-    const auto applyRow = [](QButtonGroup *group, QPushButton *const *btns, bool enabled)
-    {
-        if (!enabled)
-        {
-            group->setExclusive(false);
-            for (int i = 0; i < 3; ++i)
-            {
-                btns[i]->setChecked(false);
-            }
-            group->setExclusive(true);
-        }
-        for (int i = 0; i < 3; ++i)
-        {
-            btns[i]->setEnabled(enabled);
-        }
-    };
-    applyRow(m_alignHGroup, m_alignHBtns, horizontal);
-    applyRow(m_alignVGroup, m_alignVBtns, vertical);
-    m_alignHLabel->setEnabled(horizontal);
-    m_alignVLabel->setEnabled(vertical);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void ODetailsPieceWidget::ApplyAlignPointControls(const VPiece &det, const VContainer *data)
 {
+    if (m_alignWidget == nullptr)
+    {
+        return;
+    }
+
+    // This is a model → UI sync. Resyncing the row can check another button, and a check is what the
+    // panel reports as a user choice: without this the sync would write back into the piece (and push
+    // an undo step) every time a pick is armed or cancelled.
+    const QSignalBlocker blocker(m_alignWidget);
+
     const bool member = IsMemberOfGroup(data);
-    const bool hasPoint = det.GetGradedAlignPointId() != NULL_ID;
+    const bool hasH = det.GetGradedAlignPointId() != NULL_ID;
+    const bool hasV = det.GetGradedAlignPointVId() != NULL_ID;
+    const bool selectingH = m_alignPointSelectState == AlignPointSelectState::SelectingH;
+    const bool selectingV = m_alignPointSelectState == AlignPointSelectState::SelectingV;
 
-    m_alignPointBtn->setText(m_alignPointSelectState == AlignPointSelectState::Selecting
-                                 ? tr("Cancel")
-                                 : tr("Align on a point"));
-    m_alignPointBtn->setEnabled(!member);
-    m_removeAlignPointBtn->setVisible(hasPoint);
-    m_removeAlignPointBtn->setEnabled(!member);
-    m_showAlignPointCheck->setEnabled(hasPoint && !member);
-    m_showAlignPointCheck->setChecked(hasPoint && m_showAlignPointState);
+    // A member piece takes its whole alignment from its group: both rows go inert, and the point
+    // cannot be picked here — the group's common point replaces it.
+    m_alignWidget->SetAlignmentPointAvailable(!member);
+    m_alignWidget->SetAlignHEnabled(!member);
+    m_alignWidget->SetAlignVEnabled(!member);
 
-    // A member piece takes its whole alignment from its group: both rows go inert. A forced point
-    // takes the horizontal row over — the vertical one keeps working.
-    SetAlignRowsEnabled(!member && !hasPoint, !member);
+    // A row is on its point as soon as a point is stored, or while its pick is armed — that is what
+    // the fourth button stands for. Sanitised anchor values: 0 is not one of the three anchors.
+    const auto axisValue = [](int value) -> int { return (value >= 1 && value <= 3) ? value : 2; };
+    m_alignWidget->SetAlignH(hasH || selectingH ? OGradedAlignWidget::ValueOnPoint
+                                                : axisValue(det.GetGradedAlignH()));
+    m_alignWidget->SetAlignV(hasV || selectingV ? OGradedAlignWidget::ValueOnPoint
+                                                : axisValue(det.GetGradedAlignV()));
 
-    int h = det.GetGradedAlignH();
-    if (h == 0)
-    {
-        h = 2;
-    }
-    int v = det.GetGradedAlignV();
-    if (v == 0)
-    {
-        v = 2;
-    }
-    if (!member && !hasPoint)
-    {
-        if (auto *hBtn = m_alignHGroup->button(h))
-        {
-            hBtn->setChecked(true);
-        }
-    }
-    if (!member)
-    {
-        if (auto *vBtn = m_alignVGroup->button(v))
-        {
-            vBtn->setChecked(true);
-        }
-    }
+    m_alignWidget->SetAlignPointActive(false, (hasH || selectingH) && !member);
+    m_alignWidget->SetAlignPointActive(true, (hasV || selectingV) && !member);
+    m_alignWidget->SetAlignPointShown(false, m_showAlignPointState[0]);
+    m_alignWidget->SetAlignPointShown(true, m_showAlignPointState[1]);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -199,9 +199,10 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
         // horizontale, et une pièce centrée par la règle resterait décalée par le point.
         if (!centreEveryPiece)
         {
-            rule.refPointX = layers.at(it.value().first().layer)
-                                 .pieces.at(it.value().first().piece)
-                                 .alignPointX;
+            const OExportPieceGeometry &ref = layers.at(it.value().first().layer)
+                                                  .pieces.at(it.value().first().piece);
+            rule.refPointX = ref.alignPointX;
+            rule.refPointY = ref.alignPointY;
         }
 
         for (int i = 0; i < it.value().size(); ++i)
@@ -209,7 +210,8 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
             const SizeSlot &slot = it.value().at(i);
             const qreal layerPointX = layers.at(slot.layer).pieces.at(slot.piece).alignPointX;
             layers[slot.layer].pieces[slot.piece].alignDelta +=
-                OGraded::UnitLayerDelta(rule, unionRect, rects.at(i), layerPointX);
+                OGraded::UnitLayerDelta(rule, unionRect, rects.at(i), layerPointX,
+                                        layers.at(slot.layer).pieces.at(slot.piece).alignPointY);
         }
     }
 
@@ -233,6 +235,7 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
         QMap<int, QVector<SizeSlot>> membersByLayer;
         QMap<int, QRectF> rectByLayer;
         QMap<int, qreal> pointXByLayer;  // layer -> forced point X (first one wins)
+        QMap<int, qreal> pointYByLayer;  // layer -> forced point Y (first one wins)
         int memberCount = 0;
 
         for (int l = 0; l < layers.size(); ++l)
@@ -255,6 +258,11 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
                 {
                     pointXByLayer.insert(l, px);
                 }
+                const qreal py = layer.pieces.at(p).alignPointY;
+                if (!qIsNaN(py) && !pointYByLayer.contains(l))
+                {
+                    pointYByLayer.insert(l, py);
+                }
             }
         }
 
@@ -276,12 +284,14 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
         if (!centreEveryPiece && !rectByLayer.isEmpty())
         {
             rule.refPointX = pointXByLayer.value(rectByLayer.firstKey(), qQNaN());
+            rule.refPointY = pointYByLayer.value(rectByLayer.firstKey(), qQNaN());
         }
 
         for (auto it = rectByLayer.cbegin(); it != rectByLayer.cend(); ++it)
         {
             const QPointF delta = OGraded::UnitLayerDelta(rule, overallRect, it.value(),
-                                                          pointXByLayer.value(it.key(), qQNaN()));
+                                                          pointXByLayer.value(it.key(), qQNaN()),
+                                                          pointYByLayer.value(it.key(), qQNaN()));
             for (const SizeSlot &slot : membersByLayer.value(it.key()))
             {
                 layers[slot.layer].pieces[slot.piece].alignDelta += delta;

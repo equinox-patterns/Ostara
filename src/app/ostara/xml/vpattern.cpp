@@ -1235,6 +1235,7 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                 group.alignPointSourceId = GetParametrUInt(groupElement, AttrGradedAlignPoint, QChar('0'));
                 group.alignPointMemberId = GetParametrUInt(groupElement, AttrGradedAlignPointMember, QChar('0'));
                 group.alignOnPoint = GetParametrBool(groupElement, AttrGradedAlignOnPoint, QStringLiteral("false"));
+                group.alignOnPointV = GetParametrBool(groupElement, AttrGradedAlignOnPointV, QStringLiteral("false"));
                 group.m_inLayout = GetParametrBool(groupElement, AttrInLayout, QStringLiteral("true"));
 
                 const uint groupPieceNumber = GetParametrUInt(groupElement, AttrPieceNumber, QChar('0'));

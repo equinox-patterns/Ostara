@@ -59,6 +59,9 @@ constexpr int kGradedBasePenRole     = Qt::UserRole + 908;
 /// runs after the live combination has been restored. 0 is a legal X, so "carries a point" must be
 /// tested with QVariant::isValid(), never isNull().
 constexpr int kGradedAlignPointXRole = Qt::UserRole + 909;
+/// Local Y (pattern frame) of the unit's forced VERTICAL alignment point for that size. Same capture
+/// rule as the X role, and the same "test QVariant::isValid()" caveat: 0 is a legal Y.
+constexpr int kGradedAlignPointYRole = Qt::UserRole + 910;
 /// Piece id carried by the "Member of <group>" mark hung above a grouped reference member.
 constexpr int kGradedMemberMarkRole  = Qt::UserRole + 911;
 /// Marks the invisible deck a reference piece hangs its own children on (see GradedDecorHost).
@@ -160,6 +163,17 @@ inline auto GradedAlignPointX(const QGraphicsItem *item) -> qreal
     }
     const QVariant x = item->data(kGradedAlignPointXRole);
     return x.isValid() ? x.toDouble() : qQNaN();
+}
+
+/// Local Y of the forced vertical alignment point carried by an item, or NaN when it carries none.
+inline auto GradedAlignPointY(const QGraphicsItem *item) -> qreal
+{
+    if (item == nullptr)
+    {
+        return qQNaN();
+    }
+    const QVariant y = item->data(kGradedAlignPointYRole);
+    return y.isValid() ? y.toDouble() : qQNaN();
 }
 
 /// Rebuild the per-group reference decoration (defined in mainwindow_graded_group.cpp): mask what

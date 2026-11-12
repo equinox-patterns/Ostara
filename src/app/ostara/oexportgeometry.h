@@ -179,6 +179,10 @@ struct OExportPieceGeometry
     /// put back on its own size.
     qreal alignPointX{qQNaN()};
 
+    /// Pattern-frame Y of the unit's forced VERTICAL alignment point for this size, or NaN when
+    /// the unit has none. Same capture rule as the X above; the two axes are independent.
+    qreal alignPointY{qQNaN()};
+
     /// The piece's direction, resolved for a cutting plan and left unknown otherwise.
     ///
     /// ⚠️ **A grouped member takes the GROUP's direction, never its own.** `VLayoutPiece::Create`

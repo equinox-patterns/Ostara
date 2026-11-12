@@ -184,19 +184,26 @@ void MainWindow::GradedAlignContextMenu(const QPoint &globalPos)
     // otherwise. Read off the graded items, which is exactly what the alignment pass consumes —
     // the point counts only while it still resolves to a node.
     bool alignOnPoint = false;
+    bool alignOnPointV = false;
     const auto *unitGroups = pattern->DataPieceGroups();
     for (auto *item : m_sceneGraded->items())
     {
         const quint32 pid = GradedPieceId(item);
-        if (pid == NULL_ID || qIsNaN(GradedAlignPointX(item)))
+        if (pid == NULL_ID)
         {
             continue;
         }
         const bool belongs = isGroup ? (unitGroups != nullptr && unitGroups->value(unitId).pieceIds.contains(pid))
                                      : (pid == unitId);
-        if (belongs)
+        if (!belongs)
         {
-            alignOnPoint = true;
+            continue;
+        }
+        // Each axis counts only while its own point still resolves to a node.
+        alignOnPoint = alignOnPoint || !qIsNaN(GradedAlignPointX(item));
+        alignOnPointV = alignOnPointV || !qIsNaN(GradedAlignPointY(item));
+        if (alignOnPoint && alignOnPointV)
+        {
             break;
         }
     }
@@ -238,6 +245,7 @@ void MainWindow::GradedAlignContextMenu(const QPoint &globalPos)
     for (const AlignMenuOption &option : kAlignMenuV)
     {
         QAction *action = AddOption(vSub, option, alignV);
+        action->setEnabled(!alignOnPointV);
         connect(action, &QAction::triggered, topMenu, [&choice, option]() {
             choice.vertical = true;
             choice.value = option.value;
@@ -393,12 +401,14 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
                 if (GradedIsReference(item))
                 {
                     rule.refPointX = GradedAlignPointX(item);
+                    rule.refPointY = GradedAlignPointY(item);
                 }
             }
             for (int i = 0; i < unitItems.size(); ++i)
             {
                 const QPointF delta = OGraded::UnitLayerDelta(rule, unionRect, rects.at(i),
-                                                              GradedAlignPointX(unitItems.at(i)));
+                                                              GradedAlignPointX(unitItems.at(i)),
+                                                              GradedAlignPointY(unitItems.at(i)));
                 if (!qFuzzyIsNull(delta.x()) || !qFuzzyIsNull(delta.y()))
                 {
                     unitItems.at(i)->setPos(unitItems.at(i)->pos() + delta);
@@ -417,6 +427,7 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
             QMap<qreal, QList<QGraphicsItem *>> itemsByLayer;
             QMap<qreal, QRectF> rectByLayer;
             QMap<qreal, qreal> pointXByLayer;  // z -> forced point X (first one wins)
+            QMap<qreal, qreal> pointYByLayer;  // z -> forced point Y (first one wins)
             qreal refLayerZ = qQNaN();
             for (quint32 memberId : group.pieceIds)
             {
@@ -437,6 +448,11 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
                     {
                         pointXByLayer.insert(z, px);
                     }
+                    const qreal py = GradedAlignPointY(item);
+                    if (!qIsNaN(py) && !pointYByLayer.contains(z))
+                    {
+                        pointYByLayer.insert(z, py);
+                    }
                     if (GradedIsReference(item))
                     {
                         refLayerZ = z;
@@ -456,12 +472,14 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
                 if (!qIsNaN(refLayerZ))
                 {
                     rule.refPointX = pointXByLayer.value(refLayerZ, qQNaN());
+                    rule.refPointY = pointYByLayer.value(refLayerZ, qQNaN());
                 }
 
                 for (auto it = rectByLayer.cbegin(); it != rectByLayer.cend(); ++it)
                 {
                     const QPointF delta = OGraded::UnitLayerDelta(rule, overallRect, it.value(),
-                                                                  pointXByLayer.value(it.key(), qQNaN()));
+                                                                  pointXByLayer.value(it.key(), qQNaN()),
+                                                                  pointYByLayer.value(it.key(), qQNaN()));
                     if (qFuzzyIsNull(delta.x()) && qFuzzyIsNull(delta.y()))
                     {
                         continue;

@@ -12084,6 +12084,14 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
         <translation>Cliquez sur le point d&apos;alignement, sur le contour de la pièce (Échap pour annuler)</translation>
     </message>
     <message>
+        <source>Click the point to align on horizontally, on the piece outline (Esc to cancel)</source>
+        <translation>Cliquez sur le point d&apos;alignement horizontal, sur le contour de la pièce (Échap pour annuler)</translation>
+    </message>
+    <message>
+        <source>Click the point to align on vertically, on the piece outline (Esc to cancel)</source>
+        <translation>Cliquez sur le point d&apos;alignement vertical, sur le contour de la pièce (Échap pour annuler)</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1363"/>
         <source>This point is not on the piece outline - click a point of the piece</source>
         <translation>Ce point n&apos;est pas sur le contour de la pièce - cliquez sur un point de la pièce</translation>
@@ -14990,6 +14998,18 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="233"/>
         <source>Vertical</source>
         <translation>Vertical</translation>
+    </message>
+    <message>
+        <source>On a point</source>
+        <translation>Sur un point</translation>
+    </message>
+    <message>
+        <source>Remove point</source>
+        <translation>Retirer le point</translation>
+    </message>
+    <message>
+        <source>Show alignment point</source>
+        <translation>Afficher le point d&apos;alignement</translation>
     </message>
 </context>
 <context>

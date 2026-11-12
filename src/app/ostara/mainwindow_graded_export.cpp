@@ -403,6 +403,11 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
             {
                 item->setData(kGradedAlignPointXRole, alignPointX);
             }
+            const qreal alignPointY = OGraded::UnitAlignPointY(pieceId, details.at(k).piece, pattern);
+            if (!qIsNaN(alignPointY))
+            {
+                item->setData(kGradedAlignPointYRole, alignPointY);
+            }
             scene.addItem(item);
             itemsByPiece[pieceId].append(item);
             itemsOfSize.append(item);

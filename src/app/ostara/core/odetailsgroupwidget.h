@@ -123,8 +123,6 @@ private:
     OGradedAlignWidget *m_alignWidget{nullptr};
 
     // Forced alignment point: the group's common point, the one chosen when the pieces were linked.
-    QCheckBox *m_alignOnPointCheck{nullptr};
-    QCheckBox *m_showAlignPointCheck{nullptr};
 
     // Layout flags of the members. Checked when EVERY member carries the flag.
     QCheckBox *m_forceFlippingCheck{nullptr};
@@ -134,8 +132,6 @@ private:
 
     void ApplyAlignPointControls(const OPieceGroup &group);
     void RefreshAlignPointHighlight();
-    void OnAlignOnPointToggled(bool checked);
-    void OnShowAlignPointToggled(bool checked);
     auto ReferenceMemberNode(const OPieceGroup &group) const -> quint32;
 
     // Information — Group sub-tab (same structure as the PB Piece's Piece sub-tab)

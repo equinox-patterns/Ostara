@@ -93,6 +93,9 @@ struct OPieceGroup : public IPieceInfo
     quint32 alignPointSourceId{NULL_ID}; // Common point source id (NULL_ID = none stored)
     quint32 alignPointMemberId{NULL_ID}; // Member whose copy is the X reference (NULL_ID = lowest piece id)
     bool alignOnPoint{false};            // "Align on the common point": overrides the horizontal alignment
+    // Same common point, other axis. The point is one — chosen when the pieces were linked — but
+    // each axis decides for itself whether it follows it or keeps its anchor.
+    bool alignOnPointV{false};           // Overrides the vertical alignment
 
     // Children — same types as VPiece. No VCustomLabelData: the group holds its fields directly.
     VGrainlineData m_glGrainline{};

@@ -171,6 +171,15 @@ QPushButton:disabled {
     border-color: #e5e5e5;
 }
 
+/* Sélecteur d'alignement gradué — quatre valeurs par rangée, dans un dock étroit.
+   Le rembourrage standard (16px de chaque côté) fait déborder les deux rangées et oblige à élargir
+   le dock. Ces boutons n'ont pas besoin de cette respiration : leur contenu est court, et leurs huit
+   largeurs sont déjà rendues égales en C++ (OGradedAlignWidget::UpdateButtonWidths), donc les réduire
+   ne décale rien — elles restent toutes identiques. */
+QPushButton#gradedAlignBtn {
+    padding: 6px 6px;
+}
+
 /* État sélectionné (QPushButton checkable — presets de longueur, Simple/Double, …)
    Fond de sélection + bordure accent, cohérent avec QToolButton:checked. */
 QPushButton:checked {

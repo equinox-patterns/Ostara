@@ -114,6 +114,13 @@ public:
     auto GetGradedAlignPointId() const -> quint32;
     void SetGradedAlignPointId(quint32 id);
 
+    /// @brief Node carrying the vertical alignment of the graded sizes, NULL_ID when there is none.
+    ///
+    /// The vertical twin of GetGradedAlignPointId(): the two axes are independent, so a piece can
+    /// follow a point horizontally and an anchor vertically, or a different point on each axis.
+    auto GetGradedAlignPointVId() const -> quint32;
+    void SetGradedAlignPointVId(quint32 id);
+
     auto GetName() const -> QString override;
 
     auto GetPieceNumber() const -> uint override;

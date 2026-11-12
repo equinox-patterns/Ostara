@@ -391,6 +391,11 @@ void MainWindow::BuildGradedScene()
             {
                 item->setData(kGradedAlignPointXRole, alignPointX);
             }
+            const qreal alignPointY = OGraded::UnitAlignPointY(pieceId, details.at(k).piece, pattern);
+            if (!qIsNaN(alignPointY))
+            {
+                item->setData(kGradedAlignPointYRole, alignPointY);
+            }
             m_sceneGraded->addItem(item);
             itemsOfSize.append(item);
 

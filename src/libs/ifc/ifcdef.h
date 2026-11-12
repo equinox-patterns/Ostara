@@ -65,10 +65,12 @@ extern const QString AttrGradedAlignV;
 /// On a group: the construction source id (idObject) of the common point, which is the only
 /// identity the members' copies share.
 extern const QString AttrGradedAlignPoint;
+extern const QString AttrGradedAlignPointV;
 /// Group only: the member whose copy of the common point is the X reference.
 extern const QString AttrGradedAlignPointMember;
 /// Group only: whether the horizontal alignment is overridden by the common point.
 extern const QString AttrGradedAlignOnPoint;
+extern const QString AttrGradedAlignOnPointV;
 extern const QString AttrPieceNumber;
 extern const QString AttrCutFabricQty;
 extern const QString AttrCutFabricOnFold;

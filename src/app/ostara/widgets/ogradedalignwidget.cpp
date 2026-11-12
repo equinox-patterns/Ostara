@@ -30,12 +30,14 @@
 
 #include <QAbstractButton>
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QEvent>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QLabel>
 #include <QPushButton>
+#include <QSignalBlocker>
 #include <QSize>
 #include <QVariant>
 #include <QVBoxLayout>
@@ -116,81 +118,9 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
 
     m_alignGroupBox = new QGroupBox(tr("Graded alignment"));
     m_alignLayout = new QVBoxLayout(m_alignGroupBox);
-    auto *alignLayout = m_alignLayout;
 
-    // Horizontal
-    m_alignHLabel = new QLabel(tr("Horizontal"));
-    auto *hLayout = new QHBoxLayout();
-    m_alignHGroup = new QButtonGroup(this);
-    m_alignHGroup->setExclusive(true);
-
-    for (int i = 0; i < 3; ++i)
-    {
-        auto *btn = new QPushButton(tr(kAlignHItems[i].text));
-        btn->setCheckable(true);
-        btn->setAutoDefault(false); // never the dialog's default button
-        btn->setFocusPolicy(Qt::NoFocus);
-        btn->setProperty("alignValue", kAlignHItems[i].value);
-        btn->installEventFilter(this); // hover icon swap
-        connect(btn, &QAbstractButton::toggled, this, [this, btn](bool checked) {
-            if (checked)
-            {
-                emit AlignHChanged(btn->property("alignValue").toInt());
-            }
-            // A selected button has no hover: restore its theme rendering under the cursor.
-            if (not btn->underMouse())
-            {
-                return;
-            }
-            const QVariant prop = checked ? btn->property("normalIcon") : btn->property("hoverIcon");
-            if (prop.isValid())
-            {
-                btn->setIcon(prop.value<QIcon>());
-            }
-        });
-        m_alignHGroup->addButton(btn, kAlignHItems[i].value);
-        hLayout->addWidget(btn);
-        m_alignHBtns[i] = btn;
-    }
-    alignLayout->addWidget(m_alignHLabel);
-    alignLayout->addLayout(hLayout);
-
-    // Vertical
-    m_alignVLabel = new QLabel(tr("Vertical"));
-    auto *vLayout = new QHBoxLayout();
-    m_alignVGroup = new QButtonGroup(this);
-    m_alignVGroup->setExclusive(true);
-
-    for (int i = 0; i < 3; ++i)
-    {
-        auto *btn = new QPushButton(tr(kAlignVItems[i].text));
-        btn->setCheckable(true);
-        btn->setAutoDefault(false); // never the dialog's default button
-        btn->setFocusPolicy(Qt::NoFocus);
-        btn->setProperty("alignValue", kAlignVItems[i].value);
-        btn->installEventFilter(this); // hover icon swap
-        connect(btn, &QAbstractButton::toggled, this, [this, btn](bool checked) {
-            if (checked)
-            {
-                emit AlignVChanged(btn->property("alignValue").toInt());
-            }
-            // A selected button has no hover: restore its theme rendering under the cursor.
-            if (not btn->underMouse())
-            {
-                return;
-            }
-            const QVariant prop = checked ? btn->property("normalIcon") : btn->property("hoverIcon");
-            if (prop.isValid())
-            {
-                btn->setIcon(prop.value<QIcon>());
-            }
-        });
-        m_alignVGroup->addButton(btn, kAlignVItems[i].value);
-        vLayout->addWidget(btn);
-        m_alignVBtns[i] = btn;
-    }
-    alignLayout->addWidget(m_alignVLabel);
-    alignLayout->addLayout(vLayout);
+    BuildRow(false); // horizontal: label, its four values, then the controls of its point
+    BuildRow(true);  // vertical
 
     mainLayout->addWidget(m_alignGroupBox);
 
@@ -199,8 +129,10 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
 
     // Uniform button widths: the H and V rows are independent QHBoxLayouts, so in a narrow
     // window each row keeps its own natural size and "Left" (longer text) renders wider than
-    // "Top". Share one minimum width across all six buttons so the selector looks like every
-    // other alignment selector in the app (Dialog Piece step 2, PB Details general tab).
+    // "Top". Share one minimum width across all six anchored buttons so the selector looks like
+    // every other alignment selector in the app (Dialog Piece step 2, PB Details general tab).
+    // The fourth button of a row stays out of it: it carries no icon, and its label is longer than
+    // every anchor — stretching the anchors to it would leave three half-empty buttons.
     UpdateButtonWidths();
 
     // The model default is center/center (VPiece::m_gradedAlignH/V = 2): show it
@@ -210,15 +142,120 @@ OGradedAlignWidget::OGradedAlignWidget(QWidget *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::BuildRow(bool vertical)
+{
+    const AlignItem *items = vertical ? kAlignVItems : kAlignHItems;
+    QLabel *&label = vertical ? m_alignVLabel : m_alignHLabel;
+    QPushButton **btns = vertical ? m_alignVBtns : m_alignHBtns;
+    QPushButton *&removeBtn = vertical ? m_removeVPointBtn : m_removeHPointBtn;
+    QCheckBox *&showCheck = vertical ? m_showVPointCheck : m_showHPointCheck;
+
+    label = new QLabel(vertical ? tr("Vertical") : tr("Horizontal"));
+    m_alignLayout->addWidget(label);
+
+    // One signal per row, so the caller hears the anchor values and the point value the same way.
+    const auto notify = [this, vertical](int value) {
+        if (vertical)
+        {
+            emit AlignVChanged(value);
+        }
+        else
+        {
+            emit AlignHChanged(value);
+        }
+    };
+
+    auto *group = new QButtonGroup(this);
+    group->setExclusive(true); // four values, one anchor or the point: never two at once
+    if (vertical)
+    {
+        m_alignVGroup = group;
+    }
+    else
+    {
+        m_alignHGroup = group;
+    }
+
+    auto *row = new QHBoxLayout();
+    for (int i = 0; i < 4; ++i)
+    {
+        const bool onPoint = i == 3;
+        const int value = onPoint ? ValueOnPoint : items[i].value;
+
+        auto *btn = new QPushButton(onPoint ? tr("On a point") : tr(items[i].text));
+        // One name for the eight of them: the theme tightens their padding (a dock is narrow, and
+        // four values per row at the standard padding overflows it), and UpdateButtonWidths() gives
+        // them all the same width.
+        btn->setObjectName(QStringLiteral("gradedAlignBtn"));
+        btn->setCheckable(true);
+        btn->setAutoDefault(false); // never the dialog's default button
+        btn->setFocusPolicy(Qt::NoFocus);
+        btn->setProperty("alignValue", value);
+        if (onPoint)
+        {
+            // The point button is text only — no icon, so no hover icon and no icon to size.
+            // Hidden until the owner says a point can actually be picked and stored.
+            btn->setVisible(m_alignmentPointAvailable);
+            connect(btn, &QAbstractButton::clicked, this, [notify, value] { notify(value); });
+        }
+        else
+        {
+            btn->installEventFilter(this); // hover icon swap
+            connect(btn, &QAbstractButton::toggled, this, [this, btn, notify, value](bool checked) {
+                if (checked)
+                {
+                    notify(value);
+                }
+                // A selected button has no hover: restore its theme rendering under the cursor.
+                if (not btn->underMouse())
+                {
+                    return;
+                }
+                const QVariant prop = checked ? btn->property("normalIcon") : btn->property("hoverIcon");
+                if (prop.isValid())
+                {
+                    btn->setIcon(prop.value<QIcon>());
+                }
+            });
+        }
+        group->addButton(btn, value);
+        row->addWidget(btn);
+        btns[i] = btn;
+    }
+
+    // Both controls answer for the point of this axis alone: a piece or a group carries one point
+    // per axis, so removing the vertical one leaves the horizontal one standing.
+    removeBtn = new QPushButton(tr("Remove point"));
+    removeBtn->setAutoDefault(false);
+    removeBtn->setFocusPolicy(Qt::NoFocus);
+    removeBtn->setVisible(false);
+    connect(removeBtn, &QPushButton::clicked, this,
+            [this, vertical] { emit RemoveAlignPointRequested(vertical); });
+
+    showCheck = new QCheckBox(tr("Show alignment point"));
+    showCheck->setChecked(true); // a freshly picked point is shown straight away
+    showCheck->setVisible(false);
+    connect(showCheck, &QCheckBox::toggled, this,
+            [this, vertical](bool checked) { emit ShowAlignPointChanged(vertical, checked); });
+
+    m_alignLayout->addLayout(row);
+    m_alignLayout->addWidget(removeBtn);
+    m_alignLayout->addWidget(showCheck);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OGradedAlignWidget::UpdateButtonWidths()
 {
+    // The eight buttons share one width — anchors and the point button alike — so the two rows line
+    // up and the point button does not stand out as a longer, odd one. The width is the widest
+    // natural size hint: nothing is clipped, and nothing is padded beyond what a label needs.
     int maxAlignWidth = 0;
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         maxAlignWidth = qMax(maxAlignWidth, m_alignHBtns[i]->sizeHint().width());
         maxAlignWidth = qMax(maxAlignWidth, m_alignVBtns[i]->sizeHint().width());
     }
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         m_alignHBtns[i]->setMinimumWidth(maxAlignWidth);
         m_alignVBtns[i]->setMinimumWidth(maxAlignWidth);
@@ -236,6 +273,12 @@ void OGradedAlignWidget::RetranslateUI()
         m_alignHBtns[i]->setText(tr(kAlignHItems[i].text));
         m_alignVBtns[i]->setText(tr(kAlignVItems[i].text));
     }
+    m_alignHBtns[3]->setText(tr("On a point"));
+    m_alignVBtns[3]->setText(tr("On a point"));
+    m_removeHPointBtn->setText(tr("Remove point"));
+    m_removeVPointBtn->setText(tr("Remove point"));
+    m_showHPointCheck->setText(tr("Show alignment point"));
+    m_showVPointCheck->setText(tr("Show alignment point"));
 
     // ⚠️ **La largeur commune se recalcule.** « Left » et « Top » n'ont pas le même rapport de
     // longueur d'une langue à l'autre : sans ce rappel, les six boutons gardent la largeur mesurée
@@ -314,15 +357,6 @@ void OGradedAlignWidget::SetAlignV(int value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OGradedAlignWidget::AddExtraContent(QWidget *widget)
-{
-    if (widget != nullptr && m_alignLayout != nullptr)
-    {
-        m_alignLayout->addWidget(widget);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void OGradedAlignWidget::SetAlignHEnabled(bool enabled)
 {
     if (!enabled)
@@ -331,17 +365,76 @@ void OGradedAlignWidget::SetAlignHEnabled(bool enabled)
         // around the reset, then restore it. Unchecking emits nothing — the widget only reports a
         // new value on check, so the model is left untouched here.
         m_alignHGroup->setExclusive(false);
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 4; ++i)
         {
             m_alignHBtns[i]->setChecked(false);
         }
         m_alignHGroup->setExclusive(true);
     }
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         m_alignHBtns[i]->setEnabled(enabled);
     }
     m_alignHLabel->setEnabled(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::SetAlignVEnabled(bool enabled)
+{
+    if (!enabled)
+    {
+        m_alignVGroup->setExclusive(false);
+        for (int i = 0; i < 4; ++i)
+        {
+            m_alignVBtns[i]->setChecked(false);
+        }
+        m_alignVGroup->setExclusive(true);
+    }
+    for (int i = 0; i < 4; ++i)
+    {
+        m_alignVBtns[i]->setEnabled(enabled);
+    }
+    m_alignVLabel->setEnabled(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::SetAlignmentPointAvailable(bool available)
+{
+    m_alignmentPointAvailable = available;
+    m_alignHBtns[3]->setVisible(available);
+    m_alignVBtns[3]->setVisible(available);
+    if (!available)
+    {
+        // Nothing can be picked or stored: the point controls have nothing to report on.
+        m_removeHPointBtn->setVisible(false);
+        m_removeVPointBtn->setVisible(false);
+        m_showHPointCheck->setVisible(false);
+        m_showVPointCheck->setVisible(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::SetAlignPointActive(bool vertical, bool active)
+{
+    QPushButton *removeBtn = vertical ? m_removeVPointBtn : m_removeHPointBtn;
+    QCheckBox *showCheck = vertical ? m_showVPointCheck : m_showHPointCheck;
+    const bool visible = active && m_alignmentPointAvailable;
+    removeBtn->setVisible(visible);
+    showCheck->setVisible(visible);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OGradedAlignWidget::IsAlignPointShown(bool vertical) const -> bool
+{
+    return vertical ? m_showVPointCheck->isChecked() : m_showHPointCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OGradedAlignWidget::SetAlignPointShown(bool vertical, bool shown)
+{
+    QCheckBox *showCheck = vertical ? m_showVPointCheck : m_showHPointCheck;
+    const QSignalBlocker blocker(showCheck);
+    showCheck->setChecked(shown);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

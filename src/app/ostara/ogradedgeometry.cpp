@@ -69,18 +69,30 @@ auto AnchorPoint(const QRectF &rect, int h, int v) -> QPointF
 //---------------------------------------------------------------------------------------------------------------------
 namespace
 {
-/// X of a node in pattern coordinates for the current size, or NaN when it cannot be resolved.
-auto NodeX(quint32 nodeId, const VContainer *pattern) -> qreal
+/// The node of a forced alignment point in pattern coordinates, or a null point when unresolvable.
+auto NodePoint(quint32 nodeId, const VContainer *pattern) -> QPointF
 {
     try
     {
         const QSharedPointer<VPointF> point = pattern->GeometricObject<VPointF>(nodeId);
-        return point.isNull() ? qQNaN() : point->x();
+        return point.isNull() ? QPointF(qQNaN(), qQNaN()) : QPointF(point->x(), point->y());
     }
     catch (const VExceptionBadId &)
     {
-        return qQNaN();
+        return QPointF(qQNaN(), qQNaN());
     }
+}
+
+/// X of a node in pattern coordinates for the current size, or NaN when it cannot be resolved.
+auto NodeX(quint32 nodeId, const VContainer *pattern) -> qreal
+{
+    return NodePoint(nodeId, pattern).x();
+}
+
+/// Y of a node in pattern coordinates for the current size, or NaN when it cannot be resolved.
+auto NodeY(quint32 nodeId, const VContainer *pattern) -> qreal
+{
+    return NodePoint(nodeId, pattern).y();
 }
 
 /// The member whose copy of the common point every size is brought onto.
@@ -143,16 +155,57 @@ auto UnitAlignPointX(quint32 pieceId, const VPiece &piece, const VContainer *pat
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto UnitAlignPointY(quint32 pieceId, const VPiece &piece, const VContainer *pattern) -> qreal
+{
+    if (pattern == nullptr || pieceId == NULL_ID)
+    {
+        return qQNaN();
+    }
+
+    const quint32 groupId = pattern->GetPieceGroupId(pieceId);
+    const auto *groups = pattern->DataPieceGroups();
+    if (groupId != NULL_ID && groups != nullptr)
+    {
+        const auto found = groups->constFind(groupId);
+        if (found != groups->cend() && found.value().pieceIds.size() >= kMinGroupMembers)
+        {
+            const OPieceGroup &group = found.value();
+            if (!group.alignOnPointV || group.alignPointSourceId == NULL_ID)
+            {
+                return qQNaN();
+            }
+            if (pieceId != ReferenceMemberId(group))
+            {
+                return qQNaN();  // only the reference member carries the Y of the whole layer
+            }
+            const quint32 nodeId =
+                OPieceCommonPoint::PieceNodeWithSource(piece, group.alignPointSourceId, pattern);
+            return nodeId == NULL_ID ? qQNaN() : NodeY(nodeId, pattern);
+        }
+    }
+
+    const quint32 nodeId = piece.GetGradedAlignPointVId();
+    if (nodeId == NULL_ID || piece.GetPath().indexOfNode(nodeId) == -1)
+    {
+        return qQNaN();  // no point, or it left the main path: silent fallback
+    }
+    return NodeY(nodeId, pattern);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto UnitLayerDelta(const AlignRule &rule, const QRectF &unitRect, const QRectF &layerRect,
-                    qreal layerPointX) -> QPointF
+                    qreal layerPointX, qreal layerPointY) -> QPointF
 {
     const QPointF unitAnchor = AnchorPoint(unitRect, rule.alignH, rule.alignV);
     const QPointF layerAnchor = AnchorPoint(layerRect, rule.alignH, rule.alignV);
 
-    // The forced point only ever takes over the horizontal component; the vertical anchor stands.
-    const bool forced = !qIsNaN(rule.refPointX) && !qIsNaN(layerPointX);
-    const qreal x = forced ? rule.refPointX - layerPointX : unitAnchor.x() - layerAnchor.x();
-    return QPointF(x, unitAnchor.y() - layerAnchor.y());
+    // Each axis answers for itself: the horizontal point may be set while the vertical one is not,
+    // and the other way round. An axis without a point keeps its anchor.
+    const bool forcedX = !qIsNaN(rule.refPointX) && !qIsNaN(layerPointX);
+    const bool forcedY = !qIsNaN(rule.refPointY) && !qIsNaN(layerPointY);
+    const qreal x = forcedX ? rule.refPointX - layerPointX : unitAnchor.x() - layerAnchor.x();
+    const qreal y = forcedY ? rule.refPointY - layerPointY : unitAnchor.y() - layerAnchor.y();
+    return QPointF(x, y);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -233,6 +286,7 @@ void ApplyOffsets(const QList<QGraphicsItem *> &items, const OSizerange &range, 
             if (GradedIsReference(item))
             {
                 rule.refPointX = GradedAlignPointX(item);
+                rule.refPointY = GradedAlignPointY(item);
                 break;
             }
         }
@@ -250,7 +304,8 @@ void ApplyOffsets(const QList<QGraphicsItem *> &items, const OSizerange &range, 
         for (int i = 0; i < pieceItems.size(); ++i)
         {
             const QPointF delta =
-                UnitLayerDelta(rule, unionRect, rects.at(i), GradedAlignPointX(pieceItems.at(i)));
+                UnitLayerDelta(rule, unionRect, rects.at(i), GradedAlignPointX(pieceItems.at(i)),
+                               GradedAlignPointY(pieceItems.at(i)));
             if (!qFuzzyIsNull(delta.x()) || !qFuzzyIsNull(delta.y()))
             {
                 pieceItems.at(i)->setPos(pieceItems.at(i)->pos() + delta);
@@ -273,6 +328,7 @@ void ApplyOffsets(const QList<QGraphicsItem *> &items, const OSizerange &range, 
             QMap<qreal, QList<QGraphicsItem *>> itemsByLayer;  // z -> items
             QMap<qreal, QRectF> rectByLayer;                   // z -> pre-move member union
             QMap<qreal, qreal> pointXByLayer;                  // z -> forced point X (first one wins)
+            QMap<qreal, qreal> pointYByLayer;                  // z -> forced point Y (first one wins)
             qreal refLayerZ = qQNaN();                         // z of the reference (smallest) size
             int totalItems = 0;
             for (quint32 memberId : group.pieceIds)
@@ -295,6 +351,11 @@ void ApplyOffsets(const QList<QGraphicsItem *> &items, const OSizerange &range, 
                     if (!qIsNaN(px) && !pointXByLayer.contains(z))
                     {
                         pointXByLayer.insert(z, px);
+                    }
+                    const qreal py = GradedAlignPointY(item);
+                    if (!qIsNaN(py) && !pointYByLayer.contains(z))
+                    {
+                        pointYByLayer.insert(z, py);
                     }
                     if (GradedIsReference(item))
                     {
@@ -319,12 +380,14 @@ void ApplyOffsets(const QList<QGraphicsItem *> &items, const OSizerange &range, 
             if (!qIsNaN(refLayerZ))
             {
                 rule.refPointX = pointXByLayer.value(refLayerZ, qQNaN());
+                rule.refPointY = pointYByLayer.value(refLayerZ, qQNaN());
             }
 
             for (auto it = rectByLayer.cbegin(); it != rectByLayer.cend(); ++it)
             {
                 const QPointF delta = UnitLayerDelta(rule, overallRect, it.value(),
-                                                     pointXByLayer.value(it.key(), qQNaN()));
+                                                     pointXByLayer.value(it.key(), qQNaN()),
+                                                     pointYByLayer.value(it.key(), qQNaN()));
                 if (qFuzzyIsNull(delta.x()) && qFuzzyIsNull(delta.y()))
                 {
                     continue;

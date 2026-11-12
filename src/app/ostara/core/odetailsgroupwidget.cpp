@@ -28,6 +28,7 @@
 
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QSignalBlocker>
 #include <QComboBox>
 #include <QEnterEvent>
 #include <QEvent>
@@ -154,15 +155,10 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     m_alignWidget = new OGradedAlignWidget(generalPage);
     generalLayout->addWidget(m_alignWidget);
 
-    // Forced alignment point: the group's common point — the one chosen when the pieces were
-    // linked. Opt-in, and it overrides the horizontal row above; the vertical one keeps working.
-    m_alignOnPointCheck = new QCheckBox(tr("Align on the common point"));
-    m_alignWidget->AddExtraContent(m_alignOnPointCheck);
-    m_showAlignPointCheck = new QCheckBox(tr("Show alignment point"));
-    m_showAlignPointCheck->setChecked(true);
-    m_alignWidget->AddExtraContent(m_showAlignPointCheck);
-    connect(m_alignOnPointCheck, &QCheckBox::toggled, this, &ODetailsGroupWidget::OnAlignOnPointToggled);
-    connect(m_showAlignPointCheck, &QCheckBox::toggled, this, &ODetailsGroupWidget::OnShowAlignPointToggled);
+    // Forced alignment point: the fourth value of each row. A group has one common point — the one
+    // chosen when the pieces were linked — so each axis only decides whether it follows it. The
+    // widget owns the "Remove point" button and the "Show alignment point" checkbox of each row.
+    m_alignWidget->SetAlignmentPointAvailable(true);
 
     // Layout flags. The group carries none of them — they belong to the pieces: ticking one here writes it into
     // every member, so the user neither unlinks the group nor ticks each member in the tree. Same labels and
@@ -206,7 +202,17 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
         {
             return;
         }
-        Commit([v](OPieceGroup &group) { group.alignH = v; });
+        if (v == OGradedAlignWidget::ValueOnPoint)
+        {
+            // No pick here: the group's point is the common point, chosen when the pieces were linked.
+            Commit([](OPieceGroup &group) { group.alignOnPoint = true; });
+            return;
+        }
+        Commit([v](OPieceGroup &group)
+        {
+            group.alignH = v;
+            group.alignOnPoint = false;
+        });
     });
     connect(m_alignWidget, &OGradedAlignWidget::AlignVChanged, this,
             [this](int v)
@@ -215,7 +221,50 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
         {
             return;
         }
-        Commit([v](OPieceGroup &group) { group.alignV = v; });
+        if (v == OGradedAlignWidget::ValueOnPoint)
+        {
+            Commit([](OPieceGroup &group) { group.alignOnPointV = true; });
+            return;
+        }
+        Commit([v](OPieceGroup &group)
+        {
+            group.alignV = v;
+            group.alignOnPointV = false;
+        });
+    });
+    connect(m_alignWidget, &OGradedAlignWidget::RemoveAlignPointRequested, this,
+            [this](bool vertical)
+    {
+        if (m_updating)
+        {
+            return;
+        }
+        // Back to the middle of the axis. The common point stays stored — it belongs to the link, and
+        // there is no way to pick another one from here.
+        Commit([vertical](OPieceGroup &group)
+        {
+            if (vertical)
+            {
+                group.alignOnPointV = false;
+                group.alignV = 2;
+            }
+            else
+            {
+                group.alignOnPoint = false;
+                group.alignH = 2;
+            }
+        });
+    });
+    connect(m_alignWidget, &OGradedAlignWidget::ShowAlignPointChanged, this,
+            [this](bool vertical, bool shown)
+    {
+        Q_UNUSED(vertical) // one point, two axes: the checkbox of either row lights the same point
+        if (m_updating)
+        {
+            return;
+        }
+        m_showAlignPointState = shown;
+        RefreshAlignPointHighlight();
     });
 
     // ⚠️ **Les titres d'onglets passent par le poseur.** Ils sont posés une fois ici et aucun
@@ -374,17 +423,15 @@ void ODetailsGroupWidget::Show(quint32 groupId, VContainer *data, VAbstractPatte
     }
 
     // Alignment (OGradedAlignWidget — same widget as the piece dialog / piece browser).
-    // The common point takes the horizontal row over: disable it first, then set the value back —
-    // SetAlignHEnabled() unchecks, so a re-check after it would light up a dead row.
+    // Each row shows either its anchor or the fourth value that stands for the common point, so no
+    // row is ever disabled by the point: the checked fourth button says it all.
     if (m_alignWidget != nullptr)
     {
-        const bool horizontalEnabled = !group.alignOnPoint;
-        m_alignWidget->SetAlignHEnabled(horizontalEnabled);
-        if (horizontalEnabled)
-        {
-            m_alignWidget->SetAlignH(group.alignH);
-        }
-        m_alignWidget->SetAlignV(group.alignV);
+        const QSignalBlocker blocker(m_alignWidget);
+        m_alignWidget->SetAlignHEnabled(true);
+        m_alignWidget->SetAlignVEnabled(true);
+        m_alignWidget->SetAlignH(group.alignOnPoint ? OGradedAlignWidget::ValueOnPoint : group.alignH);
+        m_alignWidget->SetAlignV(group.alignOnPointV ? OGradedAlignWidget::ValueOnPoint : group.alignV);
     }
     ApplyAlignPointControls(group);
     ShowLayoutFlags();
@@ -402,28 +449,6 @@ void ODetailsGroupWidget::Show(quint32 groupId, VContainer *data, VAbstractPatte
 
     m_updating = false;
 
-    RefreshAlignPointHighlight();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::OnAlignOnPointToggled(bool checked)
-{
-    if (m_updating)
-    {
-        return;
-    }
-    // Commit() re-Shows the group at the end, so the rows and the highlight resynchronise there.
-    Commit([checked](OPieceGroup &group) { group.alignOnPoint = checked; });
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::OnShowAlignPointToggled(bool checked)
-{
-    if (m_updating)
-    {
-        return;
-    }
-    m_showAlignPointState = checked;
     RefreshAlignPointHighlight();
 }
 
@@ -447,7 +472,8 @@ void ODetailsGroupWidget::RefreshAlignPointHighlight()
     const OPieceGroup group = groups != nullptr ? groups->value(m_groupId) : OPieceGroup();
 
     quint32 nodeId = NULL_ID;
-    if (group.alignPointSourceId != NULL_ID && group.alignOnPoint && m_showAlignPointCheck->isChecked()
+    const bool onPoint = group.alignOnPoint || group.alignOnPointV;
+    if (group.alignPointSourceId != NULL_ID && onPoint && m_alignWidget->IsAlignPointShown(false)
         && m_tabWidget->currentIndex() == kGeneralTabIndex)
     {
         nodeId = ReferenceMemberNode(group);
@@ -488,9 +514,6 @@ void ODetailsGroupWidget::RetranslateUI()
     // .ui, et `ui->retranslateUi` ne peut donc pas l'atteindre.
     m_alignWidget->RetranslateUI();
 
-    m_alignOnPointCheck->setText(tr("Align on the common point"));
-    m_showAlignPointCheck->setText(tr("Show alignment point"));
-
     m_forceFlippingCheck->setText(tr("Show mirrored"));
     m_forceFlippingCheck->setToolTip(tr("Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature."));
     m_symmetricalCopyCheck->setText(tr("Symmetrical copy"));
@@ -511,16 +534,13 @@ void ODetailsGroupWidget::ApplyAlignPointControls(const OPieceGroup &group)
 {
     const bool hasPoint = group.alignPointSourceId != NULL_ID;
 
-    // Texts are set here rather than once at construction: the member rows are rebuilt on every
-    // Show() too, so a language change is picked up the same way.
-    m_alignOnPointCheck->setText(tr("Align on the common point"));
-    m_showAlignPointCheck->setText(tr("Show alignment point"));
-
-    // A group written before the common point was stored carries none: the choice cannot be offered.
-    m_alignOnPointCheck->setEnabled(hasPoint);
-    m_alignOnPointCheck->setChecked(hasPoint && group.alignOnPoint);
-    m_showAlignPointCheck->setEnabled(hasPoint && group.alignOnPoint);
-    m_showAlignPointCheck->setChecked(hasPoint && group.alignOnPoint && m_showAlignPointState);
+    // A group written before the common point was stored carries none: the fourth button cannot be
+    // offered, since nothing could be picked from here.
+    m_alignWidget->SetAlignmentPointAvailable(hasPoint);
+    m_alignWidget->SetAlignPointActive(false, hasPoint && group.alignOnPoint);
+    m_alignWidget->SetAlignPointActive(true, hasPoint && group.alignOnPointV);
+    m_alignWidget->SetAlignPointShown(false, m_showAlignPointState);
+    m_alignWidget->SetAlignPointShown(true, m_showAlignPointState);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

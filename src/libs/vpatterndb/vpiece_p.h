@@ -101,6 +101,9 @@ public:
      * the vertical alignment keeps working. Stored as the node id of this piece's own copy.
      */
     quint32 m_gradedAlignPointId{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
+    // Second forced point, the vertical one: each axis carries its own, so the horizontal point can
+    // stay on the shoulder while the vertical pins the piece on another landmark.
+    quint32 m_gradedAlignPointVId{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     /** @brief Piece number displayed on the cartouche (0 = none). */
     uint m_pieceNumber{0}; // NOLINT(misc-non-private-member-variables-in-classes)

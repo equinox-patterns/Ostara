@@ -82,10 +82,18 @@ auto AnchorPoint(const QRectF &rect, int h, int v) -> QPointF;
  */
 auto UnitAlignPointX(quint32 pieceId, const VPiece &piece, const VContainer *pattern) -> qreal;
 
+/// @brief Y of a unit's forced vertical alignment point for the pattern's current size, or NaN.
+///
+/// The vertical twin of UnitAlignPointX: same group/member rule, but the axis is gated by the
+/// group's vertical flag and by the piece's own vertical point. The two axes are independent, so a
+/// piece may carry a point horizontally and none vertically, or a different point on each.
+auto UnitAlignPointY(quint32 pieceId, const VPiece &piece, const VContainer *pattern) -> qreal;
+
 /// @brief The alignment rule of a unit, resolved once for all its sizes.
 struct AlignRule
 {
-    qreal refPointX{qQNaN()}; ///< NaN = no forced point: the horizontal anchor applies
+    qreal refPointX{qQNaN()}; ///< NaN = no forced horizontal point: the horizontal anchor applies
+    qreal refPointY{qQNaN()}; ///< NaN = no forced vertical point: the vertical anchor applies
     int alignH{2};
     int alignV{2};
 };
@@ -93,16 +101,17 @@ struct AlignRule
 /**
  * @brief Delta bringing one layer of a unit onto the unit's anchor.
  *
- * The vertical anchor always applies. The horizontal one does too, unless a forced point is known
- * for both the reference layer and this one — then it takes over and the horizontal alignment is
- * overridden (its stored value is left untouched, and applies again once the point is removed).
+ * Each axis follows its own rule. An axis whose forced point is known for both the reference layer
+ * and this one drops its anchor and lands on the point; the other axis keeps its anchor (its stored
+ * value is left untouched, and applies again once the point is removed).
  *
  * @param unitRect    the unit's extent across every layer
  * @param layerRect   the unit's extent for the layer being moved
- * @param layerPointX local X of the forced point for that layer (NaN when unknown)
+ * @param layerPointX local X of the forced horizontal point for that layer (NaN when unknown)
+ * @param layerPointY local Y of the forced vertical point for that layer (NaN when unknown)
  */
 auto UnitLayerDelta(const AlignRule &rule, const QRectF &unitRect, const QRectF &layerRect,
-                    qreal layerPointX) -> QPointF;
+                    qreal layerPointX, qreal layerPointY) -> QPointF;
 
 /**
  * @brief Align and offset a set of graded items exactly like the live canvas

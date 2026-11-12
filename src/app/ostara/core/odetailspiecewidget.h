@@ -49,6 +49,7 @@ class OBlockConfigWidget;
 class OAnnotationsConfigWidget;
 class OThumbnailConfigWidget;
 class ODetailsFoldLineWidget;
+class OGradedAlignWidget;
 class ODetailsGrainlineWidget;
 class ODetailsInternalPathWidget;
 class ODetailsSeamAllowanceWidget;
@@ -128,9 +129,6 @@ signals:
     /** @brief Ask the canvas to highlight/clear a whole internal path (trace + points). */
     void InternalPathHighlight(quint32 pieceId, quint32 pathId, bool highlight);
 
-protected:
-    bool eventFilter(QObject *obj, QEvent *event) override;
-
 private:
     void ConnectControls();
     void CommitPending();
@@ -167,36 +165,28 @@ private:
     QLabel *m_nameLabel{nullptr};
     OPieceInfoWidget *m_pieceInfoWidget{nullptr};
 
-    // General tab
-    QGroupBox *m_alignGroupBox{nullptr};
-    QLabel *m_alignHLabel{nullptr};
-    QLabel *m_alignVLabel{nullptr};
-    QButtonGroup *m_alignHGroup{nullptr};
-    QButtonGroup *m_alignVGroup{nullptr};
-    QPushButton *m_alignHBtns[3]{};
-    QPushButton *m_alignVBtns[3]{};
-    void RefreshAlignIcons();
+    // General tab — the shared graded alignment selector (four values per row: three anchors and
+    // the piece's own forced point, plus that point's controls). Same widget as the group page and
+    // the creation dialog, so the three cannot drift apart.
+    OGradedAlignWidget *m_alignWidget{nullptr};
 
-    // Forced alignment point: a main path node whose X every size shares. It overrides the
-    // horizontal row and leaves the vertical one alone.
-    QPushButton *m_alignPointBtn{nullptr};
-    QPushButton *m_removeAlignPointBtn{nullptr};
-    QCheckBox *m_showAlignPointCheck{nullptr};
-
+    // Forced alignment point: a main path node of the piece. Each axis carries its own point, so the
+    // horizontal one can sit on the shoulder while the vertical one pins another landmark.
     enum class AlignPointSelectState
     {
         Idle,
-        Selecting
+        SelectingH,
+        SelectingV
     };
     AlignPointSelectState m_alignPointSelectState{AlignPointSelectState::Idle};
-    bool m_showAlignPointState{true};        // UI state, per piece: on by default
-    quint32 m_alignPointHighlightId{NULL_ID}; // node currently painted orange, 0 when none
+    bool m_showAlignPointState[2]{true, true}; // UI state, per axis: on by default
+    quint32 m_alignPointHighlightId{NULL_ID};  // horizontal point currently painted orange
+    quint32 m_alignPointVHighlightId{NULL_ID}; // vertical point currently painted orange
 
     void ApplyAlignPointControls(const VPiece &det, const VContainer *data);
-    void SetAlignRowsEnabled(bool horizontal, bool vertical);
-    void OnAlignPointClicked();
-    void OnRemoveAlignPoint();
-    void OnShowAlignPointToggled(bool checked);
+    void BeginAlignPointSelection(bool vertical);
+    void OnRemoveAlignPoint(bool vertical);
+    void OnShowAlignPointToggled(bool vertical, bool shown);
     void RefreshAlignPointHighlight();
     auto IsMemberOfGroup(const VContainer *data) const -> bool;
 

@@ -729,6 +729,8 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
                                      [](int val) noexcept { return val == 2; });
     doc->SetAttributeOrRemoveIf<quint32>(domElement, AttrGradedAlignPoint, piece.GetGradedAlignPointId(),
                                          [](quint32 id) noexcept { return id <= NULL_ID; });
+    doc->SetAttributeOrRemoveIf<quint32>(domElement, AttrGradedAlignPointV, piece.GetGradedAlignPointVId(),
+                                         [](quint32 id) noexcept { return id <= NULL_ID; });
     doc->SetAttributeOrRemoveIf<uint>(domElement, AttrPieceNumber, piece.GetPieceNumber(),
                                       [](uint number) noexcept { return number == 0; });
     doc->SetAttributeOrRemoveIf<int>(domElement, AttrCutFabricQty, piece.GetCutFabricQty(),
@@ -1057,6 +1059,8 @@ void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domE
         doc->SetAttributeOrRemoveIf<quint32>(groupElement, AttrGradedAlignPointMember, group.alignPointMemberId,
                                              [](quint32 id) noexcept { return id <= NULL_ID; });
         doc->SetAttributeOrRemoveIf<bool>(groupElement, AttrGradedAlignOnPoint, group.alignOnPoint,
+                                          [](bool on) noexcept { return not on; });
+        doc->SetAttributeOrRemoveIf<bool>(groupElement, AttrGradedAlignOnPointV, group.alignOnPointV,
                                           [](bool on) noexcept { return not on; });
         doc->SetAttributeOrRemoveIf<bool>(groupElement, AttrInLayout, group.IsInLayout(),
                                           [](bool inLayout) noexcept { return inLayout; });

@@ -1059,6 +1059,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
 
         // Forced alignment point, resolved against `target` while it still holds THIS size.
         geometry.alignPointX = OGraded::UnitAlignPointX(id, piece, target);
+        geometry.alignPointY = OGraded::UnitAlignPointY(id, piece, target);
 
         // ── La quantité, et la BANDE de chaque copie ─────────────────────────────────────────
         //
