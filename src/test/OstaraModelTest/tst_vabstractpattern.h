@@ -45,6 +45,13 @@ private slots:
     // Clear must not let pending workers leak edges into the next document's graph
     void ClearCancelsPendingWorkers();
 
+    // A copy no piece replaces is drawn whole: a layer must still be able to name it, or no layer can hide it
+    void CopyStaysLayerableWhileNoPieceIsDrawn();
+    // A copy the canvas replaces with its pieces gives way to them, and to nothing else
+    void CopyGivesWayToThePiecesItDraws();
+    // What the element declares survives the load pass even when the canvas does not draw it
+    void DeclaredPairsSurviveWhileNotDrawn();
+
 private:
     Q_DISABLE_COPY_MOVE(TST_VAbstractPattern) // NOLINT
 };

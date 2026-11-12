@@ -116,16 +116,23 @@ auto StripShowCopiesAttributes(QDomDocument *doc) -> bool;
 auto StripGroupTags(QDomDocument *doc) -> bool;
 
 // Drop the layer items no tool of the piece can produce: a pair whose tool the file no longer holds, and a pair
-// whose OBJECT the tool does not define — the second being anything but inert, since a single point ignores the
-// object id it is handed and the pairs are applied in ascending key order, so a stale key outvotes the real one.
-// Silent by design, run once on load, BEFORE the layers are normalised so the orphans are counted on clean data.
-// Returns true if at least one item was dropped.
+// whose OBJECT the tool neither draws nor declares — the second being anything but inert, since a single point
+// ignores the object id it is handed and the pairs are applied in ascending key order, so a stale key outvotes the
+// real one. What the element merely does not DREW is kept: a file written before the canvas rule is full of such
+// pairs (a copy named before its pieces existed, a cut's half the cut no longer shows), and removing them took the
+// object out of its layer at every opening. Silent by design, run once on load, BEFORE the layers are normalised so
+// the orphans are counted on clean data. Returns true if at least one item was dropped.
 auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool;
 
 // Seed an unlayered half of a cut with the layers of the curve it replaces. A cut's two halves are objects of
 // their own for the layers, but files written before that rule carry no entry for them: the normalisation below
 // would put them in the automatic "Unnamed" layer, away from the curve they draw. Only what no layer names is
 // seeded — a half the user has already filed stays exactly where it is.
+//
+// The same seeding covers the pieces of an armhole curve and of a segmented spline path, and the pieces a copy of
+// a cut curve is drawn with (they take the layers of the copy). A copy that NO piece replaces keeps the pair the
+// file already writes for it — CleanStaleLayerItems no longer takes it away — and is never seeded: admitting a
+// guess about where the user filed it put curves made by rotations into construction layers on a client's file.
 // Returns true if at least one pair was added.
 auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool;
 

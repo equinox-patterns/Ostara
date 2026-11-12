@@ -4017,7 +4017,8 @@ auto VAbstractPattern::IsCutPoint(const QDomElement &pointElement) -> bool
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId,
-                                              VAbstractPattern *doc) -> QVector<QPair<quint32, quint32>>
+                                              VAbstractPattern *doc, bool drawnOnly)
+    -> QVector<QPair<quint32, quint32>>
 {
     QVector<QPair<quint32, quint32>> objects;
     if (toolElement.isNull() || toolId == NULL_ID)
@@ -4059,7 +4060,8 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
         // Only while the cut shows them, though: with the box off the cut replaces nothing, the whole base curve
         // stays on the canvas and the two halves are not drawn. A layer holds what is drawn, so naming one of them
         // would put in a layer an object the canvas never shows — the one thing that must not happen.
-        if (IsCutPoint(toolElement) && toolElement.attribute(AttrShowTwoSegments) == trueStr)
+        if (IsCutPoint(toolElement)
+            && (not drawnOnly || toolElement.attribute(AttrShowTwoSegments) == trueStr))
         {
             for (const QString &attribute : {AttrSegment1Id, AttrSegment2Id})
             {
@@ -4087,7 +4089,8 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
         // Only while the box is ticked, though. Unticking it keeps an id only for what was built on that piece,
         // and a piece nothing draws is not layer content — the same answer the sub-curves of an intersection point
         // get, and the reason a layer never counts an object the canvas cannot show.
-        if (tag != TagSpline || toolElement.attribute(AttrSegmentAtCarrure) == trueStr)
+        if (tag != TagSpline || not drawnOnly
+            || toolElement.attribute(AttrSegmentAtCarrure) == trueStr)
         {
             for (const QString &attribute : {AttrSegment1Id, AttrSegment2Id})
             {
@@ -4125,13 +4128,38 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
             // (OCopyPieces), and a layer holds what the canvas shows. The copy gives way to them — the runs the
             // curve is cut into, and the halves of the cuts that show their two segments — so a layer never names
             // an object nobody can see, and the delete of a layer never counts one either.
+            //
+            // UNLESS no piece is drawn. `pieceIds` is written as soon as the pieces exist, whatever the cuts' boxes
+            // say — a half is stored even when its cut shows one segment only — and with every box off nothing
+            // replaces the copy: it is drawn whole, as before. Reading the attribute alone and giving way there took
+            // the copy out of every layer of the file (the loading pass judges the pair stale and removes it in
+            // silence), and a curve no layer names is drawn whatever the layers say: measured on a client's file,
+            // twenty copies came back on screen outside their hidden layers. So the copy is layerable whenever it is
+            // drawn, and only the pair of the drawn pieces is offered when one of them takes its place.
             if (item.hasAttribute(QStringLiteral("pieceIds")))
             {
-                for (const quint32 pieceId : DrawnPieceIds(item, doc))
+                if (not drawnOnly)
                 {
-                    objects.append({pieceId, toolId});
+                    // The other question: what the element DECLARES, drawn or not. The copy is still a real object
+                    // — a layer written before the pieces existed names it — and so is every piece the attribute
+                    // encodes, whatever its cut shows today.
+                    for (const quint32 pieceId : EncodedPieceIds(item.attribute(QStringLiteral("pieceIds"))))
+                    {
+                        objects.append({pieceId, toolId});
+                    }
                 }
-                continue;
+                else
+                {
+                    const QVector<quint32> drawn = DrawnPieceIds(item, doc);
+                    if (not drawn.isEmpty())
+                    {
+                        for (const quint32 pieceId : drawn)
+                        {
+                            objects.append({pieceId, toolId});
+                        }
+                        continue;
+                    }
+                }
             }
 
             if (const quint32 objectId = item.attribute(AttrIdObject).toUInt(); objectId != NULL_ID)

@@ -903,7 +903,7 @@ auto CollectLayeredPairs(const QDomElement &draw) -> QMap<quint32, QSet<quint32>
 // The document goes with it: a copy's pieces are layerable, but only those the canvas actually draws, and that
 // question is answered by the cut each piece comes from.
 //---------------------------------------------------------------------------------------------------------------------
-auto ContainerObjects(const QDomElement &container, VAbstractPattern *doc)
+auto ContainerObjects(const QDomElement &container, VAbstractPattern *doc, bool drawnOnly = true)
     -> QVector<QPair<quint32, quint32>>
 {
     QVector<QPair<quint32, quint32>> objects;
@@ -917,7 +917,7 @@ auto ContainerObjects(const QDomElement &container, VAbstractPattern *doc)
         {
             continue;
         }
-        objects += VAbstractPattern::LayerableObjectsOfTool(element, toolId, doc);
+        objects += VAbstractPattern::LayerableObjectsOfTool(element, toolId, doc, drawnOnly);
     }
 
     return objects;
@@ -954,7 +954,8 @@ auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool
         // point ignores the object id it is handed (VToolSinglePoint::GroupVisibility), and ParseGroups applies the
         // pairs in ascending key order, so a stale key with a HIGHER id decides that point's visibility in place
         // of its own. Measured on a real file: three stale keys (735, 736 and 737, all on tool 733) sitting in a
-        // VISIBLE layer held a point of a HIDDEN layer on screen. A pair no tool can produce cannot be meant.
+        // VISIBLE layer held a point of a HIDDEN layer on screen. A pair the element does not DECLARE at all cannot
+        // be meant — that, and only that, is what this pass removes.
         QMap<quint32, QSet<quint32>> drawable;
         for (const QDomElement &container : {draw.firstChildElement(VAbstractPattern::TagCalculation),
                                              draw.firstChildElement(VAbstractPattern::TagModeling)})
@@ -962,6 +963,21 @@ auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool
             for (const auto &[objectId, toolId] : ContainerObjects(container, doc))
             {
                 drawable[toolId].insert(objectId);
+            }
+        }
+
+        // A pair the element does not DRAW may still be one it DECLARES — a copy a layer names from before the
+        // pieces existed, a cut's half its cut no longer shows. Those designate something real, and a file written
+        // before this rule was in place is full of them: judging them by the canvas alone took the copy out of its
+        // layer at every opening, and a curve no layer names is drawn whatever the layers say. Measured on a
+        // client's file: eighty pairs lost, twenty-four of them the copies of rotations and moves.
+        QMap<quint32, QSet<quint32>> declared;
+        for (const QDomElement &container : {draw.firstChildElement(VAbstractPattern::TagCalculation),
+                                             draw.firstChildElement(VAbstractPattern::TagModeling)})
+        {
+            for (const auto &[objectId, toolId] : ContainerObjects(container, doc, false))
+            {
+                declared[toolId].insert(objectId);
             }
         }
         // Pieces are tools too, and a group holding one is not something this pass has to understand: it is
@@ -988,7 +1004,8 @@ auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool
                 const quint32 objectId = item.hasAttribute(VAbstractPattern::AttrObject)
                                              ? item.attribute(VAbstractPattern::AttrObject).toUInt()
                                              : toolId; // `object` is omitted when it equals `tool`
-                if (not drawable.value(toolId).contains(objectId))
+                if (not drawable.value(toolId).contains(objectId)
+                    && not declared.value(toolId).contains(objectId))
                 {
                     stale.append(item);
                 }
@@ -1096,6 +1113,7 @@ auto AppendPairIfMissing(VAbstractPattern *doc, QDomElement &group, quint32 tool
     group.appendChild(item);
     return true;
 }
+
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1110,6 +1128,11 @@ auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool
     //
     // The two pieces of an armhole curve split at the carrure are in the same state, and for the same reason: a
     // file written before the layers knew them names neither, and they draw the curve they belong to.
+    //
+    // The copy an operation makes of a cut curve follows the same rule: the pieces it is drawn with take the layers
+    // of the copy they replace. A copy no piece replaces keeps the pair the file writes for it, and nothing here
+    // invents a layer for it — a guess of that kind put curves made by rotations into a client's construction
+    // layers, and the layers of a file are the user's.
     if (doc == nullptr)
     {
         return false;
@@ -1277,6 +1300,12 @@ auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool
         // drawn — the copy itself is then invisible and has no business in one. The pieces take the layers of the
         // copy they replace, and only the pieces actually drawn are named (DrawnPieceIds). The copy's own entry is
         // left to CleanStaleLayerItems, which runs AFTER this pass for exactly that reason.
+        //
+        // A copy NO piece replaces is the other half of the rule, and it needs nothing here: with every cut box
+        // off nothing takes the copy's place, the copy is drawn whole, and the pair a layer already writes for it
+        // is kept by CleanStaleLayerItems. Seeding it from the layers of its figure was tried and removed: on a
+        // client's file it filed curves made by rotations into construction layers that never held them, and the
+        // layers of a file are the user's, not a guess.
         for (QDomElement operation = calculation.firstChildElement(VAbstractPattern::TagOperation);
              !operation.isNull(); operation = operation.nextSiblingElement(VAbstractPattern::TagOperation))
         {
@@ -1291,9 +1320,19 @@ auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool
                  item = item.nextSiblingElement(QStringLiteral("item")))
             {
                 const quint32 copyId = item.attribute(AttrIdObject).toUInt();
-                const QVector<quint32> pieces = VAbstractPattern::DrawnPieceIds(item, doc);
-                if (copyId == NULL_ID || pieces.isEmpty())
+                if (copyId == NULL_ID)
                 {
+                    continue;
+                }
+
+                const QVector<quint32> pieces = VAbstractPattern::DrawnPieceIds(item, doc);
+                if (pieces.isEmpty())
+                {
+                    // The copy is drawn whole, and a layer written for it names it: it keeps its pair (see
+                    // CleanStaleLayerItems, which no longer takes it away), and this pass has nothing to invent
+                    // for it. Guessing a home here is what filled a client's construction layer with curves made
+                    // by rotations: the layers of a file are the user's, and nothing but the "Unnamed" layer is
+                    // ever given to an object they did not file.
                     continue;
                 }
 

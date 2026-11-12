@@ -1217,6 +1217,12 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         // names none of them. Give an unlayered piece the layers of the drawing it replaces, so it stays with it
         // instead of falling into the automatic "Unnamed" layer.
         //
+        // And the copy that NO piece replaces — every cut box off, so the canvas still draws the copy whole —
+        // takes the layers of the curve it copies. A build that read the pieces' attribute alone had let the
+        // loading pass throw that copy out of its layer, and a curve no layer names is drawn whatever the layers
+        // say: an .ostara written by it, and a .val converted by it, came back with curves on screen that their
+        // hidden layers had no hold on. This pass puts them back before the stale entries are judged.
+        //
         // This runs FIRST, before the stale entries are taken out, and the order is the rule: a layer that still
         // names the copy a piece replaces is exactly the layer that piece belongs to, and cutting the copy's entry
         // beforehand would leave the pass nothing to inherit from.

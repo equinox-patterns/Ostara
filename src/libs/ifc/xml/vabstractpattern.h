@@ -515,8 +515,14 @@ public:
     /// @param doc the pattern, for the one question the element cannot answer alone: a cut's halves are layerable
     ///        only when that cut draws them, and whether it does is written on the cut's own element. Pass NULL only
     ///        when no element can be looked up — the pieces a copy draws are then counted by their kind alone.
+    /// @param drawnOnly false asks the OTHER question, the one the loading pass needs: every pair the element
+    ///        DECLARES, drawn or not. A layer written by an older build may name a copy that is now drawn by its
+    ///        pieces, or a cut's half that the cut no longer shows; such a pair designates something real, and
+    ///        judging it by what the canvas draws deleted it from the file in silence, which is how a curve ends up
+    ///        belonging to no layer at all. Only a pair the element does not declare at all is stale.
     static auto LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId,
-                                       VAbstractPattern *doc = nullptr) -> QVector<QPair<quint32, quint32>>;
+                                       VAbstractPattern *doc = nullptr,
+                                       bool drawnOnly = true) -> QVector<QPair<quint32, quint32>>;
 
     /// The pieces of a copy the canvas actually DRAWS, as its `pieceIds` names them.
     ///

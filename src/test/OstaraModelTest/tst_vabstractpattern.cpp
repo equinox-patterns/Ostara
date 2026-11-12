@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "tst_vabstractpattern.h"
+#include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../ifc/xml/vpatterngraph.h"
 
@@ -176,4 +177,94 @@ void TST_VAbstractPattern::ClearCancelsPendingWorkers()
     QThreadPool::globalInstance()->waitForDone();
 
     QCOMPARE(graph->EdgeCount(), static_cast<std::size_t>(0));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+// An operation copy of a cut curve, inside a document that holds the cut it was split at. `showTwoSegments` is
+// the whole question: with it on, the copy gives way to two drawn halves; with it off, nothing replaces the copy.
+auto BuildCopyDocument(TestDoc &doc, bool showTwoSegments) -> QDomElement
+{
+    QDomElement root = doc.createElement(u"pattern"_s);
+    doc.appendChild(root);
+
+    QDomElement draw = doc.createElement(u"draw"_s);
+    draw.setAttribute(AttrName, u"Buste"_s);
+    root.appendChild(draw);
+
+    QDomElement calculation = doc.createElement(u"calculation"_s);
+    draw.appendChild(calculation);
+
+    QDomElement cut = doc.createElement(u"point"_s);
+    cut.setAttribute(VDomDocument::AttrId, u"173"_s);
+    cut.setAttribute(AttrType, u"cutSplinePath"_s);
+    cut.setAttribute(AttrSegment1Id, u"2363"_s);
+    cut.setAttribute(AttrSegment2Id, u"2364"_s);
+    if (showTwoSegments)
+    {
+        cut.setAttribute(AttrShowTwoSegments, u"true"_s);
+    }
+    calculation.appendChild(cut);
+
+    QDomElement operation = doc.createElement(u"operation"_s);
+    operation.setAttribute(VDomDocument::AttrId, u"1027"_s);
+    operation.setAttribute(AttrType, u"rotation"_s);
+    calculation.appendChild(operation);
+
+    QDomElement destination = doc.createElement(u"destination"_s);
+    operation.appendChild(destination);
+
+    QDomElement item = doc.createElement(u"item"_s);
+    item.setAttribute(AttrIdObject, u"1035"_s);
+    item.setAttribute(u"pieceIds"_s, u"c173-1=2511;c173-2=2512"_s);
+    destination.appendChild(item);
+
+    return operation;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+// The copy is what the canvas draws when no cut box is ticked, so a layer must be able to name it. Reading
+// `pieceIds` alone and stopping there took it out of every layer at load time — and a curve no layer names is
+// drawn whatever the layers say, which is what put two rotations back on screen outside their hidden layers.
+void TST_VAbstractPattern::CopyStaysLayerableWhileNoPieceIsDrawn()
+{
+    TestDoc doc;
+    const QDomElement operation = BuildCopyDocument(doc, false);
+
+    const QVector<QPair<quint32, quint32>> pairs
+        = VAbstractPattern::LayerableObjectsOfTool(operation, 1027, &doc);
+
+    QCOMPARE(pairs, (QVector<QPair<quint32, quint32>>{{1035, 1027}}));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The loading pass asks the OTHER question: what the element declares, drawn or not. A layer written before the
+// pieces existed names the copy, and that pair designates something real — deleting it is what left curves
+// belonging to no layer, and a curve no layer names is drawn whatever the layers say.
+void TST_VAbstractPattern::DeclaredPairsSurviveWhileNotDrawn()
+{
+    TestDoc doc;
+    const QDomElement operation = BuildCopyDocument(doc, false);
+
+    const QVector<QPair<quint32, quint32>> declared
+        = VAbstractPattern::LayerableObjectsOfTool(operation, 1027, &doc, false);
+
+    QCOMPARE(declared, (QVector<QPair<quint32, quint32>>{{2511, 1027}, {2512, 1027}, {1035, 1027}}));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// With a cut showing its two segments the copy is replaced on the canvas: the layer must name the halves instead,
+// and only those — naming the copy as well would hide an object nobody draws.
+void TST_VAbstractPattern::CopyGivesWayToThePiecesItDraws()
+{
+    TestDoc doc;
+    const QDomElement operation = BuildCopyDocument(doc, true);
+
+    const QVector<QPair<quint32, quint32>> pairs
+        = VAbstractPattern::LayerableObjectsOfTool(operation, 1027, &doc);
+
+    QCOMPARE(pairs, (QVector<QPair<quint32, quint32>>{{2511, 1027}, {2512, 1027}}));
 }
