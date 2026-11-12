@@ -40,6 +40,7 @@ public:
 private slots:
     void TestUnitingMainPaths_data();
     void TestUnitingMainPaths();
+    void TestFusionPoints();
 
 private:
     Q_DISABLE_COPY_MOVE(TST_VToolUnionDetails) // NOLINT

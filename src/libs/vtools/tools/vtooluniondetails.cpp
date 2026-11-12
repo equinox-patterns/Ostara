@@ -1200,12 +1200,12 @@ void CreateUnitedNodes(VPiece &newDetail, const VPiece &d1, const VPiece &d2, co
         patternGraph->AddEdge(d2Path.at(i).GetId(), initData.id);
     }
 
-    const auto unitedPath = VToolUnionDetails::CalcUnitedPath(d1Path, d2Path, initData.indexD2, pRotate);
+    const auto contour = VToolUnionDetails::CalcUnitedPath(d1Path, d2Path, initData.indexD2, pRotate);
 
     QVector<quint32> children;
     VPiecePath newPath;
 
-    for (const auto &[first, second] : unitedPath)
+    for (const auto &[first, second] : contour)
     {
         patternGraph->AddEdge(second.GetId(), initData.id);
         if (first)
@@ -1217,6 +1217,26 @@ void CreateUnitedNodes(VPiece &newDetail, const VPiece &d1, const VPiece &d2, co
             AddNodeToNewPath(initData, newPath, second, children, drawName, idMap, dx, dy, pRotate, angle);
         }
     }
+
+    // **The two points of the second piece are not nameless.** They are gone from the contour, but everything the
+    // file says about them still names them: a custom seam allowance drawn up to one of them, for instance. The
+    // correspondence has to reach the point that took their place, or GetValidRecords drops the record silently.
+    VPieceNode a1;
+    VPieceNode b1;
+    d1Path.NodeOnEdge(initData.indexD1, a1, b1);
+    VPieceNode a2;
+    VPieceNode b2;
+    d2Path.NodeOnEdge(initData.indexD2, a2, b2);
+
+    const auto remapFusionPoint = [&idMap](quint32 gone, quint32 kept) -> void
+    {
+        if (const auto survivor = idMap.constFind(kept); survivor != idMap.cend())
+        {
+            idMap.insert(gone, survivor.value());
+        }
+    };
+    remapFusionPoint(a2.GetId(), b1.GetId()); // the placement laid the start of the second edge on the end of the first
+    remapFusionPoint(b2.GetId(), a1.GetId());
 
     newDetail.SetPath(newPath);
 
@@ -1468,11 +1488,24 @@ void UpdateUnitedNodes(const VToolUnionDetailsInitData &initData, qreal dx, qrea
     // This check needed for backward compatibility
     // Remove check and "else" part if min version is 0.3.2
     Q_STATIC_ASSERT_X(VPatternConverter::PatternMinVer < FormatVersion(0, 3, 2), "Time to refactor the code.");
-    if (children.size() == countNodeD1 + countNodeD2 - 1)
-    {
-        const auto unitedPath = VToolUnionDetails::CalcUnitedPath(d1REPath, d2REPath, initData.indexD2, pRotate);
+    // A contour written before the four points became two holds one child more: the point of the second piece that
+    // sits at the end of its own seam edge. Which of the two sequences this file was written with, its children say.
+    const auto contour = VToolUnionDetails::CalcUnitedPath(d1REPath, d2REPath, initData.indexD2, pRotate);
+    const auto beforeFusion = VToolUnionDetails::CalcUnitedPath(d1REPath, d2REPath, initData.indexD2, pRotate, false);
 
-        for (const auto &[first, second] : unitedPath)
+    const QVector<QPair<bool, VPieceNode>> *sequence = nullptr;
+    if (children.size() == contour.size())
+    {
+        sequence = &contour;
+    }
+    else if (children.size() == beforeFusion.size())
+    {
+        sequence = &beforeFusion;
+    }
+
+    if (sequence != nullptr)
+    {
+        for (const auto &[first, second] : *sequence)
         {
             patternGraph->AddEdge(second.GetId(), initData.id);
             if (first)
@@ -1796,7 +1829,8 @@ void UniteDetails(const VToolUnionDetailsInitData &initData)
             // Written down on purpose: this is the only place that says a union was actually replayed. The graded
             // scene reparses the whole pattern once per size, so a log with one line per size is the proof that
             // the united piece follows the sizes instead of staying on the geometry it was built with.
-            qCDebug(vToolUnion, "Union %u replayed: %d nodes.", initData.id, d1Path.CountNodes() + d2Path.CountNodes());
+            qCDebug(vToolUnion, "Union %u replayed: %lld nodes.", initData.id,
+                    static_cast<long long>(d1Path.CountNodes() + d2Path.CountNodes()));
         }
         catch (const VExceptionBadId &e)
         {
@@ -2086,36 +2120,35 @@ void VToolUnionDetails::Replay(const VToolUnionDetailsInitData &initData)
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolUnionDetails::CalcUnitedPath(const VPiecePath &d1Path, const VPiecePath &d2Path, quint32 indexD2,
-                                       quint32 pRotate) -> QVector<QPair<bool, VPieceNode>>
+                                       quint32 pRotate, bool fuseFusionPoints)
+    -> QVector<QPair<bool, VPieceNode>>
 {
     QVector<QPair<bool, VPieceNode>> path;
 
     const vsizetype countNodeD1 = d1Path.CountNodes();
     const vsizetype countNodeD2 = d2Path.CountNodes();
 
+    // **Four points make two.** The two edges the user picked are the seam: they are in neither outline, and their
+    // four ends become two points. The placement of UnionInitParameters lays the second edge on the first one in
+    // reverse — the end of the second edge on the start of the first one — so the pairs are (a1, b2) and (b1, a2).
+    // What the contour keeps is the two points of the FIRST piece: a point belongs to a piece, and it is its name
+    // that the user reads. The two points of the second piece give what they carried instead of a place: the width
+    // of the segment that arrives at one end, of the segment that leaves at the other. Their passmarks go with
+    // them — a notch on a seam that is no longer there marks nothing.
+    VPieceNode a2;
+    VPieceNode b2;
+    d2Path.NodeOnEdge(indexD2, a2, b2);
+
+    // The nodes of the second piece that enter the contour: everything but the two ends of its seam edge.
+    const vsizetype blockSize = fuseFusionPoints ? countNodeD2 - 2 : countNodeD2 - 1;
+
     qint32 pointsD2 = 0; // Keeps number points the second detail, that we have already added.
     qint32 i = 0;
     const int det1P1Index = d1Path.indexOfNode(pRotate);
     bool checkUniqueness = false;
-    bool skipNext = false; // the node of d1 the last node of d2 was just laid upon
+    bool waitForFusionEnd = false; // the next node of the first piece is b1: it takes over from a2
     do
     {
-        if (skipNext)
-        {
-            // **Two points at one place is not a corner.** The placement brings the first point of the second
-            // edge onto the second point of the first one (UnionInitParameters), so the last node of the
-            // inserted block lands exactly where the next node of d1 stands. Kept, the pair makes a corner the
-            // seam-allowance builder merges away — losing the widths those nodes carry — and the dock shows a
-            // passmark whose point nobody can select. One of the two has to give way, and it is the one that
-            // carries nothing the block ended with.
-            ++i;
-            skipNext = false;
-            if (i >= countNodeD1)
-            {
-                break;
-            }
-        }
-
         VPieceNode node = d1Path.at(i);
         if (checkUniqueness)
         {
@@ -2123,10 +2156,25 @@ auto VToolUnionDetails::CalcUnitedPath(const VPiecePath &d1Path, const VPiecePat
             node.SetCheckUniqueness(false);
             checkUniqueness = false;
         }
+        if (waitForFusionEnd)
+        {
+            node.SetFormulaSABefore(a2.GetFormulaSABefore()); // the segment that arrives comes from the second piece
+            node.SetPassmark(false);
+            waitForFusionEnd = false;
+        }
         path.append(qMakePair(true, node));
         ++i;
-        if (i > det1P1Index && pointsD2 < countNodeD2 - 1)
+        if (i > det1P1Index && blockSize > 0 && pointsD2 < blockSize)
         {
+            if (fuseFusionPoints)
+            {
+                // a1 has just been laid down: the segment that leaves it is the first one of the second piece.
+                VPieceNode &a1 = path.last().second;
+                a1.SetFormulaSAAfter(b2.GetFormulaSAAfter());
+                a1.SetPassmark(false);
+                waitForFusionEnd = true;
+            }
+
             qint32 j = 0;
             FindIndexJ(pointsD2, d2Path, indexD2, j);
             do
@@ -2138,11 +2186,19 @@ auto VToolUnionDetails::CalcUnitedPath(const VPiecePath &d1Path, const VPiecePat
                 path.append(qMakePair(false, d2Path.at(j)));
                 ++pointsD2;
                 ++j;
-            } while (pointsD2 < countNodeD2 - 1);
+            } while (pointsD2 < blockSize);
             checkUniqueness = true;
-            skipNext = true;
         }
     } while (i < countNodeD1);
+
+    // The seam can be the closing edge of the first piece: then the node that follows a1 is the first one of the
+    // contour, and that is where the second piece ends.
+    if (waitForFusionEnd && not path.isEmpty())
+    {
+        VPieceNode &b1 = path.first().second;
+        b1.SetFormulaSABefore(a2.GetFormulaSABefore());
+        b1.SetPassmark(false);
+    }
 
     return path;
 }

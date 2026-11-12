@@ -27,6 +27,8 @@
  *************************************************************************/
 
 #include "tst_vtooluniondetails.h"
+#include "../vgeometry/vpointf.h"
+#include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
 #include "../vtools/tools/vtooluniondetails.h"
@@ -79,9 +81,10 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
     result.append(qMakePair(false, d2p2));
     result.append(qMakePair(false, d2p3));
     result.append(qMakePair(false, d2p4));
-    result.append(qMakePair(false, d2p0));
-    // The node of d1 that follows the rotation point is skipped: the last node of the inserted block is laid
-    // on it, and a corner needs one point, not two (CalcUnitedPath).
+    // The second piece contributes neither end of its own seam edge: the start of it is one point with the end of
+    // the first edge, and the end of it one point with the start of the first. What is left of the first piece on
+    // both sides of the seam stays.
+    result.append(qMakePair(true, d1p4));
     result.append(qMakePair(true, d1p5));
 
     VPiecePath d1;
@@ -112,9 +115,7 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
     result.append(qMakePair(false, d2p2));
     result.append(qMakePair(false, d2p3));
     result.append(qMakePair(false, d2p4));
-    result.append(qMakePair(false, d2p0));
-    // The node of d1 that follows the rotation point is skipped: the last node of the inserted block is laid
-    // on it, and a corner needs one point, not two (CalcUnitedPath).
+    result.append(qMakePair(true, d1p4));
     result.append(qMakePair(true, d1p5));
     result.append(qMakePair(true, d1p0));
 
@@ -134,9 +135,7 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
     result.append(qMakePair(false, d2p2));
     result.append(qMakePair(false, d2p3));
     result.append(qMakePair(false, d2p4));
-    result.append(qMakePair(false, d2p0));
-    // The node of d1 that follows the rotation point is skipped: the last node of the inserted block is laid
-    // on it, and a corner needs one point, not two (CalcUnitedPath).
+    result.append(qMakePair(true, d1p4));
     result.append(qMakePair(true, d1p5));
     result.append(qMakePair(true, d1p0));
     result.append(qMakePair(true, d1p1));
@@ -151,8 +150,8 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
 
     QTest::newRow("Case 3") << d1 << d2 << indexD2 << pRotate << result;
 
-    // The rotation point sits on the second to last node: the block is inserted, the node it is laid on is the
-    // last one, and the walk must stop there instead of reading past the end of d1.
+    // The rotation point sits on the second to last node: the block goes in before the last node, and the last node
+    // is the end of the seam — it stays, since the point it is one with belongs to the second piece.
     result.clear();
     result.append(qMakePair(true, d1p0));
     result.append(qMakePair(true, d1p1));
@@ -162,7 +161,7 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
     result.append(qMakePair(false, d2p2));
     result.append(qMakePair(false, d2p3));
     result.append(qMakePair(false, d2p4));
-    result.append(qMakePair(false, d2p0));
+    result.append(qMakePair(true, d1p5));
 
     d1.Clear();
     d1.Append(d1p0);
@@ -172,7 +171,22 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
     d1.Append(d1p4);
     d1.Append(d1p5);
 
-    QTest::newRow("Last node skipped") << d1 << d2 << indexD2 << quint32(1209) << result;
+    QTest::newRow("Seam ends on the second to last node") << d1 << d2 << indexD2 << quint32(1209) << result;
+
+    // The seam is the closing edge of the first piece: the block goes in after the very last node, and the node that
+    // follows it is the first one of the contour. That is the shape of the union this was reported on.
+    result.clear();
+    result.append(qMakePair(true, d1p0));
+    result.append(qMakePair(true, d1p1));
+    result.append(qMakePair(true, d1p2));
+    result.append(qMakePair(true, d1p3));
+    result.append(qMakePair(true, d1p4));
+    result.append(qMakePair(true, d1p5));
+    result.append(qMakePair(false, d2p2));
+    result.append(qMakePair(false, d2p3));
+    result.append(qMakePair(false, d2p4));
+
+    QTest::newRow("Seam closes the contour") << d1 << d2 << indexD2 << quint32(1204) << result;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -188,9 +202,9 @@ void TST_VToolUnionDetails::TestUnitingMainPaths()
 
     QVERIFY(result.size() == out.size());
 
-    // **A corner is one point.** The united contour holds one node fewer than the sum of both outlines: the node
-    // of the second piece that the placement lays on the rotation point, and the node of the first one it is
-    // laid upon. This is what keeps the seam allowance from merging two points and losing the widths they carry.
+    // **Four points make two.** Both seam edges are in neither outline, and both their ends are named once: the
+    // contour holds two nodes fewer than the sum of both outlines — always, whatever the names or the places of the
+    // four points that were joined.
     QCOMPARE(out.size(), d1.CountNodes() + d2.CountNodes() - 2);
 
     for (int i = 0; i < out.size(); ++i)
@@ -210,4 +224,66 @@ void TST_VToolUnionDetails::TestUnitingMainPaths()
                      outP.GetTypeTool() == resP.GetTypeTool(),
                  qUtf8Printable(msg));
     }
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VToolUnionDetails::TestFusionPoints()
+{
+    // **The four points the user picked become two.** The contour keeps the two points of the first piece — a point
+    // belongs to a piece and shows its name — and drops the two of the second one, which give what they held
+    // instead of a place: the margin of the segment that arrives at one end, of the segment that leaves at the
+    // other. What they also held is a notch, and a notch on a seam that is no longer there marks nothing.
+    VPieceNode b1(1205, Tool::NodePoint); // the seam ends here, at the start of the contour
+    VPieceNode inside(1206, Tool::NodePoint);
+    VPieceNode a1(1207, Tool::NodePoint); // the seam starts here, at the last node
+    VPieceNode a2(1211, Tool::NodePoint); // the start of the second piece's edge: one point with b1
+    VPieceNode b2(1212, Tool::NodePoint); // its end: one point with a1
+    VPieceNode d2inside(1213, Tool::NodePoint);
+
+    b1.SetPassmark(true);
+    b1.SetPassmarkLineType(PassmarkLineType::TMark);
+    a1.SetPassmark(true);
+    a1.SetPassmarkLineType(PassmarkLineType::OneLine);
+    inside.SetPassmark(true); // a notch inside the first piece: it has nothing to do with the seam
+    a2.SetFormulaSABefore(QStringLiteral("4.5"));
+    a2.SetPassmark(true);
+    b2.SetFormulaSAAfter(QStringLiteral("7"));
+    b2.SetPassmark(true);
+
+    VPiecePath d1;
+    d1.Append(b1);
+    d1.Append(inside);
+    d1.Append(a1);
+
+    VPiecePath d2;
+    d2.Append(a2);
+    d2.Append(b2);
+    d2.Append(d2inside);
+
+    // The seam is the closing edge of the first piece and the first edge of the second one.
+    const QVector<UnitedPathNode> out = VToolUnionDetails::CalcUnitedPath(d1, d2, 0, a1.GetId());
+
+    QCOMPARE(out.size(), d1.CountNodes() + d2.CountNodes() - 2);
+    QCOMPARE(out.at(0).second.GetId(), b1.GetId());
+    QCOMPARE(out.at(1).second.GetId(), inside.GetId());
+    QCOMPARE(out.at(2).second.GetId(), a1.GetId());
+    QCOMPARE(out.at(3).second.GetId(), d2inside.GetId());
+
+    // What the two points of the second piece carried.
+    QCOMPARE(out.at(0).second.GetFormulaSABefore(), a2.GetFormulaSABefore());
+    QCOMPARE(out.at(2).second.GetFormulaSAAfter(), b2.GetFormulaSAAfter());
+
+    // And what they must not carry any more.
+    QVERIFY(not out.at(0).second.IsPassmark());
+    QVERIFY(not out.at(2).second.IsPassmark());
+    QVERIFY(out.at(1).second.IsPassmark());
+
+    // A union saved before the four points became two was written with one node more; its children are mapped on
+    // the sequence as it was, and that sequence has to stay reachable.
+    const QVector<UnitedPathNode> before = VToolUnionDetails::CalcUnitedPath(d1, d2, 0, a1.GetId(), false);
+    QCOMPARE(before.size(), d1.CountNodes() + d2.CountNodes() - 1);
+    QCOMPARE(before.constLast().second.GetId(), a2.GetId());
+    QCOMPARE(out.at(0).second.GetFormulaSABefore(), a2.GetFormulaSABefore());
+    QVERIFY(before.at(0).second.IsPassmark());
 }

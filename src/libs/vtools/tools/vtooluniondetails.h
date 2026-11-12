@@ -87,8 +87,14 @@ public:
     void ShowVisualization(bool show) override;
     void GroupVisibility(quint32 object, bool visible) override;
 
-    static auto CalcUnitedPath(const VPiecePath &d1Path, const VPiecePath &d2Path, quint32 indexD2, quint32 pRotate)
-        -> QVector<QPair<bool, VPieceNode>>;
+    /** @brief The contour of the united piece.
+     *
+     *  Two outlines, joined along the two edges the user picked: the edges leave, the four points that bounded them
+     *  become two, and each of the two keeps the name of the first piece. `fuseFusionPoints` is what says the two
+     *  points of the second piece are one with the two of the first — a file written before that was so holds one
+     *  node more, and its children are mapped on the sequence as it was. */
+    static auto CalcUnitedPath(const VPiecePath &d1Path, const VPiecePath &d2Path, quint32 indexD2, quint32 pRotate,
+                               bool fuseFusionPoints = true) -> QVector<QPair<bool, VPieceNode>>;
 
     /** @brief Replays a union from its file record: recomputes the objects it made.
      *
