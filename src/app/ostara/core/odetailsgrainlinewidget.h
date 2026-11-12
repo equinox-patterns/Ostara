@@ -62,17 +62,26 @@ public:
 private:
     void ConnectControls();
     void UpdatePresetsState(bool grainlineEnabled);
+    void ApplyArrowChoice();
+    auto CurrentArrows() const -> GrainlineArrows;
+    void UpdateCrossRowVisibility(bool crossed);
 
     QCheckBox *m_activeCheck{nullptr};
     QButtonGroup *m_lengthGroup{nullptr};
     QDoubleSpinBox *m_rotationSpin{nullptr};
-    QButtonGroup *m_arrowGroup{nullptr};
+    QButtonGroup *m_linesGroup{nullptr};
+    QButtonGroup *m_mainEndsGroup{nullptr};
+    QButtonGroup *m_crossEndsGroup{nullptr};
 
     QGroupBox *m_grainlineGroup{nullptr};
     QLabel *m_lenLabel{nullptr};
     QLabel *m_rotLabel{nullptr};
+    QLabel *m_linesLabel{nullptr};
+    QLabel *m_mainEndsLabel{nullptr};
+    QLabel *m_crossEndsLabel{nullptr};
     QPushButton *m_simpleBtn{nullptr};
     QPushButton *m_doubleBtn{nullptr};
+    QWidget *m_crossRow{nullptr};
 
     std::function<void(std::function<void(VGrainlineData &)>)> m_modifyPending;
     std::function<std::optional<QPointF>()> m_centerProvider{};

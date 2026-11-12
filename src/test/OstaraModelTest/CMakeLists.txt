@@ -36,6 +36,7 @@ set(OSTARA_MODEL_TESTS
     tst_dxf:TST_DXF
     tst_findpoint:TST_FindPoint
     tst_formulacache:TST_FormulaCache
+    tst_grainlinearrows:TST_GrainlineArrows
     tst_misc:TST_Misc
     tst_nameregexp:TST_NameRegExp
     tst_qmutokenparser:TST_QmuTokenParser

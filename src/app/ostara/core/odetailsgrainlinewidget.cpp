@@ -58,6 +58,40 @@ const struct
     {80, QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "80 cm")},
 };
 constexpr int kGrainlinePresetCount = static_cast<int>(sizeof(kGrainlinePresets) / sizeof(kGrainlinePresets[0]));
+
+// UI order of the ends choices. On the main line the far end (p2) reads as top and the near end
+// (p1) as bottom; on the crossed line p1 is left and p2 right, because the cross is the main line
+// turned 90° about its centre and the grainline is created vertical.
+const GrainlineEnds kMainEndsOrder[] = {GrainlineEnds::Both, GrainlineEnds::Second, GrainlineEnds::First};
+const GrainlineEnds kCrossEndsOrder[] = {GrainlineEnds::Both, GrainlineEnds::First, GrainlineEnds::Second};
+
+auto MainEndsLabel(GrainlineEnds ends) -> const char *
+{
+    switch (ends)
+    {
+        case GrainlineEnds::Both:
+            return QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Both");
+        case GrainlineEnds::First:
+            return QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Bottom");
+        case GrainlineEnds::Second:
+            return QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Top");
+    }
+    return QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Both");
+}
+
+auto CrossEndsLabel(GrainlineEnds ends) -> const char *
+{
+    switch (ends)
+    {
+        case GrainlineEnds::Both:
+            return QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Both");
+        case GrainlineEnds::First:
+            return QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Left");
+        case GrainlineEnds::Second:
+            return QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Right");
+    }
+    return QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Both");
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -115,26 +149,74 @@ ODetailsGrainlineWidget::ODetailsGrainlineWidget(QWidget *parent)
     }
     grainLayout->addLayout(rotForm);
 
-    // Arrow type
-    auto *arrowLayout = new QHBoxLayout();
-    m_arrowGroup = new QButtonGroup(this);
-    m_arrowGroup->setExclusive(true);
+    // Line count: one grainline, or the crossed one (the main line turned 90° about its centre).
+    auto *lineLayout = new QHBoxLayout();
+    m_linesGroup = new QButtonGroup(this);
+    m_linesGroup->setExclusive(true);
 
     m_simpleBtn = new QPushButton();
     OTranslation::SetText(this, m_simpleBtn, QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Simple"));
     m_simpleBtn->setCheckable(true);
-    m_simpleBtn->setProperty("arrowType", static_cast<int>(GrainlineArrowDirection::twoWaysUpDown));
-    m_arrowGroup->addButton(m_simpleBtn, 0);
-    arrowLayout->addWidget(m_simpleBtn);
+    m_linesGroup->addButton(m_simpleBtn, 0);
+    lineLayout->addWidget(m_simpleBtn);
 
     m_doubleBtn = new QPushButton();
     OTranslation::SetText(this, m_doubleBtn, QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Double"));
     m_doubleBtn->setCheckable(true);
-    m_doubleBtn->setProperty("arrowType", static_cast<int>(GrainlineArrowDirection::fourWays));
-    m_arrowGroup->addButton(m_doubleBtn, 1);
-    arrowLayout->addWidget(m_doubleBtn);
+    m_linesGroup->addButton(m_doubleBtn, 1);
+    lineLayout->addWidget(m_doubleBtn);
 
-    grainLayout->addLayout(arrowLayout);
+    // Same shape as Length: a label above the row, because three buttons alone say nothing about
+    // what they set.
+    m_linesLabel = new QLabel();
+    OTranslation::SetText(this, m_linesLabel, QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Lines"));
+    grainLayout->addWidget(m_linesLabel);
+    grainLayout->addLayout(lineLayout);
+
+    // Which end(s) of the main line carry an arrowhead.
+    m_mainEndsGroup = new QButtonGroup(this);
+    m_mainEndsGroup->setExclusive(true);
+    auto *mainEndsLayout = new QHBoxLayout();
+
+    for (const GrainlineEnds ends : kMainEndsOrder)
+    {
+        auto *btn = new QPushButton();
+        OTranslation::SetText(this, btn, MainEndsLabel(ends));
+        btn->setCheckable(true);
+        m_mainEndsGroup->addButton(btn, static_cast<int>(ends));
+        mainEndsLayout->addWidget(btn);
+    }
+    m_mainEndsLabel = new QLabel();
+    OTranslation::SetText(this, m_mainEndsLabel, QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Arrows"));
+    grainLayout->addWidget(m_mainEndsLabel);
+    grainLayout->addLayout(mainEndsLayout);
+
+    // The crossed line, same choice. Its row is the visible half of the Double button: hidden
+    // while the grainline is a single line, so the dock never shows a choice that cannot act.
+    m_crossRow = new QWidget();
+    auto *crossRowLayout = new QVBoxLayout(m_crossRow);
+    crossRowLayout->setContentsMargins(0, 0, 0, 0);
+
+    m_crossEndsLabel = new QLabel();
+    OTranslation::SetText(this, m_crossEndsLabel, QT_TRANSLATE_NOOP("ODetailsGrainlineWidget", "Crossed arrows"));
+    crossRowLayout->addWidget(m_crossEndsLabel);
+
+    auto *crossButtonsLayout = new QHBoxLayout();
+    m_crossEndsGroup = new QButtonGroup(this);
+    m_crossEndsGroup->setExclusive(true);
+
+    for (const GrainlineEnds ends : kCrossEndsOrder)
+    {
+        auto *btn = new QPushButton();
+        OTranslation::SetText(this, btn, CrossEndsLabel(ends));
+        btn->setCheckable(true);
+        m_crossEndsGroup->addButton(btn, static_cast<int>(ends));
+        crossButtonsLayout->addWidget(btn);
+    }
+    crossRowLayout->addLayout(crossButtonsLayout);
+
+    grainLayout->addWidget(m_crossRow);
+    m_crossRow->setVisible(false);
 
     mainLayout->addWidget(m_grainlineGroup);
 
@@ -153,6 +235,18 @@ void ODetailsGrainlineWidget::RetranslateUI()
     }
     m_simpleBtn->setText(tr("Simple"));
     m_doubleBtn->setText(tr("Double"));
+    m_linesLabel->setText(tr("Lines"));
+    m_mainEndsLabel->setText(tr("Arrows"));
+    m_crossEndsLabel->setText(tr("Crossed arrows"));
+
+    for (auto *btn : m_mainEndsGroup->buttons())
+    {
+        btn->setText(tr(MainEndsLabel(static_cast<GrainlineEnds>(m_mainEndsGroup->id(btn)))));
+    }
+    for (auto *btn : m_crossEndsGroup->buttons())
+    {
+        btn->setText(tr(CrossEndsLabel(static_cast<GrainlineEnds>(m_crossEndsGroup->id(btn)))));
+    }
     for (auto *btn : m_lengthGroup->buttons())
     {
         const int id = m_lengthGroup->id(btn);
@@ -275,20 +369,22 @@ void ODetailsGrainlineWidget::ConnectControls()
         });
     });
 
-    connect(m_arrowGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled),
-            this, [this](QAbstractButton *button, bool checked)
+    // One handler for the three exclusive groups: a click only moves the check mark, the arrow
+    // type is recomputed from the three states, so the twelve-value table stays in floatitemdef.h.
+    const auto onArrowChoice = [this](QAbstractButton *button, bool checked)
     {
         if (!checked || m_updating)
         {
             return;
         }
-        const auto arrowType = static_cast<GrainlineArrowDirection>(button->property("arrowType").toInt());
-        if (!m_modifyPending)
-        {
-            return;
-        }
-        m_modifyPending([arrowType](VGrainlineData &geom) { geom.SetArrowType(arrowType); });
-    });
+        ApplyArrowChoice();
+    };
+    connect(m_linesGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled), this,
+            onArrowChoice);
+    connect(m_mainEndsGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled), this,
+            onArrowChoice);
+    connect(m_crossEndsGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled), this,
+            onArrowChoice);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -311,12 +407,24 @@ void ODetailsGrainlineWidget::Show(const VGrainlineData &grainline,
     }
 
     {
-        const auto arrowType = grainline.GetArrowType();
-        const int btnIdx = (arrowType == GrainlineArrowDirection::fourWays) ? 1 : 0;
-        if (auto *btn = m_arrowGroup->button(btnIdx))
+        // Every state the file can hold is restored exactly. The two one-arrow values used to be
+        // folded into "Simple" and silently rewritten to two arrows on the next click.
+        const GrainlineArrows arrows = DecodeGrainlineArrows(grainline.GetArrowType());
+
+        if (auto *btn = m_linesGroup->button(arrows.crossed ? 1 : 0))
         {
             btn->setChecked(true);
         }
+        if (auto *btn = m_mainEndsGroup->button(static_cast<int>(arrows.main)))
+        {
+            btn->setChecked(true);
+        }
+        if (auto *btn = m_crossEndsGroup->button(static_cast<int>(arrows.cross)))
+        {
+            btn->setChecked(true);
+        }
+
+        UpdateCrossRowVisibility(arrows.crossed);
     }
 
     m_updating = false;
@@ -343,6 +451,51 @@ void ODetailsGrainlineWidget::Clear()
 {
     m_centerProvider = {};
     m_updating = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODetailsGrainlineWidget::CurrentArrows() const -> GrainlineArrows
+{
+    GrainlineArrows arrows;
+    arrows.crossed = m_linesGroup->checkedId() == 1;
+
+    const int mainEnds = m_mainEndsGroup->checkedId();
+    if (mainEnds >= 0)
+    {
+        arrows.main = static_cast<GrainlineEnds>(mainEnds);
+    }
+
+    const int crossEnds = m_crossEndsGroup->checkedId();
+    if (crossEnds >= 0)
+    {
+        arrows.cross = static_cast<GrainlineEnds>(crossEnds);
+    }
+
+    return arrows;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGrainlineWidget::ApplyArrowChoice()
+{
+    const GrainlineArrows arrows = CurrentArrows();
+    UpdateCrossRowVisibility(arrows.crossed);
+
+    if (!m_modifyPending)
+    {
+        return;
+    }
+
+    const auto arrowType = EncodeGrainlineArrows(arrows);
+    m_modifyPending([arrowType](VGrainlineData &geom) { geom.SetArrowType(arrowType); });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODetailsGrainlineWidget::UpdateCrossRowVisibility(bool crossed)
+{
+    if (m_crossRow != nullptr)
+    {
+        m_crossRow->setVisible(crossed);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

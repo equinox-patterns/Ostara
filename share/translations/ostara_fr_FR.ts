@@ -11488,6 +11488,49 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
         <source>Double</source>
         <translation>Double</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="73"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="79"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="87"/>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="93"/>
+        <source>Both</source>
+        <translation>Les deux</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="77"/>
+        <source>Top</source>
+        <translation>Haut</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="75"/>
+        <source>Bottom</source>
+        <translation>Bas</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="89"/>
+        <source>Left</source>
+        <translation>Gauche</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="91"/>
+        <source>Right</source>
+        <translation>Droite</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="172"/>
+        <source>Lines</source>
+        <translation>Lignes</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="190"/>
+        <source>Arrows</source>
+        <translation>Flèches</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="201"/>
+        <source>Crossed arrows</source>
+        <translation>Flèches croisées</translation>
+    </message>
 </context>
 <context>
     <name>ODetailsGroupWidget</name>
