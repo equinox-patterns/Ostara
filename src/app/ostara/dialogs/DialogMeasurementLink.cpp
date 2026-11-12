@@ -44,16 +44,25 @@ DialogMeasurementLink::DialogMeasurementLink(const QString &recordedPath, QWidge
 
     auto *text = new QLabel(this);
     text->setWordWrap(true);
+
+    // Said before anything is chosen, because both buttons below speak about FILES and a user who has just opened
+    // her .val can read them as editing it. Ostara never writes into one: it opens a copy, which will be saved as
+    // .ostara, and every table it builds is a file of its own.
+    const QString notTouched
+        = tr("Your Valentina files are never modified: Ostara builds its own versions of them.");
+
     if (recordedPath.isEmpty())
     {
-        text->setText(tr("This pattern reads measurements and no table is linked to it.\n\n"
-                         "Ostara uses the .omt/.otu format. Choose how to proceed:"));
+        text->setText(tr("This pattern reads measurements and no table is linked to it.\n\n%1\n\n"
+                         "Ostara uses the .omt/.otu format. Choose how to proceed:")
+                          .arg(notTouched));
     }
     else
     {
         text->setText(tr("The pattern is linked to a legacy Tape file:\n\n%1\n\n"
-                         "but it could not be found. Ostara uses the .omt/.otu format. Choose how to proceed:")
-                          .arg(QFileInfo(recordedPath).fileName()));
+                         "but it could not be found.\n\n%2\n\n"
+                         "Ostara uses the .omt/.otu format. Choose how to proceed:")
+                          .arg(QFileInfo(recordedPath).fileName(), notTouched));
     }
     mainLayout->addWidget(text);
 
@@ -63,7 +72,7 @@ DialogMeasurementLink::DialogMeasurementLink(const QString &recordedPath, QWidge
     // searching for it is the gesture that replaces it. The library stays one click away, exactly as it is when
     // the linked file still exists.
     auto *searchBtn = buttonBox->addButton(tr("Search for the file"), QDialogButtonBox::AcceptRole);
-    auto *libraryBtn = buttonBox->addButton(tr("Replace with an existing .omt/.otu"), QDialogButtonBox::ActionRole);
+    auto *libraryBtn = buttonBox->addButton(tr("Use a table from the library"), QDialogButtonBox::ActionRole);
     buttonBox->addButton(QDialogButtonBox::Cancel);
     mainLayout->addWidget(buttonBox);
 

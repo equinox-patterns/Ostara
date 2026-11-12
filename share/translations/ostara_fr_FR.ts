@@ -3393,36 +3393,53 @@ Vérifiez que le dossier autorise l&apos;écriture et qu&apos;un fichier de ce n
         <translation>Fichier de mensurations hérité</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="49"/>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="56"/>
         <source>This pattern reads measurements and no table is linked to it.
+
+%1
 
 Ostara uses the .omt/.otu format. Choose how to proceed:</source>
         <translation>Ce patron lit des mensurations et aucun tableau n&apos;y est lié.
 
+%1
+
 Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="54"/>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="52"/>
+        <source>Your Valentina files are never modified: Ostara builds its own versions of them.</source>
+        <translation>Vos fichiers Valentina ne sont jamais modifiés : Ostara en crée ses propres versions.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="62"/>
         <source>The pattern is linked to a legacy Tape file:
 
 %1
 
-but it could not be found. Ostara uses the .omt/.otu format. Choose how to proceed:</source>
+but it could not be found.
+
+%2
+
+Ostara uses the .omt/.otu format. Choose how to proceed:</source>
         <translation>Le patron est lié à un fichier Tape hérité :
 
 %1
 
-mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
+mais il est introuvable.
+
+%2
+
+Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="65"/>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="74"/>
         <source>Search for the file</source>
         <translation>Rechercher le fichier</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="66"/>
-        <source>Replace with an existing .omt/.otu</source>
-        <translation>Remplacer par un fichier .omt/.otu existant</translation>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="75"/>
+        <source>Use a table from the library</source>
+        <translation>Utiliser un tableau de la bibliothèque</translation>
     </message>
 </context>
 <context>
