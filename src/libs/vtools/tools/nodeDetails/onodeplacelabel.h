@@ -39,14 +39,19 @@ class VPlaceLabelItem;
 
 /**
  * @brief The ONodePlaceLabel class an interactive per-place-label handle drawn on a Details
- * piece. It reuses the standard "real point" visuals of VScenePoint so a place label reads and
- * behaves like the piece's own node points (outline circle at rest, name + leader line, hover
- * highlight) while staying a lightweight child of the piece — it is NOT a data tool and NOT a
+ * piece. It stays a lightweight child of the piece — it is NOT a data tool and NOT a
  * seam-allowance node. Clicking it selects the owning piece (the main window routes the scene
  * press); it is not movable and holds no editing state of its own.
  *
- * Ported behaviour from Val Fork (VNodePlaceLabel), re-expressed on VScenePoint so the look
- * matches the piece's real points instead of re-implementing the paint.
+ * **It draws nothing.** The circle VScenePoint would draw sits exactly on the internal mark and
+ * hides the very shape the user came to look at, so the handle is a HIT AREA and only that: the
+ * press, the selection and the name point keep working, and the mark stays visible under an
+ * invisible target. Hiding the item instead would have taken the clicks with it — Qt only delivers
+ * an event to a visible item — and dimming the pen would have to be re-silenced on every hover and
+ * selection the base class recolours. The empty paint says it once.
+ *
+ * Ported behaviour from Val Fork (VNodePlaceLabel), re-expressed on VScenePoint so the geometry,
+ * the name point and the selection semantics are the piece's own.
  */
 class ONodePlaceLabel final : public VScenePoint
 {
@@ -65,6 +70,9 @@ public:
     void UpdateFromLabel(quint32 labelId, const VPlaceLabelItem &label);
 
     auto getId() const -> quint32 { return m_id; }
+
+    /// Draws nothing, on purpose — see the class comment. The hit area is the inherited shape().
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
 protected:
     auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;

@@ -2474,6 +2474,9 @@ auto VAbstractPiece::PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLab
         case PlaceLabelType::Button:
             return ButtonShape();
         case PlaceLabelType::Circle:
+        case PlaceLabelType::FilledCircle:
+            // The same circle: what makes the disc is not its geometry but whether its inside is painted
+            // (IsFilledPlaceLabel), which the surfaces drawing it decide.
             return CircleShape();
         default:
             return {};

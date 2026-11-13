@@ -84,6 +84,8 @@ struct VToolSeamAllowanceGeometry
     bool seamAllowanceValid{true};
     QPainterPath seamAllowance{};
     QPainterPath placeLabels{};
+    /// The discs, kept apart from @ref placeLabels: filling one merged path would blacken every mark.
+    QPainterPath filledPlaceLabels{};
     QString pieceName{};
 };
 
@@ -280,6 +282,8 @@ public:
     auto PassmarksPath() const -> QPainterPath;
     /** @brief The place labels as the tool draws them, in the tool's own coordinates. */
     auto PlaceLabelsPath() const -> QPainterPath;
+    /// The marks whose inside is painted — the discs (see VPiece::FilledPlaceLabelPath).
+    auto FilledPlaceLabelsPath() const -> QPainterPath;
     /** @brief The fold line (the symmetry line when the piece is shown full) as the tool draws it. */
     auto MirrorLinePath() const -> QPainterPath;
     /** @brief The fold line's mark — what marks the fold along that line. */
@@ -418,6 +422,8 @@ private:
     VGrainlineItem *m_grainLine;
     QGraphicsPathItem *m_passmarks;
     QGraphicsPathItem *m_placeLabels;
+    /// A VGraphicsFilledMarkItem, held as a path item: what it adds is its paint, not its interface.
+    QGraphicsPathItem *m_placeLabelsFilled;
     QGraphicsPathItem *m_mirrorLine;
     QGraphicsPathItem *m_foldLineMark;
     QGraphicsPathItem *m_foldLineLabel;

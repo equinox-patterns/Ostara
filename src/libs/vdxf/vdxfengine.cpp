@@ -87,6 +87,13 @@ QT_WARNING_POP
 
 namespace
 {
+// A mark whose shape is a disc or a drill: the cutting formats carry it as a drill point, never as a polygon.
+auto IsDrillMark(PlaceLabelType type) -> bool
+{
+    return type == PlaceLabelType::Doubletree || type == PlaceLabelType::Button
+           || type == PlaceLabelType::Circle || type == PlaceLabelType::FilledCircle;
+}
+
 const qreal AAMATextHeight = 2.5;
 // ASTM D6673 4.3.15: "For readability, the text height for annotation should be 3.5 or 5 mm in height."
 const qreal ASTMAnnotationTextHeight = 5.0;
@@ -940,8 +947,7 @@ void VDxfEngine::ExportAAMADrawPlaceLabels(const QSharedPointer<dx_ifaceBlock> &
     const QVector<VLayoutPlaceLabel> labels = detail.GetPlaceLabels();
     for (const auto &label : labels)
     {
-        if (label.Type() != PlaceLabelType::Doubletree && label.Type() != PlaceLabelType::Button &&
-            label.Type() != PlaceLabelType::Circle)
+        if (not IsDrillMark(label.Type()))
         {
             DrawShape(detail.MapPlaceLabelShape(VAbstractPiece::PlaceLabelShape(label)), false);
 
@@ -1162,8 +1168,7 @@ void VDxfEngine::ExportAAMADrill(const QSharedPointer<dx_ifaceBlock> &detailBloc
 
     for (const auto &label : labels)
     {
-        if (label.Type() == PlaceLabelType::Doubletree || label.Type() == PlaceLabelType::Button ||
-            label.Type() == PlaceLabelType::Circle)
+        if (IsDrillMark(label.Type()))
         {
             QPointF center = detail.GetMatrix().map(label.Center());
             detailBlock->ent.push_back(AAMAPoint(center, *layer13));
@@ -1426,8 +1431,7 @@ void VDxfEngine::ExportASTMDrawPlaceLabels(const QSharedPointer<dx_ifaceBlock> &
     const QVector<VLayoutPlaceLabel> labels = detail.GetPlaceLabels();
     for (const auto &label : labels)
     {
-        if (label.Type() != PlaceLabelType::Doubletree && label.Type() != PlaceLabelType::Button &&
-            label.Type() != PlaceLabelType::Circle)
+        if (not IsDrillMark(label.Type()))
         {
             PlaceLabelImg shape = detail.MapPlaceLabelShape(VAbstractPiece::PlaceLabelShape(label));
             DrawShape(shape, label.IsNotMirrored(), false);
@@ -1544,8 +1548,7 @@ void VDxfEngine::ExportASTMDrill(const QSharedPointer<dx_ifaceBlock> &detailBloc
 
     for (const auto &label : labels)
     {
-        if (label.Type() == PlaceLabelType::Doubletree || label.Type() == PlaceLabelType::Button ||
-            label.Type() == PlaceLabelType::Circle)
+        if (IsDrillMark(label.Type()))
         {
             QPointF center = detail.GetMatrix().map(label.Center());
             const QLineF diameter(label.Box().bottomLeft(), label.Box().topRight());

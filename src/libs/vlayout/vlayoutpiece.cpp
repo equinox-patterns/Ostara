@@ -30,6 +30,8 @@
 
 #include "vlayoutpiece.h"
 
+#include "vgraphicsfilledmarkitem.h"
+
 #include <QBrush>
 #include <QFlags>
 #include <QFont>
@@ -1356,6 +1358,15 @@ void VLayoutPiece::DrawMiniature(QPainter &painter, bool togetherWithNotches) co
 
     for (const auto &label : d->m_placeLabels)
     {
+        // A disc is painted with its own ink, as VGraphicsFilledMarkItem does for the real item.
+        if (IsFilledPlaceLabel(label.Type()))
+        {
+            QPainterStateGuard const guard(&painter);
+            painter.setBrush(painter.pen().color());
+            painter.drawPath(m.map(LabelShapePath(label)));
+            continue;
+        }
+
         painter.drawPath(m.map(LabelShapePath(label)));
     }
 
@@ -1395,7 +1406,11 @@ auto VLayoutPiece::GetItem(bool textAsPaths, bool togetherWithNotches, bool show
 
     for (const auto &label : d->m_placeLabels)
     {
-        auto *pathItem = new QGraphicsPathItem(item);
+        // A disc is an item of its own: its paint fills the shape with the pen's colour, so a size style or
+        // the ink pass of an export recolours the inside along with the outline.
+        auto *pathItem = IsFilledPlaceLabel(label.Type()) ? static_cast<QGraphicsPathItem *>(
+                                                                new VGraphicsFilledMarkItem(item))
+                                                          : new QGraphicsPathItem(item);
         QPen pen = pathItem->pen();
         pen.setWidthF(VAbstractApplication::VApp()->Settings()->WidthHairLine());
         pathItem->setPen(pen);

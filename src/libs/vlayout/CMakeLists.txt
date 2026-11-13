@@ -5,6 +5,7 @@ set(VLAYOUT_SOURCES
     vlayoutpoint.cpp
     otextwrap.cpp
     vgraphicsfillitem.cpp
+    vgraphicsfilledmarkitem.cpp
     vabstractpiece.cpp
     vlayoutpiece.cpp
     vlayoutpiecepath.cpp
@@ -19,6 +20,7 @@ set(VLAYOUT_SOURCES
     vsapoint.h
     otextwrap.h
     vgraphicsfillitem.h
+    vgraphicsfilledmarkitem.h
     vabstractpiece.h
     vabstractpiece_p.h
     vlayoutpiece.h

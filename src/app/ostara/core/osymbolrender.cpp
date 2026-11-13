@@ -205,7 +205,14 @@ auto PlaceLabelDrawing(const OSymbolShapes::Shape &shape) -> OSymbolRender::Draw
     label.SetBox(QRectF(0, 0, kPlaceLabelBox, kPlaceLabelBox));
 
     OSymbolRender::Drawing drawing;
-    drawing.strokes.append(VAbstractPiece::LabelShapePath(label));
+    const QPainterPath path = VAbstractPiece::LabelShapePath(label);
+    drawing.strokes.append(path);
+    // A disc is filled with the ink as well as traced — the same two lists the fold line uses, and the
+    // reason a symbol shows the mark the canvas draws rather than its outline.
+    if (IsFilledPlaceLabel(label.Type()))
+    {
+        drawing.fills.append(path);
+    }
     return drawing;
 }
 

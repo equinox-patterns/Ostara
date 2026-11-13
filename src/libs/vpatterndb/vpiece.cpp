@@ -513,6 +513,18 @@ auto VPiece::PassmarksPath(const VContainer *data) const -> QPainterPath
 //---------------------------------------------------------------------------------------------------------------------
 auto VPiece::PlaceLabelPath(const VContainer *data) const -> QPainterPath
 {
+    return PlaceLabelsPath(data, false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::FilledPlaceLabelPath(const VContainer *data) const -> QPainterPath
+{
+    return PlaceLabelsPath(data, true);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPiece::PlaceLabelsPath(const VContainer *data, bool filled) const -> QPainterPath
+{
     QPainterPath path;
     for (auto placeLabel : d->m_placeLabels)
     {
@@ -525,6 +537,11 @@ auto VPiece::PlaceLabelPath(const VContainer *data) const -> QPainterPath
             }
 
             VLayoutPlaceLabel const layoutLabel(*label);
+            if (IsFilledPlaceLabel(layoutLabel.Type()) != filled)
+            {
+                continue; // a disc is painted, not outlined: the two paths never draw the same mark
+            }
+
             path.addPath(LabelShapePath(layoutLabel));
 
             if (const QLineF mirrorLine = SeamMirrorLine(data);

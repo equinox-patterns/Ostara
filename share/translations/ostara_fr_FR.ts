@@ -4885,6 +4885,11 @@ Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
         <source>Circle</source>
         <translation>Cercle</translation>
     </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="623"/>
+        <source>Filled circle</source>
+        <translation>Cercle plein</translation>
+    </message>
 </context>
 <context>
     <name>DialogPleat</name>
@@ -12226,6 +12231,11 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="82"/>
         <source>Circle</source>
         <translation>Cercle</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="83"/>
+        <source>Filled circle</source>
+        <translation>Cercle plein</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="66"/>

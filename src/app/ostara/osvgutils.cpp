@@ -38,6 +38,7 @@
 #include <QXmlStreamWriter>
 
 #include "../vlayout/vgraphicsfillitem.h"
+#include "../vlayout/vgraphicsfilledmarkitem.h"
 
 #include <algorithm>
 
@@ -179,7 +180,8 @@ void WriteLine(QXmlStreamWriter &writer, const QLineF &segment, const QPen &pen)
 QGraphicsPathItem *AsPathItem(QGraphicsItem *item)
 {
     const int t = item->type();
-    if (t == VGraphicsFillItem::Type || t == VGraphicsFoldLineItem::Type)
+    if (t == VGraphicsFillItem::Type || t == VGraphicsFoldLineItem::Type
+        || t == VGraphicsFilledMarkItem::Type)
     {
         return static_cast<QGraphicsPathItem *>(item);
     }

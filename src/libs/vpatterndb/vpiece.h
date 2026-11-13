@@ -90,7 +90,11 @@ public:
     auto FullSeamAllowancePath(const VContainer *data) const -> QPainterPath;
     template <class T> auto SeamAllowancePath(const QVector<T> &points) const -> QPainterPath;
     auto PassmarksPath(const VContainer *data) const -> QPainterPath;
+    /// The marks whose outline is drawn — every internal mark. A disc is NOT here: see FilledPlaceLabelPath.
     auto PlaceLabelPath(const VContainer *data) const -> QPainterPath;
+    /// The marks whose inside is painted — the discs (see IsFilledPlaceLabel). Two paths and not one, because
+    /// a single path filled would blacken every mark it crosses, not only the discs.
+    auto FilledPlaceLabelPath(const VContainer *data) const -> QPainterPath;
 
     auto IsSeamAllowanceValid(const VContainer *data) const -> bool;
 
@@ -238,6 +242,9 @@ public:
     auto SeamAllowanceMirrorLine(const VContainer *data) const -> QLineF;
 
 private:
+    /// The one body both @ref PlaceLabelPath and @ref FilledPlaceLabelPath read: the labels whose type is a
+    /// disc, or the others.
+    auto PlaceLabelsPath(const VContainer *data, bool filled) const -> QPainterPath;
     QSharedDataPointer<VPieceData> d;
 
     auto GetValidRecords() const -> QVector<CustomSARecord>;

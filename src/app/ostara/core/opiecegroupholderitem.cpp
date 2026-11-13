@@ -267,6 +267,7 @@ void OPieceGroupHolderItem::RefreshMemberShapes(const OPieceGroup &group)
             shape.seamAllowance = mirror.map(tool->SeamAllowancePath());
             shape.passmarks = mirror.map(tool->PassmarksPath());
             shape.placeLabels = mirror.map(tool->PlaceLabelsPath());
+            shape.placeLabelsFilled = mirror.map(tool->FilledPlaceLabelsPath());
             // **The group's fold line is the chosen member's.** Only that member gives its line to
             // the stack; the others keep theirs where their own piece is edited.
             if (group.m_foldLineMemberId == pieceId)
@@ -719,6 +720,10 @@ void OPieceGroupHolderItem::paint(QPainter *painter, const QStyleOptionGraphicsI
         painter->drawPath(shape.seamAllowance);
         painter->drawPath(shape.passmarks);
         painter->drawPath(shape.placeLabels);
+        // The discs take the member's ink, exactly as a size style or the theme would have them.
+        painter->setBrush(shape.pen.color());
+        painter->drawPath(shape.placeLabelsFilled);
+        painter->setBrush(Qt::NoBrush);
         painter->drawPath(shape.foldLineMark);
         painter->drawPath(shape.foldLineLabel);
         for (const QPainterPath &internalPath : shape.internalPaths)

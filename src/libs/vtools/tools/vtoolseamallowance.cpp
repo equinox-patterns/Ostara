@@ -59,6 +59,7 @@
 #include "../vgeometry/vplacelabelitem.h"
 #include "../vgeometry/vpointf.h"
 #include "../vlayout/vboundary.h"
+#include "../vlayout/vgraphicsfilledmarkitem.h"
 #include "../vlayout/vfoldline.h"
 #include "../vlayout/vlayoutpiece.h"
 #include "../vlayout/vlayoutpiecepath.h"
@@ -2478,6 +2479,8 @@ void VToolSeamAllowance::RefreshScale()
     m_seamAllowance->setPen(toolPen);
     m_passmarks->setPen(toolPen);
     m_placeLabels->setPen(toolPen);
+    // The disc paints its inside with this pen's colour (VGraphicsFilledMarkItem) — no brush to keep in step.
+    m_placeLabelsFilled->setPen(toolPen);
     m_foldLineMark->setPen(toolPen);
     m_foldLineLabel->setPen(toolPen);
 
@@ -2525,6 +2528,12 @@ auto VToolSeamAllowance::PassmarksPath() const -> QPainterPath
 auto VToolSeamAllowance::PlaceLabelsPath() const -> QPainterPath
 {
     return m_placeLabels->path();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::FilledPlaceLabelsPath() const -> QPainterPath
+{
+    return m_placeLabelsFilled->path();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3038,6 +3047,7 @@ VToolSeamAllowance::VToolSeamAllowance(const VToolSeamAllowanceInitData &initDat
     m_grainLine(new VGrainlineItem(VColorRole::PieceColor, this)),
     m_passmarks(new QGraphicsPathItem(this)),
     m_placeLabels(new QGraphicsPathItem(this)),
+    m_placeLabelsFilled(new VGraphicsFilledMarkItem(this)),
     m_mirrorLine(new QGraphicsPathItem(this)),
     m_foldLineMark(new QGraphicsPathItem(this)),
     m_foldLineLabel(new QGraphicsPathItem(this)),
@@ -3286,6 +3296,7 @@ auto VToolSeamAllowance::ComputePieceGeometry(bool combineTogether, bool pieceSh
     geom.showMainPath = pieceShowMainPath || not detail.IsHideMainPath() || not detail.IsSeamAllowance();
 
     geom.placeLabels = detail.PlaceLabelPath(containerData);
+    geom.filledPlaceLabels = detail.FilledPlaceLabelPath(containerData);
 
     geom.valid = true;
     return geom;
@@ -3407,6 +3418,7 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     this->setPath(path);
 
     m_placeLabels->setPath(geom.placeLabels);
+    m_placeLabelsFilled->setPath(geom.filledPlaceLabels);
     m_saHighlights.Update(VAbstractTool::data.GetPiece(m_id), getData());
 
     if (geom.hasSeamAllowance)

@@ -80,6 +80,7 @@ auto PlaceLabels() -> const QVector<PlaceLabelEntry> &
         {PlaceLabelType::Hshaped, QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "H-shaped")},
         {PlaceLabelType::Button, QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Button")},
         {PlaceLabelType::Circle, QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Circle")},
+        {PlaceLabelType::FilledCircle, QT_TRANSLATE_NOOP("ODetailsPlaceLabelWidget", "Filled circle")},
     };
     return table;
 }

@@ -136,6 +136,8 @@ private:
         QPainterPath seamAllowance{};
         QPainterPath passmarks{};
         QPainterPath placeLabels{};
+        /// The discs (see IsFilledPlaceLabel): painted, not outlined, so they travel apart from the marks.
+        QPainterPath placeLabelsFilled{};
         QPainterPath mirrorLine{};
         QPainterPath foldLineMark{};
         QPainterPath foldLineLabel{};

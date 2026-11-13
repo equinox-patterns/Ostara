@@ -167,6 +167,29 @@ auto VLayoutPassmark::toJson() const -> QJsonObject
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto IsFilledPlaceLabel(PlaceLabelType type) -> bool
+{
+    switch (type)
+    {
+        case PlaceLabelType::FilledCircle:
+            return true;
+        case PlaceLabelType::Segment:
+        case PlaceLabelType::Rectangle:
+        case PlaceLabelType::Cross:
+        case PlaceLabelType::Tshaped:
+        case PlaceLabelType::Doubletree:
+        case PlaceLabelType::Corner:
+        case PlaceLabelType::Triangle:
+        case PlaceLabelType::Hshaped:
+        case PlaceLabelType::Button:
+        case PlaceLabelType::Circle:
+            break;
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto IsLineSegmentOnLineSegment(const QLineF &seg1, const QLineF &seg2, qreal accuracy) -> bool
 {
     const bool onLine = IsPointOnLineviaPDP(seg1.p1(), seg2.p1(), seg2.p2(), accuracy)

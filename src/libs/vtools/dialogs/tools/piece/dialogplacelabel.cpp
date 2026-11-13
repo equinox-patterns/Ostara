@@ -620,6 +620,7 @@ void DialogPlaceLabel::FillPlaceLabelTypes()
     m_typeCombo->addItem(tr("H-shaped"), static_cast<int>(PlaceLabelType::Hshaped));
     m_typeCombo->addItem(tr("Button"), static_cast<int>(PlaceLabelType::Button));
     m_typeCombo->addItem(tr("Circle"), static_cast<int>(PlaceLabelType::Circle));
+    m_typeCombo->addItem(tr("Filled circle"), static_cast<int>(PlaceLabelType::FilledCircle));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

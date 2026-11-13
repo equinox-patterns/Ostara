@@ -34,6 +34,7 @@
 #include "oexportink.h"
 #include "core/oexportrecipe.h"
 #include "../vlayout/vgraphicsfillitem.h"
+#include "../vlayout/vgraphicsfilledmarkitem.h"
 #include "../vtools/tools/othumbnailitem.h"
 
 #include <QColor>
@@ -179,11 +180,14 @@ void WriteTrace(QXmlStreamWriter &writer, const InkSpace &space, const QPen &def
     QString fill = QStringLiteral("none");
     const bool grainOrFold = gitem->type() == VGraphicsFillItem::Type
                              || gitem->type() == VGraphicsFoldLineItem::Type;
+    // A disc carries no brush: its paint fills the shape with the pen's own colour, which is what a painter
+    // sees and what a reader of the file must see too. Same rule as the grainline's arrows.
+    const bool filledMark = gitem->type() == VGraphicsFilledMarkItem::Type;
     if (pathItem->brush().style() != Qt::NoBrush)
     {
         fill = pathItem->brush().color().name();
     }
-    else if (grainOrFold)
+    else if (grainOrFold || filledMark)
     {
         fill = stroke;
     }

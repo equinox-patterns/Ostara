@@ -61,6 +61,17 @@ ONodePlaceLabel::ONodePlaceLabel(QGraphicsItem *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ONodePlaceLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    // Nothing: the handle is a hit area, not a mark. What the user clicks is the internal mark drawn by the
+    // piece underneath; a node on top of it only hides it. The item stays visible and selectable, so the
+    // scene still delivers the press, the hover and the tooltip to it.
+    Q_UNUSED(painter)
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto ONodePlaceLabel::itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant
 {
     // Mirror the Qt selection state onto VScenePoint's active pen, so a selected label handle is
@@ -139,6 +150,7 @@ void ONodePlaceLabel::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         {PlaceLabelType::Hshaped, "H-shaped"},
         {PlaceLabelType::Button, "Button"},
         {PlaceLabelType::Circle, "Circle"},
+        {PlaceLabelType::FilledCircle, "Filled circle"},
     };
 
     const PlaceLabelType current = label->GetLabelType();

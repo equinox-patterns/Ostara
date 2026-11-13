@@ -72,8 +72,20 @@ enum class PlaceLabelType : quint8
     Triangle = 6,
     Hshaped = 7,
     Button = 8,
-    Circle = 9
+    Circle = 9,
+    /// A disc — the same circle, its inside painted with the ink instead of left empty. Kept last, and
+    /// numbered like the others: the document stores the number, never a name (see AttrPlaceLabelType).
+    FilledCircle = 10
 };
+
+/**
+ * @brief Whether a mark's inside is painted with the ink rather than left empty.
+ *
+ * A disc is the only one: every other mark is a drawing of lines, and filling it would blacken the fabric
+ * it lies on instead of drawing the mark. Asked by the canvas, the layout, the symbol renderer and the SVG
+ * writer, so the rule lives here and nowhere else.
+ */
+auto IsFilledPlaceLabel(PlaceLabelType type) -> bool;
 
 struct VLayoutPassmark
 {
