@@ -105,7 +105,7 @@ auto VFormula::operator=(VFormula &&formula) noexcept -> VFormula &
 //---------------------------------------------------------------------------------------------------------------------
 auto VFormula::operator==(const VFormula &formula) const -> bool
 {
-    return d->formula == formula.GetFormula() && d->strValue == formula.getStringValue() &&
+    return d->formula == formula.GetFormula() && getStringValue() == formula.getStringValue() &&
            d->checkZero == formula.getCheckZero() && d->checkLessThanZero == formula.getCheckLessThanZero() &&
            d->data == formula.getData() && d->toolId == formula.getToolId() && d->postfix == formula.getPostfix() &&
            d->error == formula.error() && VFuzzyComparePossibleNulls(d->dValue, formula.getDoubleValue());
@@ -144,6 +144,11 @@ void VFormula::SetFormula(const QString &value, FormulaType type)
 //---------------------------------------------------------------------------------------------------------------------
 auto VFormula::getStringValue() const -> QString
 {
+    if (d->strValuePending)
+    {
+        d->strValue = VAbstractApplication::VApp()->LocaleToString(d->dValue) + ' '_L1 + d->strValuePostfix;
+        d->strValuePending = false;
+    }
     return d->strValue;
 }
 
@@ -283,7 +288,9 @@ void VFormula::Eval()
         }
         else
         {
-            d->strValue = VAbstractApplication::VApp()->LocaleToString(result) + ' '_L1 + d->postfix;
+            // Written when it is read (getStringValue), with the postfix of now.
+            d->strValuePending = true;
+            d->strValuePostfix = d->postfix;
             d->error = false;
         }
     }
@@ -360,6 +367,7 @@ auto VFormula::CheckObjectNames() -> bool
 void VFormula::ResetState()
 {
     d->strValue = tr("Error");
+    d->strValuePending = false;
     d->error = true;
     d->dValue = std::numeric_limits<qreal>::quiet_NaN();
     d->reason = tr("Not evaluated");

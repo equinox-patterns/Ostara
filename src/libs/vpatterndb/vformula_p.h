@@ -54,7 +54,14 @@ public:
     ~VFormulaData() = default;
 
     QString formula{};                                     // NOLINT(misc-non-private-member-variables-in-classes)
-    QString strValue{tr("Error")};                         // NOLINT(misc-non-private-member-variables-in-classes)
+    // The value as shown: written by VFormula::getStringValue the first time it is read after an evaluation, not by
+    // VFormula::Eval — most evaluations (building a piece, a size of the graded range) never show their value, and
+    // formatting a number through the system locale cost 16 % of building a layout piece (profiled 13-11-2026).
+    mutable QString strValue{tr("Error")};                 // NOLINT(misc-non-private-member-variables-in-classes)
+    /// True when strValue is still to be written from dValue and strValuePostfix.
+    mutable bool strValuePending{false};                   // NOLINT(misc-non-private-member-variables-in-classes)
+    /// The postfix as it was at the evaluation: what Eval wrote with, kept for the deferred text.
+    QString strValuePostfix{};                             // NOLINT(misc-non-private-member-variables-in-classes)
     bool checkZero{false};                                 // NOLINT(misc-non-private-member-variables-in-classes)
     bool checkLessThanZero{false};                         // NOLINT(misc-non-private-member-variables-in-classes)
     const VContainer *data{nullptr};                       // NOLINT(misc-non-private-member-variables-in-classes)

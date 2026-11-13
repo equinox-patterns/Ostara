@@ -34,6 +34,8 @@
 #include "vpatterndb/variables/vinternalvariable.h"
 #include "vmisc/testvapplication.h"
 #include "vpatterndb/vcontainer.h"
+#include "vpatterndb/vformula.h"
+#include "vmisc/vabstractapplication.h"
 #include "vpatterndb/vtranslatevars.h"
 
 #include <QtTest>
@@ -199,4 +201,35 @@ void TST_LineRoleNames::SegmentTakesItsRouteBackWhenReadAgain()
     QVERIFY(not byRoute.isNull());
     QCOMPARE(variables->value(byRoute->GetName()), byRoute); // the route reads the variable of this move
     QVERIFY(not variables->contains(route + QStringLiteral("_1")));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The text of a formula's value is written when it is read, not at each evaluation — and it must read exactly as when
+// it was written at the evaluation: the value of that evaluation, with the postfix of that moment.
+void TST_LineRoleNames::FormulaShowsTheValueOfItsEvaluation()
+{
+    VTranslateVars trVars;
+    Unit unit = Unit::Cm;
+    VContainer data(&trVars, &unit, VContainer::UniqueNamespace());
+
+    VFormula formula(QStringLiteral("2.5*2"), &data);
+    formula.setPostfix(QStringLiteral("cm"));
+    formula.Eval();
+
+    QVERIFY(not formula.error());
+    QCOMPARE(formula.getDoubleValue(), 5.0);
+    const QString expected = VAbstractApplication::VApp()->LocaleToString(5.0) + QStringLiteral(" cm");
+
+    formula.setPostfix(QStringLiteral("mm")); // after the evaluation: the text keeps the postfix it was evaluated with
+    QCOMPARE(formula.getStringValue(), expected);
+    QCOMPARE(formula.getStringValue(), expected); // read twice, same text
+
+    const VFormula copy = formula; // a copy shows the same text
+    QCOMPARE(copy.getStringValue(), expected);
+
+    // A formula that does not evaluate shows the error text, as before.
+    VFormula broken(QStringLiteral("2+"), &data);
+    broken.Eval();
+    QVERIFY(broken.error());
+    QCOMPARE(broken.getStringValue(), QCoreApplication::translate("VFormulaData", "Error"));
 }

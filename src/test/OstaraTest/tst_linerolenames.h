@@ -47,6 +47,8 @@ private slots:
     void NameOfAnotherLineIsTaken();
     // A segment registered again without the variables being cleared (a drag) takes its own route back
     void SegmentTakesItsRouteBackWhenReadAgain();
+    // The value a formula shows is the one of its last evaluation, written only when read
+    void FormulaShowsTheValueOfItsEvaluation();
 };
 
 #endif // TST_LINEROLENAMES_H
