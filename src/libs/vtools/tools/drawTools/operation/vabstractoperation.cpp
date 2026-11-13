@@ -861,6 +861,13 @@ void VAbstractOperation::FullUpdateFromFile()
             continue; // the pieces are rebuilt whole below, from the copies just refreshed
         }
 
+        // A copy this tool's data does not hold cannot be drawn, and asking for it would throw and fail the whole
+        // parse — the user is left with a frozen window. It keeps its last shape; the next complete parse redraws it.
+        if (not VAbstractTool::data.HasObject(i.key()))
+        {
+            continue;
+        }
+
         if (i.value()->GetType() == GOType::Point)
         {
             auto *item = qobject_cast<VSimplePoint *>(i.value());
@@ -1204,6 +1211,21 @@ void VAbstractOperation::RefreshCopyPieces()
     if (m_patternData == nullptr)
     {
         m_patternData = getData();
+    }
+
+    // The live container can be a snapshot of an EARLIER block: a drag reparses the active block alone, and
+    // VPattern::setCurrentData then restores the container from the last tool of that block, which was read before
+    // this operation existed. Such a container does not hold this operation's own copies, so nothing about them can be
+    // rebuilt from it — and copying it over this tool's data below would wipe the copies out of the tool itself: its
+    // next FullUpdateFromFile asks for one of them, gets ExceptionBadId, and the parse fails (seen 13-11-2026 dragging
+    // the base point of "Buste" while a move in "Manche Dennic" had cut pieces). The tool keeps what it holds; the
+    // cross-block reparse that follows the drag rebuilds it from a complete container.
+    for (const auto &object : std::as_const(m_destination))
+    {
+        if (object.id != NULL_ID && not m_patternData->HasObject(object.id))
+        {
+            return;
+        }
     }
 
     const OCopyPieces::Pieces built = OCopyPieces::Build(doc, m_patternData, m_id);

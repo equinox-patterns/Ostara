@@ -995,9 +995,12 @@ void VPattern::LiteParseTree(const Document &parse)
         switch (parse)
         {
             case Document::LitePPParse:
+            {
                 PatternGraph()->SetGraphRebuildEnabled(false);
+                // Back on even when the block fails to read: a graph left frozen would miss every later edit.
+                const auto graphGuard = qScopeGuard([this]() { PatternGraph()->SetGraphRebuildEnabled(true); });
                 ParseCurrentPP();
-                PatternGraph()->SetGraphRebuildEnabled(true);
+            }
                 // The active block alone, because this is a drag. What it cannot cover — a tool of another
                 // piece reading this one, a transfer's copies or a formula in a later piece — is caught up
                 // once the gesture has settled.
@@ -1033,65 +1036,41 @@ void VPattern::LiteParseTree(const Document &parse)
     {
         qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error parsing file.")), //-V807
                    qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
-        emit SetEnabledGUI(false);
-        if (not VApplication::IsGUIMode())
-        {
-            QCoreApplication::exit(V_EX_NOINPUT);
-        }
+        RecoverFromFailedLiteParse(parse);
         return;
     }
     catch (const VExceptionConversionError &e)
     {
         qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error can't convert value.")),
                    qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
-        emit SetEnabledGUI(false);
-        if (not VApplication::IsGUIMode())
-        {
-            QCoreApplication::exit(V_EX_NOINPUT);
-        }
+        RecoverFromFailedLiteParse(parse);
         return;
     }
     catch (const VExceptionEmptyParameter &e)
     {
         qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error empty parameter.")),
                    qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
-        emit SetEnabledGUI(false);
-        if (not VApplication::IsGUIMode())
-        {
-            QCoreApplication::exit(V_EX_NOINPUT);
-        }
+        RecoverFromFailedLiteParse(parse);
         return;
     }
     catch (const VExceptionWrongId &e)
     {
         qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error wrong id.")), qUtf8Printable(e.ErrorMessage()),
                    qUtf8Printable(e.DetailedInformation()));
-        emit SetEnabledGUI(false);
-        if (not VApplication::IsGUIMode())
-        {
-            QCoreApplication::exit(V_EX_NOINPUT);
-        }
+        RecoverFromFailedLiteParse(parse);
         return;
     }
     catch (VException &e)
     {
         qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error parsing file.")), qUtf8Printable(e.ErrorMessage()),
                    qUtf8Printable(e.DetailedInformation()));
-        emit SetEnabledGUI(false);
-        if (not VApplication::IsGUIMode())
-        {
-            QCoreApplication::exit(V_EX_NOINPUT);
-        }
+        RecoverFromFailedLiteParse(parse);
         return;
     }
     catch (const std::bad_alloc &)
     {
         qCCritical(vXML, "%s", qUtf8Printable(tr("Error parsing file (std::bad_alloc).")));
-        emit SetEnabledGUI(false);
-        if (not VApplication::IsGUIMode())
-        {
-            QCoreApplication::exit(V_EX_NOINPUT);
-        }
+        RecoverFromFailedLiteParse(parse);
         return;
     }
 
@@ -1107,17 +1086,62 @@ void VPattern::LiteParseTree(const Document &parse)
     {
         qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error updating scene after parsing.")),
                    qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
-        emit SetEnabledGUI(false);
-        if (not VApplication::IsGUIMode())
-        {
-            QCoreApplication::exit(V_EX_NOINPUT);
-        }
+        RecoverFromFailedLiteParse(parse);
         return;
     }
     // Recalculate scene rect
     VMainGraphicsView::NewSceneRect(sceneDraw, VAbstractValApplication::VApp()->getSceneView());
     VMainGraphicsView::NewSceneRect(sceneDetail, VAbstractValApplication::VApp()->getSceneView());
     qCDebug(vXML, "Scene size updated.");
+
+    // The pattern reads again: a later failure may undo again.
+    m_liteParseUndoing = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::RecoverFromFailedLiteParse(const Document &parse)
+{
+    if (not VApplication::IsGUIMode())
+    {
+        emit SetEnabledGUI(false);
+        QCoreApplication::exit(V_EX_NOINPUT);
+        return;
+    }
+
+    // Disabling the window was Valentina's answer to a file that cannot be read at all. In the middle of an edit it
+    // leaves the user with nothing: no canvas, no tool, no Save, an emptied Undo — only Quit, and no offer to save
+    // on the way out. An edit that breaks the reading is answered here instead, in the order that loses the least.
+
+    // 1. A drag reads the active block alone. Reading every block may well succeed where that partial read could not.
+    if (parse == Document::LitePPParse && not m_liteParseRetrying)
+    {
+        m_liteParseRetrying = true;
+        const auto retryGuard = qScopeGuard([this]() { m_liteParseRetrying = false; });
+        qCWarning(vXML, "The active block could not be read alone; reading every block instead.");
+        LiteParseTree(Document::LiteParse); // its own failure comes back here with LiteParse, to step 2
+        return;
+    }
+
+    // 2. Undo the change that broke the reading — once: an undo that fails in turn must not unwind the whole history.
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    if (not m_liteParseUndoing && undoStack != nullptr && undoStack->canUndo())
+    {
+        m_liteParseUndoing = true;
+        QApplication::postEvent(this, new UndoEvent());
+        // Said once the undo has run, never in the middle of a gesture.
+        QTimer::singleShot(0, this,
+                           []()
+                           {
+                               QMessageBox::information(
+                                   QApplication::activeWindow(), tr("Change undone"),
+                                   tr("This change could not be applied to the pattern, so it was undone. "
+                                      "Your pattern is unchanged and you can keep working."));
+                           });
+        return;
+    }
+
+    // 3. Nothing left to undo, or the undo failed too: the pattern cannot be read in its current state.
+    emit SetEnabledGUI(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1127,6 +1151,9 @@ void VPattern::customEvent(QEvent *event)
     if (event->type() == UNDO_EVENT)
     {
         VAbstractApplication::VApp()->getUndoStack()->undo();
+        // The undo may have queued its own reparse: the guard is released after it, so that a failure of that
+        // reparse still counts as the failed undo and does not undo once more.
+        QTimer::singleShot(0, this, [this]() { m_liteParseUndoing = false; });
     }
     else if (event->type() == LITE_PARSE_EVENT)
     {

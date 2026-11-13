@@ -215,6 +215,15 @@ private:
 
     bool m_pieceGeometryDirty{true};
 
+    /** @brief LiteParseTree failed and RecoverFromFailedLiteParse is retrying with every block. */
+    bool m_liteParseRetrying{false};
+    /** @brief RecoverFromFailedLiteParse posted an undo, not yet run: a second failure must not undo again. */
+    bool m_liteParseUndoing{false};
+
+    /** @brief Answer a LiteParseTree that failed, so that the user is never left with a disabled window:
+     *  read every block again (after a drag), else undo the change, else — nothing left to try — disable it. */
+    void RecoverFromFailedLiteParse(const Document &parse);
+
     bool m_garbageCollected{false};
     QString m_garbageCollectBackupFilePath{};
 

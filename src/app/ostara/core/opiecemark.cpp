@@ -963,7 +963,9 @@ auto OPieceMark::NormaliseCurveHeads(const QDomElement &root) -> int
                             }
                         }
                         return token;
-                    });
+                    },
+                    // Every token the map changes holds one of the two heads.
+                    {QStringLiteral("Spl_"), QStringLiteral("SplPath_")});
 
     return written;
 }
@@ -1052,6 +1054,21 @@ auto OPieceMark::UseAliases(const QDomElement &root, const VContainer *data) -> 
         return 0;
     }
 
+    // What a rewritten token always contains: the name it replaces (ReplaceTokenAlias matches `<head>_<name>` and
+    // what follows it), or the pair of points a role replaces. Any other attribute is skipped unparsed.
+    QStringList needles;
+    needles.reserve(curves.size() + roles.size());
+    for (const auto &[name, alias] : std::as_const(curves))
+    {
+        Q_UNUSED(alias)
+        needles.append(name);
+    }
+    for (const auto &[pair, role] : std::as_const(roles))
+    {
+        Q_UNUSED(role)
+        needles.append(pair);
+    }
+
     int written = 0;
     QDomElement envelope = root;
     RewriteFormulas(envelope,
@@ -1079,7 +1096,8 @@ auto OPieceMark::UseAliases(const QDomElement &root, const VContainer *data) -> 
                         }
 
                         return token;
-                    });
+                    },
+                    needles);
 
     return written;
 }

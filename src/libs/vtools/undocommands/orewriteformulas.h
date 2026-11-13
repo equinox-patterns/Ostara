@@ -28,6 +28,7 @@
 
 #include <QDomElement>
 #include <QString>
+#include <QStringList>
 #include <functional>
 
 class VAbstractPattern;
@@ -37,8 +38,14 @@ class VAbstractPattern;
  *  The same walk as `RewriteDocumentFormulas`, rooted on an element instead of a document: the block of a piece
  *  is not a document yet when its names change, and its formulas have to be rewritten where it stands — without
  *  reaching into the pattern it came from, which is what rewriting the whole document would do.
+ *
+ *  @a needles, when given, is a promise of the caller: @a map changes no token that does not contain one of them.
+ *  An attribute containing none is then skipped without being parsed — which is most of a file (ids, colours,
+ *  coordinates, names). Building the token parser for each of them cost ~0.3 s per pass on a 900-object pattern
+ *  (measured 13-11-2026). Every attribute is still visited; only the parsing is saved.
  */
-auto RewriteFormulas(QDomElement &root, const std::function<QString(const QString &)> &map) -> void;
+auto RewriteFormulas(QDomElement &root, const std::function<QString(const QString &)> &map,
+                     const QStringList &needles = QStringList()) -> void;
 
 /** @brief Rewrite every formula of @a doc, token by token, through @a map.
  *

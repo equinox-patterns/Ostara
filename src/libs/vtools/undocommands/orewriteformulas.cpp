@@ -29,13 +29,16 @@
 #include <QDomElement>
 #include <QDomNamedNodeMap>
 #include <QDomNodeList>
+#include <QStringList>
+#include <algorithm>
 
 #include "../../ifc/xml/vabstractpattern.h"
 #include "../../vpatterndb/vformula.h"
 #include "../../vmisc/def.h"
 
 //---------------------------------------------------------------------------------------------------------------------
-auto RewriteFormulas(QDomElement &root, const std::function<QString(const QString &)> &map) -> void
+auto RewriteFormulas(QDomElement &root, const std::function<QString(const QString &)> &map,
+                     const QStringList &needles) -> void
 {
     if (root.isNull())
     {
@@ -54,7 +57,19 @@ auto RewriteFormulas(QDomElement &root, const std::function<QString(const QStrin
     // `AngleLigne_M_M1` a **survécu** au rôle donné à sa ligne : la réécriture ne la voyait pas, la pièce ne
     // pouvait plus s'enregistrer, et le refus nommait un nom composé que plus personne ne lisait ailleurs
     // (mesuré le 13-10-2026 : `BustedeBase.ostara`, `<pathPoint angle2="AngleLine_M_M1">`).
-    const std::function<void(QDomElement &)> rewrite = [&map, &rewrite](QDomElement &element) -> void
+    // A value holding none of the caller's needles has no token the map would change (see the header): it is not
+    // parsed. A plain substring search costs a fraction of building the token parser.
+    const auto mayChange = [&needles](const QString &value) -> bool
+    {
+        if (needles.isEmpty())
+        {
+            return true;
+        }
+        return std::any_of(needles.cbegin(), needles.cend(),
+                           [&value](const QString &needle) { return value.contains(needle); });
+    };
+
+    const std::function<void(QDomElement &)> rewrite = [&map, &rewrite, &mayChange](QDomElement &element) -> void
     {
         const QDomNamedNodeMap attrs = element.attributes();
         for (int j = 0; j < attrs.size(); ++j)
@@ -66,7 +81,7 @@ auto RewriteFormulas(QDomElement &root, const std::function<QString(const QStrin
             }
 
             const QString formula = attr.value();
-            if (formula.isEmpty())
+            if (formula.isEmpty() || not mayChange(formula))
             {
                 continue;
             }

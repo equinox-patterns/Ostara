@@ -24010,6 +24010,16 @@ Voulez-vous continuer ?</translation>
         <translation>Deux objets porteraient le même identifiant : le fichier n&apos;a pas été écrit.</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1136"/>
+        <source>Change undone</source>
+        <translation>Modification annulée</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1137"/>
+        <source>This change could not be applied to the pattern, so it was undone. Your pattern is unchanged and you can keep working.</source>
+        <translation>Cette modification n&apos;a pas pu être appliquée au patron : elle a été annulée. Votre patron est inchangé et vous pouvez continuer à travailler.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="687"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="693"/>
         <source>Error creating or updating the pleat operation</source>
