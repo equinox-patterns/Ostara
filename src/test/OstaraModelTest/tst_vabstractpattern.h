@@ -52,6 +52,10 @@ private slots:
     // What the element declares survives the load pass even when the canvas does not draw it
     void DeclaredPairsSurviveWhileNotDrawn();
 
+    // The versions of the pattern: the entry that cannot be deleted, ids that are never reused, and the
+    // switch that keeps the list it turns off
+    void PatternVersions();
+
 private:
     Q_DISABLE_COPY_MOVE(TST_VAbstractPattern) // NOLINT
 };

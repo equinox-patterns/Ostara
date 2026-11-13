@@ -36,6 +36,7 @@
 #include "../vpatterndb/ipieceinfo.h"
 
 class QCheckBox;
+class QComboBox;
 class QLabel;
 class QPlainTextEdit;
 class QSpinBox;
@@ -76,12 +77,15 @@ public:
 
 private:
     void InitCutTab(int index, const QString &title, QSpinBox **qtySpin, QCheckBox **onFoldCheck);
+    void ShowVersion(const IPieceInfo &detail, const VContainer *data);
 
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(OPieceInfoWidget) // NOLINT
 
     std::function<void(std::function<void(IPieceInfo &)>)> m_modifyPending;
 
+    QLabel *m_versionLabel{nullptr};
+    QComboBox *m_versionCombo{nullptr};
     QSpinBox *m_numberSpin{nullptr};
     QLabel *m_numberLabel{nullptr};
     QLabel *m_totalLabel{nullptr};

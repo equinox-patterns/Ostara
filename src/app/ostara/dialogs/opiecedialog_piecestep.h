@@ -31,6 +31,7 @@
 #include <QWidget>
 
 class QCheckBox;
+class QComboBox;
 class QFrame;
 class QLabel;
 class QLineEdit;
@@ -38,6 +39,7 @@ class QPlainTextEdit;
 class QSpinBox;
 class QTabWidget;
 class OGradedAlignWidget;
+class VAbstractPattern;
 
 /**
  * @brief Piece-level fields of the piece tool dialog.
@@ -50,7 +52,19 @@ class OPiecePieceStep final : public QWidget
     Q_OBJECT
 
 public:
-    explicit OPiecePieceStep(QWidget *parent = nullptr);
+    explicit OPiecePieceStep(VAbstractPattern *doc, QWidget *parent = nullptr);
+
+    /** @brief Reload the version combo from the pattern.
+     *
+     * The list is the pattern's, and it can be changed while this step is alive — the first-piece
+     * dialog opens the versions dialog one page earlier. Called when the step is shown, and again
+     * whenever the versions change.
+     */
+    void RefreshVersions();
+
+    /** @brief The version the piece will be created with. The "all versions" entry while the pattern
+     *  declares only one — the combo is greyed out then, and there is nothing else it could say. */
+    auto GetPatternVersion() const -> quint32;
 
 signals:
     /** @brief Emitted on every piece-name edit (host dialogs drive their OK button from it). */
@@ -84,7 +98,10 @@ public:
 private:
     void InitCutTab(const QString &title, QSpinBox **qtySpin, QCheckBox **onFoldCheck);
 
+    VAbstractPattern *m_doc{nullptr};
     QLineEdit *m_nameEdit{nullptr};
+    QLabel *m_versionLabel{nullptr};
+    QComboBox *m_versionCombo{nullptr};
     QLabel *m_problemLabel{nullptr};
     QSpinBox *m_numberSpin{nullptr};
     QLabel *m_totalLabel{nullptr};

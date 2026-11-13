@@ -61,7 +61,7 @@ OPieceDialog::OPieceDialog(const VContainer *data, VAbstractPattern *doc, quint3
 
     m_stack = new QStackedWidget(this);
     m_patternStep = new OPiecePatternStep(m_doc);
-    m_pieceStep = new OPiecePieceStep();
+    m_pieceStep = new OPiecePieceStep(m_doc);
     m_stack->addWidget(m_patternStep);
     m_stack->addWidget(m_pieceStep);
     m_stack->setCurrentWidget(m_pieceStep); // mono-step by default; ShowDialog picks the page
@@ -85,6 +85,9 @@ OPieceDialog::OPieceDialog(const VContainer *data, VAbstractPattern *doc, quint3
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(m_stack);
     mainLayout->addLayout(buttonRow);
+
+    // The versions are named one page earlier: the piece page must show what was just added.
+    connect(m_patternStep, &OPiecePatternStep::VersionsChanged, m_pieceStep, &OPiecePieceStep::RefreshVersions);
 
     connect(m_cancelButton, &QPushButton::clicked, this, &DialogTool::DialogRejected);
     connect(m_nextButton, &QPushButton::clicked, this, &OPieceDialog::OnPatternNext);
@@ -256,6 +259,7 @@ auto OPieceDialog::GetPiece() const -> VPiece
     // empty name while the contour is being collected.
     piece.SetName(m_pieceStep->GetPieceName());
     piece.SetPieceNumber(m_pieceStep->GetPieceNumber());
+    piece.SetPatternVersion(m_pieceStep->GetPatternVersion());
     piece.SetCutFabricQty(m_pieceStep->GetCutFabricQty());
     piece.SetCutFabricOnFold(m_pieceStep->IsCutFabricOnFold());
     piece.SetCutInterfacingQty(m_pieceStep->GetCutInterfacingQty());
@@ -326,6 +330,7 @@ void OPieceDialog::OnPatternNext()
     // Pattern fields are committed on acceptance (DialogAccepted), not here:
     // Next alone must not leave the document modified if the user then cancels.
     m_patternCommitted = true;
+    m_pieceStep->RefreshVersions();
     m_stack->setCurrentWidget(m_pieceStep);
     UpdateButtons();
 }

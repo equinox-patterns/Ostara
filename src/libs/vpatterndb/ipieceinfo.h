@@ -68,6 +68,13 @@ public:
     virtual auto GetFreeText() const -> QString = 0;
     virtual void SetFreeText(const QString &text) = 0;
 
+    /// The pattern version this object belongs to, by id into the pattern's `<patternVersions>`.
+    /// A piece carries one, and only one. A group carries none of its own — it shows the versions of
+    /// its members, which is why 0 answers for it — and the setter there does nothing: the combo that
+    /// assigns a version belongs to a piece, never to a group.
+    virtual auto GetPatternVersion() const -> quint32 = 0;
+    virtual void SetPatternVersion(quint32 id) = 0;
+
     virtual auto GetInfoBlockData() const -> const OInfoBlockData & = 0;
     virtual auto GetInfoBlockData() -> OInfoBlockData & = 0;
     virtual void SetInfoBlockData(const OInfoBlockData &data) = 0;

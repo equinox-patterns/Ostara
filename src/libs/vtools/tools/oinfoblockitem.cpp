@@ -24,6 +24,7 @@
  **
  *************************************************************************/
 
+#include "../../vmisc/def.h"
 #include "oinfoblockitem.h"
 
 #include "../../vgeometry/ocontainment.h"
@@ -42,7 +43,7 @@ OInfoBlockItem::OInfoBlockItem(int blockIndex, QGraphicsItem *parent)
 {
     setFlags(ItemIsMovable | ItemSendsGeometryChanges | ItemIsFocusable);
     setAcceptHoverEvents(true);
-    setCursor(Qt::SizeAllCursor);
+    setCursor(MoveCursorShape());
     setZValue(m_blockIndex);  // higher blocks stack above lower ones by default
     hide();
 }
@@ -290,7 +291,7 @@ auto OInfoBlockItem::CursorForHandle(Handle handle) -> Qt::CursorShape
             return Qt::SizeHorCursor;
         case Handle::None:
         default:
-            return Qt::SizeAllCursor;
+            return MoveCursorShape();
     }
 }
 
@@ -304,7 +305,7 @@ void OInfoBlockItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void OInfoBlockItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    setCursor(Qt::SizeAllCursor);
+    setCursor(MoveCursorShape());
     QGraphicsRectItem::hoverLeaveEvent(event);
 }
 

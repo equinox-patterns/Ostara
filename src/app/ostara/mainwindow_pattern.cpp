@@ -1006,7 +1006,7 @@ void MainWindow::ActionShowMainPath_triggered(bool checked)
     VAbstractValApplication::VApp()->ValentinaSettings()->SetPieceShowMainPath(checked);
     const QList<quint32> ids = pattern->DataPieces()->keys();
     const bool updateChildren = false;
-    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QGuiApplication::setOverrideCursor(QCursor(WaitCursorShape()));
     for (const auto &id : ids)
     {
         try
@@ -1028,7 +1028,7 @@ void MainWindow::ActionBoundaryTogetherWithNotches_triggered(bool checked)
     VAbstractValApplication::VApp()->ValentinaSettings()->SetBoundaryTogetherWithNotches(checked);
     const QList<quint32> ids = pattern->DataPieces()->keys();
     const bool updateChildren = false;
-    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QGuiApplication::setOverrideCursor(QCursor(WaitCursorShape()));
     for (const auto &id : ids)
     {
         try

@@ -650,19 +650,19 @@ void VToolSpline::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
             }
             else
             {
-                setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+                unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
             }
         }
         else
         {
-            setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+            unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
         }
 
         VToolAbstractBezier::hoverEnterEvent(event);
     }
     else
     {
-        setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+        unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
     }
 }
 

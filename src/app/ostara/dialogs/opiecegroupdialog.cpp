@@ -40,7 +40,9 @@ OPieceGroupDialog::OPieceGroupDialog(const VContainer *data, int countedMembers,
     setWindowTitle(tr("Link pieces"));
 
     auto *layout = new QVBoxLayout(this);
-    m_step = new OPiecePieceStep(this);
+    // No document: this step names a GROUP, and a group carries no version of its own — the row is
+    // hidden (see OPiecePieceStep::RefreshVersions), the members keep the ones they wear.
+    m_step = new OPiecePieceStep(nullptr, this);
     // The layout flags belong to the pieces, not to the group: the group carries none of them. They are read here
     // (IsForceFlipping / IsSymmetricalCopy) and written into every member by the caller — checking a flag for the
     // group is checking it for its members.

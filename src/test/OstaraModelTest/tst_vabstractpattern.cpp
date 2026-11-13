@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "tst_vabstractpattern.h"
+#include "../ifc/exception/vexceptionwrongid.h"
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../ifc/xml/vpatterngraph.h"
@@ -253,6 +254,101 @@ void TST_VAbstractPattern::DeclaredPairsSurviveWhileNotDrawn()
         = VAbstractPattern::LayerableObjectsOfTool(operation, 1027, &doc, false);
 
     QCOMPARE(declared, (QVector<QPair<quint32, quint32>>{{2511, 1027}, {2512, 1027}, {1035, 1027}}));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// The versions of the pattern, as the document holds them. Three invariants: the "all versions" entry is where
+// every piece that belongs to none lives and can never be deleted, ids are never reused (a piece that comes back
+// after an undo finds the same version), and turning the mode off keeps the list — the switch decides about the
+// pieces, not about the names the reader typed.
+void TST_VAbstractPattern::PatternVersions()
+{
+    TestDoc doc;
+
+    const QDomDocument::ParseResult parsed =
+        doc.setContent(QByteArrayLiteral("<pattern><version>1.2.0</version><unit>cm</unit></pattern>"));
+    QVERIFY2(parsed, qUtf8Printable(parsed.errorMessage));
+
+    // A pattern that never declared versions carries nothing — not an empty list.
+    QVERIFY(!doc.IsMultiVersion());
+    QCOMPARE(doc.GetPatternVersions().size(), 0);
+    QCOMPARE(doc.AllVersionsId(), 1u);
+
+    doc.SetMultiVersion(true);
+    QVERIFY(doc.IsMultiVersion());
+    QCOMPARE(doc.GetPatternVersions().size(), 1);
+
+    // **A version's key is not a pattern object id.** The document refuses to save when two objects share an
+    // id, and the versions used to carry `id="1"` — which made every save fail as soon as a version existed
+    // (a point with id 1 is in every pattern). The list must stay out of that namespace.
+    {
+        QDomElement draw = doc.createElement(u"draw"_s);
+        draw.setAttribute(AttrName, u"B"_s);
+        doc.documentElement().appendChild(draw);
+        QDomElement calculation = doc.createElement(u"calculation"_s);
+        draw.appendChild(calculation);
+        QDomElement point = doc.createElement(u"point"_s);
+        point.setAttribute(VDomDocument::AttrId, u"1"_s);
+        calculation.appendChild(point);
+    }
+    bool idsAreUnique = true;
+    try
+    {
+        doc.TestUniqueId();
+    }
+    catch (const VExceptionWrongId &)
+    {
+        idsAreUnique = false;
+    }
+    QVERIFY2(idsAreUnique, "A version's key collided with a pattern object id: the file could not be saved.");
+    const quint32 allVersions = doc.AllVersionsId();
+    QCOMPARE(allVersions, 1u);
+    QCOMPARE(doc.GetPatternVersion(allVersions).name, VAbstractPattern::AllVersionsName());
+
+    // The schema's order, or the file cannot be saved at all: the element goes after <unit>, its predecessor in
+    // <xs:sequence> among the elements this document holds.
+    const QDomElement container = doc.documentElement().firstChildElement(VAbstractPattern::TagPatternVersions);
+    QVERIFY(!container.isNull());
+    QCOMPARE(container.previousSiblingElement().tagName(), VDomDocument::TagUnit);
+
+    const quint32 versionA = doc.AddPatternVersion(u"Version A"_s);
+    QCOMPARE(versionA, 2u);
+    QCOMPARE(doc.GetPatternVersions().size(), 2);
+    QCOMPARE(doc.GetPatternVersion(versionA).name, u"Version A"_s);
+
+    // **Round trip.** What the document writes is what it reads back — and the list carries keys, never ids,
+    // which is the whole reason a pattern with versions can be saved at all (a version is not an object of
+    // the pattern, and the document refuses two objects sharing an id).
+    const QString saved = doc.toString();
+    QVERIFY2(saved.contains(u"<patternVersion key=\"1\""_s), qUtf8Printable(saved));
+    QVERIFY2(not saved.contains(u"<patternVersion id="_s), qUtf8Printable(saved));
+
+    TestDoc reloaded;
+    const QDomDocument::ParseResult parsedAgain = reloaded.setContent(saved.toUtf8());
+    QVERIFY2(parsedAgain, qUtf8Printable(parsedAgain.errorMessage));
+    QCOMPARE(reloaded.GetPatternVersions().size(), 2);
+    QCOMPARE(reloaded.GetPatternVersion(allVersions).name, VAbstractPattern::AllVersionsName());
+    QCOMPARE(reloaded.GetPatternVersion(versionA).name, u"Version A"_s);
+    QVERIFY(reloaded.IsMultiVersion());
+
+    // An id the document does not know reads as the entry every piece belongs to — never as nothing.
+    QCOMPARE(doc.GetPatternVersion(99).id, allVersions);
+
+    // "All versions" is not one version among others: it is where the pieces that belong to none live.
+    QVERIFY(!doc.RemovePatternVersion(allVersions));
+    QVERIFY(doc.RemovePatternVersion(versionA));
+    QCOMPARE(doc.GetPatternVersions().size(), 1);
+
+    // Switching off keeps the list: switching back on must find the names where they were.
+    doc.SetMultiVersion(false);
+    QVERIFY(!doc.IsMultiVersion());
+    QCOMPARE(doc.GetPatternVersions().size(), 1);
+    QCOMPARE(container.attribute(VAbstractPattern::AttrActive), u"false"_s);
+
+    doc.SetMultiVersion(true);
+    QVERIFY(doc.IsMultiVersion());
+    QCOMPARE(doc.GetPatternVersions().size(), 1);
+    QVERIFY(container.attribute(VAbstractPattern::AttrActive).isEmpty());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

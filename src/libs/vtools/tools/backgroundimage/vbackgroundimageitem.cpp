@@ -383,7 +383,7 @@ void VBackgroundImageItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     }
     else
     {
-        setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+        unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
     }
     QGraphicsObject::hoverEnterEvent(event);
 }
@@ -397,7 +397,7 @@ void VBackgroundImageItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     }
     else
     {
-        setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+        unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
     }
     QGraphicsObject::hoverMoveEvent(event);
 }
@@ -406,7 +406,7 @@ void VBackgroundImageItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 void VBackgroundImageItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     m_showHover = false;
-    setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+    unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
     QGraphicsObject::hoverLeaveEvent(event);
 }
 

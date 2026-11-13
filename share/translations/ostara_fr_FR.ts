@@ -16479,6 +16479,14 @@ Lier le dossier à cette collection ?</translation>
         <source>No collection</source>
         <translation>Aucune collection</translation>
     </message>
+    <message>
+        <source>Pattern with several versions</source>
+        <translation>Patron avec plusieurs versions</translation>
+    </message>
+    <message>
+        <source>Manage versions…</source>
+        <translation>Gérer les versions…</translation>
+    </message>
 </context>
 <context>
     <name>OPatternLibrary</name>
@@ -17179,6 +17187,10 @@ Load a measurement table that defines them, then insert the piece.</source>
         <source>On fold</source>
         <translation>Au pli</translation>
     </message>
+    <message>
+        <source>Version</source>
+        <translation>Version</translation>
+    </message>
 </context>
 <context>
     <name>OPieceInsert</name>
@@ -17524,6 +17536,18 @@ Name the piece entering:</source>
         <source>Activate information block for all pieces</source>
         <translation>Activer le bloc d&apos;information pour toutes les pièces</translation>
     </message>
+    <message>
+        <source>Versions</source>
+        <translation>Versions</translation>
+    </message>
+    <message>
+        <source>Pattern with several versions</source>
+        <translation>Patron avec plusieurs versions</translation>
+    </message>
+    <message>
+        <source>Manage versions…</source>
+        <translation>Gérer les versions…</translation>
+    </message>
 </context>
 <context>
     <name>OPiecePieceStep</name>
@@ -17586,6 +17610,10 @@ Name the piece entering:</source>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="130"/>
         <source>Symmetrical copy</source>
         <translation>Copie symétrique</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Version</translation>
     </message>
 </context>
 <context>
@@ -18658,6 +18686,18 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <location filename="../../src/app/ostara/core/othumbnailtextbuilder.cpp" line="189"/>
         <source>Seam allowances in inches</source>
         <translation>Marges de couture en pouces</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Version</translation>
+    </message>
+    <message>
+        <source>The version of the pattern this piece belongs to, as named in the pattern versions. A group shows the versions of its members.</source>
+        <translation>La version du patron à laquelle cette pièce appartient, telle qu'elle est nommée dans les versions du patron. Un groupe affiche les versions de ses membres.</translation>
+    </message>
+    <message>
+        <source>Hide for "All versions"</source>
+        <translation>Masquer pour « Toutes versions »</translation>
     </message>
 </context>
 <context>
@@ -21520,6 +21560,10 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="805"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>Nom de tag &apos;%1&apos; erroné.</translation>
+    </message>
+    <message>
+        <source>All versions</source>
+        <translation>Toutes versions</translation>
     </message>
 </context>
 <context>
@@ -28637,6 +28681,81 @@ Envoyez ce fichier à votre contact Ostara.</translation>
     <message>
         <source>Open the folder</source>
         <translation type="vanished">Ouvrir le dossier</translation>
+    </message>
+</context>
+<context>
+    <name>OPatternVersionsDialog</name>
+    <message>
+        <source>Pattern versions</source>
+        <translation>Versions du patron</translation>
+    </message>
+    <message>
+        <source>Pattern with several versions</source>
+        <translation>Patron avec plusieurs versions</translation>
+    </message>
+    <message>
+        <source>A piece belongs to one version. A group belongs to every version of its members.</source>
+        <translation>Une pièce appartient à une seule version. Un groupe appartient à toutes les versions de ses membres.</translation>
+    </message>
+    <message>
+        <source>Add a version</source>
+        <translation>Ajouter une version</translation>
+    </message>
+    <message>
+        <source>Delete this version</source>
+        <translation>Supprimer cette version</translation>
+    </message>
+    <message>
+        <source>Every piece that belongs to no particular version belongs to this one. It cannot be deleted.</source>
+        <translation>Toute pièce qui n'appartient à aucune version particulière appartient à celle-ci. Elle ne peut pas être supprimée.</translation>
+    </message>
+    <message>
+        <source>A version needs a name, and two versions cannot share one.</source>
+        <translation>Une version a besoin d'un nom, et deux versions ne peuvent pas partager le même.</translation>
+    </message>
+    <message>
+        <source>One piece wears the version "%1". Move it to "%2" and delete the version?</source>
+        <translation>Une pièce porte la version « %1 ». La déplacer vers « %2 » et supprimer la version ?</translation>
+    </message>
+    <message>
+        <source>%1 pieces wear the version "%2". Move them all to "%3" and delete the version?</source>
+        <translation>%1 pièces portent la version « %2 ». Les déplacer toutes vers « %3 » et supprimer la version ?</translation>
+    </message>
+    <message>
+        <source>One piece wears a version. Move it to "%1" and switch the versions off?</source>
+        <translation>Une pièce porte une version. La déplacer vers « %1 » et désactiver les versions ?</translation>
+    </message>
+    <message>
+        <source>%1 pieces wear a version. Move them all to "%2" and switch the versions off?</source>
+        <translation>%1 pièces portent une version. Les déplacer toutes vers « %2 » et désactiver les versions ?</translation>
+    </message>
+    <message>
+        <source>The pieces stay in "%1" — the one every piece of the pattern belongs to.</source>
+        <translation>Les pièces restent dans « %1 » — celle à laquelle appartient chaque pièce du patron.</translation>
+    </message>
+    <message>
+        <source>Yes, move them</source>
+        <translation>Oui, les déplacer</translation>
+    </message>
+    <message>
+        <source>No, keep the version</source>
+        <translation>Non, garder la version</translation>
+    </message>
+    <message>
+        <source>Move the pieces to "%1"</source>
+        <translation>Déplacer les pièces vers « %1 »</translation>
+    </message>
+    <message>
+        <source>Version %1</source>
+        <translation>Version %1</translation>
+    </message>
+    <message>
+        <source>One piece wears the version "%1". Move it to:</source>
+        <translation>Une pièce porte la version « %1 ». La déplacer vers :</translation>
+    </message>
+    <message>
+        <source>%1 pieces wear the version "%2". Move them to:</source>
+        <translation>%1 pièces portent la version « %2 ». Les déplacer vers :</translation>
     </message>
 </context>
 </TS>

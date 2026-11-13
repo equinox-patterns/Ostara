@@ -24,6 +24,7 @@
  **
  *************************************************************************/
 
+#include "../../vmisc/def.h"
 #include "oannotationitem.h"
 
 #include "../../vgeometry/ocontainment.h"
@@ -48,7 +49,7 @@ OAnnotationItem::OAnnotationItem(int index, QGraphicsItem *parent)
 {
     setFlags(ItemIsMovable | ItemSendsGeometryChanges | ItemIsFocusable);
     setAcceptHoverEvents(true);
-    setCursor(Qt::SizeAllCursor);
+    setCursor(MoveCursorShape());
     setZValue(m_index);
     hide();
 }
@@ -356,7 +357,7 @@ auto OAnnotationItem::CursorForHandle(Handle handle, qreal rotationDeg) -> Qt::C
             return swapped ? Qt::SizeVerCursor : Qt::SizeHorCursor;
         case Handle::None:
         default:
-            return Qt::SizeAllCursor;
+            return MoveCursorShape();
     }
 }
 
@@ -370,7 +371,7 @@ void OAnnotationItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void OAnnotationItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    setCursor(Qt::SizeAllCursor);
+    setCursor(MoveCursorShape());
     QGraphicsRectItem::hoverLeaveEvent(event);
 }
 

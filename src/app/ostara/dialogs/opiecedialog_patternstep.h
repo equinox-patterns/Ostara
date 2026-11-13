@@ -35,6 +35,7 @@ class QCheckBox;
 class QComboBox;
 class QLineEdit;
 class QPlainTextEdit;
+class QPushButton;
 class VAbstractPattern;
 
 /**
@@ -60,8 +61,20 @@ public:
     auto IsSewLineOnDrawing() const -> bool;
     auto IsSecondPassmarkOnSeamLine() const -> bool;
 
+signals:
+    /** @brief A version was added, renamed or deleted, or the mode was switched: reload what shows them.
+     *
+     * The versions live in the document, so they are already written when this is emitted — what the
+     * piece page needs is to read the list again, since it is the next page shown. */
+    void VersionsChanged();
+
 private:
+    void SyncVersionControls();
+    void OpenVersionsDialog();
+
     VAbstractPattern *m_doc{nullptr};
+    QCheckBox *m_multiVersionCheck{nullptr};
+    QPushButton *m_versionsButton{nullptr};
     QCheckBox *m_activateInfoBlockCheck{nullptr};
     QComboBox *m_cartoucheCombo{nullptr};
     QLineEdit *m_patternNameEdit{nullptr};

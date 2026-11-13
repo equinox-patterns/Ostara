@@ -155,6 +155,16 @@ struct VIncrementGroupData
     bool collapsed{false};
 };
 
+/// A version (variant) of the pattern: a name, and the pieces that wear it. The first entry is the
+/// "all versions" one — every piece belongs to it until it is given another version, it may be
+/// renamed, and it can never be deleted. A piece references its version by id, so renaming one moves
+/// nothing; deleting one is refused while pieces still wear it.
+struct VPatternVersionData
+{
+    quint32 id{0};
+    QString name{};
+};
+
 QT_WARNING_POP
 
 QT_WARNING_PUSH
@@ -278,6 +288,38 @@ public:
      *         block. The template is referenced by name and resolved at render. */
     auto GetCartoucheTemplate() const -> QString;
     void SetCartoucheTemplate(const QString &name);
+
+    // ── Versions of the pattern (variants) ───────────────────────────────
+
+    /** @brief Whether the pattern declares several versions. Off by default — a pattern that never
+     *  turned it on carries no `<patternVersions>` element at all. */
+    auto IsMultiVersion() const -> bool;
+    void SetMultiVersion(bool on);
+
+    /** @brief The versions the pattern declares, in file order. Empty when the pattern declares
+     *  none; the "all versions" entry is created when the mode is first turned on. */
+    auto GetPatternVersions() const -> QVector<VPatternVersionData>;
+
+    /** @brief The version @p id designates. An id the document does not know — a deleted version,
+     *  or a file edited by hand — reads as the "all versions" entry, never as nothing. */
+    auto GetPatternVersion(quint32 id) const -> VPatternVersionData;
+
+    /** @brief The id of the "all versions" entry, the first one. 1 when the pattern has no list. */
+    auto AllVersionsId() const -> quint32;
+
+    /** @brief The name of the "all versions" entry when the pattern has no list — what the combos
+     *  show while the mode is off. Translated: it is a name shown to the reader, stored only once
+     *  the list exists. */
+    static auto AllVersionsName() -> QString;
+
+    /** @brief Adds a version named @p name and returns its id. Ids are never reused, so a piece
+     *  that comes back after an undo finds the same version. */
+    auto AddPatternVersion(const QString &name) -> quint32;
+    bool RenamePatternVersion(quint32 id, const QString &name);
+
+    /** @brief Removes the version @p id. Refuses the "all versions" entry — it is where the pieces
+     *  that belong to no particular version live. */
+    bool RemovePatternVersion(quint32 id);
 
     auto GetCompanyName() const -> QString;
 
@@ -610,6 +652,8 @@ public:
     static const QString TagCollection;
     static const QString TagFabricInfo;
     static const QString TagCartouche;
+    static const QString TagPatternVersions;
+    static const QString TagPatternVersion;
     static const QString TagWatermark;
     static const QString TagFinalMeasurements;
     static const QString TagMaterial;
@@ -875,6 +919,10 @@ private:
 
     auto GetPatternVariable(const QString &attribute) const -> QString;
     void SePatternVariable(const QString &attribute, const QString &name);
+
+    /// The `<patternVersions>` element **as the document holds it**, creating nothing.
+    auto ExistingPatternVersions() const -> QDomElement;
+    auto PatternVersionElement(quint32 id) const -> QDomElement;
 };
 
 QT_WARNING_POP

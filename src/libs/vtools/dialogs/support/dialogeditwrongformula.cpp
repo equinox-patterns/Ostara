@@ -196,9 +196,9 @@ DialogEditWrongFormula::DialogEditWrongFormula(const VContainer *data, quint32 t
     connect(ui->plainTextEditFormula, &QPlainTextEdit::textChanged, this,
             [this]() { timerFormula->start(formulaTimerTimeout); });
 
-    // Disable Qt::WaitCursor
+    // Disable WaitCursorShape()
 #ifndef QT_NO_CURSOR
-    if (QGuiApplication::overrideCursor() != nullptr && QGuiApplication::overrideCursor()->shape() == Qt::WaitCursor)
+    if (QGuiApplication::overrideCursor() != nullptr && QGuiApplication::overrideCursor()->shape() == WaitCursorShape())
     {
         restoreCursor = true;
         QGuiApplication::restoreOverrideCursor();
@@ -226,7 +226,7 @@ DialogEditWrongFormula::~DialogEditWrongFormula()
 #ifndef QT_NO_CURSOR
     if (restoreCursor)
     {
-        QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+        QGuiApplication::setOverrideCursor(WaitCursorShape());
     }
 #endif
     delete ui;

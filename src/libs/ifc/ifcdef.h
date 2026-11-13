@@ -72,6 +72,12 @@ extern const QString AttrGradedAlignPointMember;
 extern const QString AttrGradedAlignOnPoint;
 extern const QString AttrGradedAlignOnPointV;
 extern const QString AttrPieceNumber;
+/// A stable key, never a pattern object id: the document checks that every `id` is unique, and a
+/// version is not an object of the pattern — `key` keeps it out of that namespace.
+extern const QString AttrKey;
+/// The pattern version a piece belongs to, by id into `<patternVersions>`. Absent = the
+/// "all versions" entry, which is what every piece of a single-version pattern is.
+extern const QString AttrPatternVersion;
 extern const QString AttrCutFabricQty;
 extern const QString AttrCutFabricOnFold;
 extern const QString AttrCutInterfacingQty;

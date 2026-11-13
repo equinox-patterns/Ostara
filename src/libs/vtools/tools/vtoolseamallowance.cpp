@@ -734,6 +734,11 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
                                          [](quint32 id) noexcept { return id <= NULL_ID; });
     doc->SetAttributeOrRemoveIf<uint>(domElement, AttrPieceNumber, piece.GetPieceNumber(),
                                       [](uint number) noexcept { return number == 0; });
+    // Absent = the "all versions" entry, which is what a single-version pattern's pieces all wear:
+    // the attribute only exists to say that a piece belongs to one version rather than to every one.
+    doc->SetAttributeOrRemoveIf<quint32>(domElement, AttrPatternVersion, piece.GetPatternVersion(),
+                                         [allVersions = doc->AllVersionsId()](quint32 id) noexcept
+                                         { return id == allVersions; });
     doc->SetAttributeOrRemoveIf<int>(domElement, AttrCutFabricQty, piece.GetCutFabricQty(),
                                      [](int qty) noexcept { return qty == 0; });
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrCutFabricOnFold, piece.IsCutFabricOnFold(),
@@ -2834,13 +2839,13 @@ void VToolSeamAllowance::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
         }
         else
         {
-            setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+            unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
         }
         QGraphicsPathItem::hoverEnterEvent(event);
     }
     else
     {
-        setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+        unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
     }
 }
 

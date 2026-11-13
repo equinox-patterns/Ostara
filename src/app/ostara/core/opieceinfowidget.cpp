@@ -26,15 +26,23 @@
 
 #include "opieceinfowidget.h"
 
+#include "opatternversions.h"
+
+#include "../ifc/xml/vabstractpattern.h"
+#include "../vmisc/FactoryWidgets.h"
+#include "../vmisc/vabstractvalapplication.h"
+#include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/vcontainer.h"
 
 #include <algorithm>
 
 #include <QCheckBox>
+#include <QComboBox>
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPlainTextEdit>
+#include <QSignalBlocker>
 #include <QSpinBox>
 #include <QTabWidget>
 #include <QTextDocument>
@@ -49,8 +57,15 @@ OPieceInfoWidget::OPieceInfoWidget(QWidget *parent)
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(4);
 
-    // Number — piece number with a dynamic total ("/ N" where N = piece count).
+    // Version — the pattern version this piece belongs to. A group has none of its own: the combo
+    // shows the versions of its members, read-only, because a version belongs to a piece.
     auto *form = new QFormLayout();
+    m_versionCombo = MakeComboBox();
+    form->addRow(tr("Version"), m_versionCombo);
+    m_versionLabel = qobject_cast<QLabel *>(form->labelForField(m_versionCombo));
+
+    // Number — piece number with a dynamic total ("/ N" where N = piece count).
+
     auto *numberRow = new QHBoxLayout();
     numberRow->setSpacing(4);
     m_numberSpin = new QSpinBox();
@@ -111,6 +126,19 @@ OPieceInfoWidget::OPieceInfoWidget(QWidget *parent)
     layout->addWidget(m_freeTextEdit);
 
     // Number + cut commits through the pending-mutation pipeline.
+    connect(m_versionCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index) {
+        if (m_loading || !m_modifyPending)
+        {
+            return;
+        }
+        const quint32 id = m_versionCombo->itemData(index).toUInt();
+        if (id == 0)
+        {
+            return;
+        }
+        m_modifyPending([id](IPieceInfo &det) { det.SetPatternVersion(id); });
+    });
+
     connect(m_numberSpin, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int value) {
         if (m_loading || !m_modifyPending)
         {
@@ -212,6 +240,8 @@ void OPieceInfoWidget::Show(const IPieceInfo &detail, const VContainer *data)
     m_loading = true;
     m_freeTextTimer->stop();
 
+    ShowVersion(detail, data);
+
     m_numberSpin->setValue(static_cast<int>(detail.GetPieceNumber()));
     // « Un groupe = 1 pièce » : the total counts standalone pieces + groups.
     m_totalLabel->setText(
@@ -237,6 +267,51 @@ void OPieceInfoWidget::Show(const IPieceInfo &detail, const VContainer *data)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OPieceInfoWidget::ShowVersion(const IPieceInfo &detail, const VContainer *data)
+{
+    const QSignalBlocker blocker(m_versionCombo);
+    m_versionCombo->clear();
+
+    auto *doc = VAbstractValApplication::VApp() != nullptr ? VAbstractValApplication::VApp()->getCurrentDocument()
+                                                           : nullptr;
+    if (doc == nullptr)
+    {
+        m_versionCombo->setEnabled(false);
+        return;
+    }
+
+    // A group carries no version: what it shows is the versions of its members, and there is nothing
+    // here to edit — a version belongs to a piece.
+    if (detail.GetPatternVersion() == 0)
+    {
+        const QStringList names = OPatternVersions::Names(*doc, OPatternVersions::Ids(*doc, data, detail));
+        m_versionCombo->addItem(OPatternVersions::Join(names), QVariant());
+        m_versionCombo->setEnabled(false);
+        return;
+    }
+
+    const quint32 allVersions = doc->AllVersionsId();
+    const quint32 own = detail.GetPatternVersion();
+
+    // A single-version pattern has nothing to choose: the combo shows the entry every piece wears and
+    // stays greyed — a choice among one is not a choice.
+    if (!doc->IsMultiVersion())
+    {
+        m_versionCombo->addItem(doc->GetPatternVersion(allVersions).name, allVersions);
+        m_versionCombo->setEnabled(false);
+        return;
+    }
+
+    for (const VPatternVersionData &version : doc->GetPatternVersions())
+    {
+        m_versionCombo->addItem(version.name, version.id);
+    }
+    const int index = m_versionCombo->findData(own != 0 ? own : allVersions);
+    m_versionCombo->setCurrentIndex(index >= 0 ? index : 0);
+    m_versionCombo->setEnabled(true);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OPieceInfoWidget::ResetTabs()
 {
     if (m_cutTabs != nullptr)
@@ -251,6 +326,7 @@ void OPieceInfoWidget::Clear()
     m_loading = true;
     m_freeTextTimer->stop();
 
+    m_versionCombo->clear();
     m_numberSpin->setValue(0);
     m_totalLabel->clear();
     m_excludedCheck->setChecked(false);
@@ -268,6 +344,10 @@ void OPieceInfoWidget::Clear()
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceInfoWidget::RetranslateUI()
 {
+    if (m_versionLabel)
+    {
+        m_versionLabel->setText(tr("Version"));
+    }
     if (m_numberLabel)
     {
         m_numberLabel->setText(tr("Number"));

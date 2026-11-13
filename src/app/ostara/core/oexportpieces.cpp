@@ -26,6 +26,7 @@
 
 #include "oexportpieces.h"
 
+#include "../ifc/xml/vabstractpattern.h"
 #include "../ogradedsvgwriter.h"  // OGradedSvg::OwnerDecorFor
 #include "../oexportgeometry.h"
 #include "../osvgutils.h"  // OSvg::PainterPathToSvgD
@@ -148,9 +149,9 @@ auto InkOf(const VLayoutPiece &piece) -> QString
 }  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layers,
-                       const QStringList &labels, const VContainer *pattern,
-                       const QList<OGradedSvg::LayoutObject> &decor) -> QDomElement
+auto OExportPieces::Of(QDomDocument &doc, const VAbstractPattern *patternDoc,
+                       const QVector<OExportSizeLayer> &layers, const QStringList &labels,
+                       const VContainer *pattern, const QList<OGradedSvg::LayoutObject> &decor) -> QDomElement
 {
     QDomElement pieces = doc.createElement(QStringLiteral("pieces"));
     // Version 5 — **le décor appartient à UNE taille.** Chaque `<piece>` porte les enfants de SA
@@ -182,6 +183,32 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
     {
         pieces.setAttribute(QStringLiteral("reference"),
                             !labels.isEmpty() ? labels.first() : layers.first().label);
+    }
+
+    // ── Les versions du patron ────────────────────────────────────────────────────────────────────
+    //
+    // ⚠️ **La version du payload reste 6.** Ce qui est ajouté ici est facultatif, et un lecteur qui
+    // ne le connaît pas l'ignore : Rabnest refuse une version de payload qu'il ne connaît pas, donc
+    // incrémenter le numéro pour une information nouvelle casserait la lecture au lieu de l'enrichir.
+    // Ce qui annonce la présence des versions, c'est l'élément `<versions>` lui-même.
+    //
+    // Un patron à une seule version n'écrit rien : ni liste, ni attribut par pièce — un payload qui
+    // n'a jamais eu de versions garde exactement sa forme.
+    const bool versioned = patternDoc != nullptr && patternDoc->IsMultiVersion();
+    if (versioned)
+    {
+        QDomElement versions = doc.createElement(QStringLiteral("versions"));
+        versions.setAttribute(QStringLiteral("active"), QStringLiteral("true"));
+        for (const VPatternVersionData &version : patternDoc->GetPatternVersions())
+        {
+            QDomElement entry = doc.createElement(QStringLiteral("version"));
+            // A key, like the pattern's own list: a version is not an object of the pattern, and Rabnest
+            // will read this list beside the pieces, where "id" would invite the same confusion.
+            entry.setAttribute(QStringLiteral("key"), QString::number(version.id));
+            entry.setAttribute(QStringLiteral("name"), version.name);
+            versions.appendChild(entry);
+        }
+        pieces.appendChild(versions);
     }
 
     // The decor is looked up by the owner's ID, never by its name: two owners may share a name — the
@@ -231,6 +258,27 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
             if (geometry.groupId != 0)
             {
                 piece.setAttribute(QStringLiteral("group"), QString::number(geometry.groupId));
+            }
+            if (versioned)
+            {
+                // Absent, a `patternVersion` means the "all versions" entry — the same rule the
+                // `.ostara` holds, so a reader applies one rule and not two.
+                //
+                // The version lives on the PIECE, not on the geometry resolved for a size: a layout
+                // piece is a shape, and which variant a cut belongs to is a fact about the piece.
+                quint32 versionId = 0;
+                if (pattern != nullptr && pattern->DataPieces() != nullptr)
+                {
+                    const QHash<quint32, VPiece> &pieces = *pattern->DataPieces();
+                    if (pieces.contains(geometry.id))
+                    {
+                        versionId = pieces.value(geometry.id).GetPatternVersion();
+                    }
+                }
+                if (versionId != 0 && versionId != patternDoc->AllVersionsId())
+                {
+                    piece.setAttribute(QStringLiteral("patternVersion"), QString::number(versionId));
+                }
             }
 
             // ── La forme de la pièce ────────────────────────────────────────────────────────────

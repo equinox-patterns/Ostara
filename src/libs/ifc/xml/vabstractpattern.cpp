@@ -109,6 +109,8 @@ const QString VAbstractPattern::TagCustomerEmail = QStringLiteral("email");
 const QString VAbstractPattern::TagCollection = QStringLiteral("collection");
 const QString VAbstractPattern::TagFabricInfo = QStringLiteral("fabricInfo");
 const QString VAbstractPattern::TagCartouche = QStringLiteral("cartouche");
+const QString VAbstractPattern::TagPatternVersions = QStringLiteral("patternVersions");
+const QString VAbstractPattern::TagPatternVersion = QStringLiteral("patternVersion");
 const QString VAbstractPattern::TagCompanyName = QStringLiteral("company");
 const QString VAbstractPattern::TagWatermark = QStringLiteral("watermark");
 const QString VAbstractPattern::TagFinalMeasurements = QStringLiteral("finalMeasurements");
@@ -1228,6 +1230,214 @@ void VAbstractPattern::SetCartoucheTemplate(const QString &name)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::ExistingPatternVersions() const -> QDomElement
+{
+    return UniqueTag(TagPatternVersions);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::PatternVersionElement(quint32 id) const -> QDomElement
+{
+    const QDomElement container = ExistingPatternVersions();
+    if (container.isNull())
+    {
+        return {};
+    }
+
+    for (QDomElement child = container.firstChildElement(TagPatternVersion); not child.isNull();
+         child = child.nextSiblingElement(TagPatternVersion))
+    {
+        if (child.attribute(AttrKey).toUInt() == id)
+        {
+            return child;
+        }
+    }
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::AllVersionsName() -> QString
+{
+    // A name the reader sees, not a tag: translated like every UI string, and stored only once the list
+    // exists — a single-version pattern carries no name at all.
+    return QCoreApplication::translate("VAbstractPattern", "All versions");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetPatternVersions() const -> QVector<VPatternVersionData>
+{
+    QVector<VPatternVersionData> versions;
+    const QDomElement container = ExistingPatternVersions();
+    if (container.isNull())
+    {
+        return versions;
+    }
+
+    for (QDomElement child = container.firstChildElement(TagPatternVersion); not child.isNull();
+         child = child.nextSiblingElement(TagPatternVersion))
+    {
+        VPatternVersionData version;
+        version.id = child.attribute(AttrKey).toUInt();
+        version.name = child.attribute(AttrName);
+        if (version.id == 0 || version.name.isEmpty())
+        {
+            continue;
+        }
+        versions.append(version);
+    }
+    return versions;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::AllVersionsId() const -> quint32
+{
+    const QVector<VPatternVersionData> versions = GetPatternVersions();
+    return versions.isEmpty() ? 1 : versions.first().id;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetPatternVersion(quint32 id) const -> VPatternVersionData
+{
+    const QVector<VPatternVersionData> versions = GetPatternVersions();
+    for (const VPatternVersionData &version : versions)
+    {
+        if (version.id == id)
+        {
+            return version;
+        }
+    }
+
+    // An id the document does not know reads as the entry every piece belongs to, so a piece can never
+    // end up wearing nothing: a version deleted by hand leaves it among the pieces of no version.
+    VPatternVersionData fallback;
+    if (not versions.isEmpty())
+    {
+        fallback = versions.first();
+    }
+    else
+    {
+        fallback.id = 1;
+        fallback.name = AllVersionsName();
+    }
+    return fallback;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::IsMultiVersion() const -> bool
+{
+    const QDomElement container = ExistingPatternVersions();
+    // Absent attribute = on: the element only exists because someone turned the mode on.
+    return not container.isNull() && container.attribute(AttrActive) != QLatin1String("false");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetMultiVersion(bool on)
+{
+    QDomElement container = ExistingPatternVersions();
+    if (on)
+    {
+        if (container.isNull())
+        {
+            container = CheckTagExists(TagPatternVersions);
+        }
+
+        container.removeAttribute(AttrActive);
+        if (GetPatternVersions().isEmpty())
+        {
+            // The "all versions" entry: where every piece already lives, so turning the mode on changes no
+            // piece. The reader may rename it; nothing removes it.
+            QDomElement version = createElement(TagPatternVersion);
+            version.setAttribute(AttrKey, QStringLiteral("1"));
+            version.setAttribute(AttrName, AllVersionsName());
+            container.appendChild(version);
+        }
+    }
+    else if (not container.isNull())
+    {
+        // The list stays: turning the mode off is a decision about the pieces, not an order to throw away
+        // names the reader typed. Turning it back on finds them where they were.
+        container.setAttribute(AttrActive, QStringLiteral("false"));
+    }
+
+    modified = true;
+    emit patternChanged(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::AddPatternVersion(const QString &name) -> quint32
+{
+    QDomElement container = ExistingPatternVersions();
+    if (container.isNull())
+    {
+        container = CheckTagExists(TagPatternVersions);
+    }
+
+    if (GetPatternVersions().isEmpty())
+    {
+        // The list must start with "all versions"; a version added to nothing would become the entry
+        // every unassigned piece belongs to, and its name would change meaning behind the reader's back.
+        QDomElement all = createElement(TagPatternVersion);
+        all.setAttribute(AttrKey, QStringLiteral("1"));
+        all.setAttribute(AttrName, AllVersionsName());
+        container.appendChild(all);
+    }
+
+    quint32 nextId = 1;
+    for (const VPatternVersionData &version : GetPatternVersions())
+    {
+        if (version.id + 1 > nextId)
+        {
+            nextId = version.id + 1;
+        }
+    }
+
+    QDomElement version = createElement(TagPatternVersion);
+    version.setAttribute(AttrKey, QString::number(nextId));
+    version.setAttribute(AttrName, name);
+    container.appendChild(version);
+
+    modified = true;
+    emit patternChanged(false);
+    return nextId;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool VAbstractPattern::RenamePatternVersion(quint32 id, const QString &name)
+{
+    QDomElement version = PatternVersionElement(id);
+    if (version.isNull() || name.isEmpty())
+    {
+        return false;
+    }
+
+    version.setAttribute(AttrName, name);
+    modified = true;
+    emit patternChanged(false);
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool VAbstractPattern::RemovePatternVersion(quint32 id)
+{
+    if (id == AllVersionsId())
+    {
+        // Not a version among others: it is where the pieces that belong to none live.
+        return false;
+    }
+
+    const QDomElement version = PatternVersionElement(id);
+    if (version.isNull())
+    {
+        return false;
+    }
+
+    version.parentNode().removeChild(version);
+    modified = true;
+    emit patternChanged(false);
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetCompanyName() const -> QString
 {
     return m_companyName;
@@ -1794,25 +2004,26 @@ auto VAbstractPattern::RootElementOrder() -> const QStringList &
         TagCollection,          // 6
         TagPatternName,         // 7
         TagPatternNum,          // 8
-        TagCompanyName,         // 9
-        TagCustomerName,        // 10
-        TagCustomerBirthDate,   // 11
-        TagCustomerEmail,       // 12
-        TagWatermark,           // 13
-        TagCartouche,           // 14
-        TagPatternMaterials,    // 15
-        TagFinalMeasurements,   // 16
-        TagBackgroundImages,    // 17
-        TagCoverPage,           // 18
-        TagMeasurements,             // 19 required
-        TagIncrements,               // 20 required
-        TagIncrementGroups,          // 21
-        TagPreviewCalculations,      // 22 required
-        TagPreviewCalculationGroups, // 23
-        TagLineNames,                // 24
-        TagDraw,                     // 25 one or more
-        TagPieceGroups,              // 26
-        TagSizeRanges,               // 27
+        TagPatternVersions,     // 9
+        TagCompanyName,         // 10
+        TagCustomerName,        // 11
+        TagCustomerBirthDate,   // 12
+        TagCustomerEmail,       // 13
+        TagWatermark,           // 14
+        TagCartouche,           // 15
+        TagPatternMaterials,    // 16
+        TagFinalMeasurements,   // 17
+        TagBackgroundImages,    // 18
+        TagCoverPage,           // 19
+        TagMeasurements,             // 20 required
+        TagIncrements,               // 21 required
+        TagIncrementGroups,          // 22
+        TagPreviewCalculations,      // 23 required
+        TagPreviewCalculationGroups, // 24
+        TagLineNames,                // 25
+        TagDraw,                     // 26 one or more
+        TagPieceGroups,              // 27
+        TagSizeRanges,               // 28
     };
     return kOrder;
 }
@@ -1880,9 +2091,9 @@ auto VAbstractPattern::CheckTagExists(const QString &tag) -> QDomElement
     // it has one answer for everybody — see RootElementOrder.
     static const QStringList kCreatable{
         TagImage,   TagDescription, TagNotes,      TagFabricInfo,     TagCollection,
-        TagPatternName, TagPatternNum, TagCompanyName, TagCustomerName, TagCustomerBirthDate,
-        TagCustomerEmail, TagWatermark, TagCartouche, TagFinalMeasurements, TagBackgroundImages,
-        TagCoverPage};
+        TagPatternName, TagPatternNum, TagPatternVersions, TagCompanyName, TagCustomerName,
+        TagCustomerBirthDate, TagCustomerEmail, TagWatermark, TagCartouche, TagFinalMeasurements,
+        TagBackgroundImages, TagCoverPage};
 
     if (not kCreatable.contains(tag))
     {

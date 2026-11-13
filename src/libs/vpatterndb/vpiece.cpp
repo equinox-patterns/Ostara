@@ -843,6 +843,18 @@ void VPiece::SetFreeText(const QString &text)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VPiece::GetPatternVersion() const -> quint32
+{
+    return d->m_patternVersion;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetPatternVersion(quint32 id)
+{
+    d->m_patternVersion = id == 0 ? 1 : id;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::GetInternalPaths() const -> QVector<quint32>
 {
     return d->m_internalPaths;

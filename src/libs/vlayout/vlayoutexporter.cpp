@@ -593,7 +593,7 @@ auto VLayoutExporter::SupportPDFConversion() -> bool
 void VLayoutExporter::PdfToPs(const QStringList &params)
 {
 #ifndef QT_NO_CURSOR
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    QGuiApplication::setOverrideCursor(WaitCursorShape());
 #endif
 
     QProcess proc;

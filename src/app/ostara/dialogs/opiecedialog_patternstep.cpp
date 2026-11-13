@@ -26,6 +26,8 @@
 
 #include "opiecedialog_patternstep.h"
 
+#include "opatternversionsdialog.h"
+
 #include "../widgets/InfoBlock/OPieceCartoucheStorage.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/def.h"
@@ -43,6 +45,8 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QPlainTextEdit>
+#include <QPushButton>
+#include <QSignalBlocker>
 #include <QVBoxLayout>
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -140,6 +144,40 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
     separator->setFrameShadow(QFrame::Sunken);
     mainLayout->addWidget(separator);
 
+    // Versions — the variants of the pattern, named once and worn by the pieces one by one. The switch
+    // is the pattern's own (a single-version pattern has nothing to choose, and its piece combo is
+    // greyed out); checking it creates the "all versions" entry, where every piece already lives.
+    auto *versionsGroup = new QGroupBox(tr("Versions"));
+    auto *versionsLayout = new QVBoxLayout(versionsGroup);
+    m_multiVersionCheck = new QCheckBox(tr("Pattern with several versions"));
+    m_multiVersionCheck->setChecked(m_doc->IsMultiVersion());
+    versionsLayout->addWidget(m_multiVersionCheck);
+    m_versionsButton = new QPushButton(tr("Manage versions…"));
+    versionsLayout->addWidget(m_versionsButton);
+    mainLayout->addWidget(versionsGroup);
+
+    connect(m_multiVersionCheck, &QCheckBox::toggled, this, [this](bool on) {
+        if (on)
+        {
+            m_doc->SetMultiVersion(true);
+        }
+        else if (m_doc->IsMultiVersion())
+        {
+            // The same refusal as the version dialog's own switch: the pieces must not be left
+            // wearing a version nobody shows any more.
+            if (!OPatternVersionsDialog::SwitchOffWithReassignment(m_doc, this))
+            {
+                const QSignalBlocker blocker(m_multiVersionCheck);
+                m_multiVersionCheck->setChecked(true);
+                return;
+            }
+        }
+        SyncVersionControls();
+        emit VersionsChanged();
+    });
+    connect(m_versionsButton, &QPushButton::clicked, this, &OPiecePatternStep::OpenVersionsDialog);
+    SyncVersionControls();
+
     // Seam allowances — pattern-level seeds applied to every piece created afterwards.
     auto *seamAllowanceGroup = new QGroupBox(tr("Seam Allowances"));
     auto *saLayout = new QVBoxLayout(seamAllowanceGroup);
@@ -196,6 +234,27 @@ OPiecePatternStep::OPiecePatternStep(VAbstractPattern *doc, QWidget *parent)
     mainLayout->addWidget(infoBlockGroup);
 
     mainLayout->addStretch();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPiecePatternStep::SyncVersionControls()
+{
+    const QSignalBlocker blocker(m_multiVersionCheck);
+    m_multiVersionCheck->setChecked(m_doc->IsMultiVersion());
+    m_versionsButton->setEnabled(m_doc->IsMultiVersion());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPiecePatternStep::OpenVersionsDialog()
+{
+    OPatternVersionsDialog dialog(m_doc, this);
+    connect(&dialog, &OPatternVersionsDialog::VersionsChanged, this, [this]() {
+        SyncVersionControls();
+        emit VersionsChanged();
+    });
+    dialog.exec();
+    SyncVersionControls();
+    emit VersionsChanged();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

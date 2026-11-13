@@ -125,6 +125,13 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OTemplateSection>
     kFontSize.rowKey = fontRow;
 
     const QList<OTemplateOptionField> textFields = {kFontFamily, kFontWeight, kFontSize, kLineSpacing};
+
+    // The version of the piece — a text like the pattern name, with one answer of its own: a piece
+    // that belongs to every version says nothing about a variant, so the reader may ask the field not
+    // to appear on it. Off by default: a pattern with versions usually wants "All versions" written.
+    const OTemplateOptionField kHideForAllVersions{
+        QStringLiteral("hideForAllVersions"), OTemplateOptionKind::Boolean,
+        T(QT_TRANSLATE_NOOP("OTemplateSection", "Hide for \"All versions\"")), {}, {}, false};
     // Axis rename: per-language display aliases of the axis and its values
     // (the title shown above the per-language tabs). Reused by the Measurement
     // section with a per-language name only (no values).
@@ -178,6 +185,11 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OTemplateSection>
                                       "renders: in the pieces, the cut quantities are entered per piece and are "
                                       "empty by default."),
                     {kCut, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
+        MakeSection("version",
+                    QT_TRANSLATE_NOOP("OTemplateSection", "Version"),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "The version of the pattern this piece belongs to, as named in the "
+                                      "pattern versions. A group shows the versions of its members."),
+                    {kHideForAllVersions, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("freeText",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Free text"),
                     QT_TRANSLATE_NOOP("OTemplateSection", "Free text entered per piece in the information block. It can span "

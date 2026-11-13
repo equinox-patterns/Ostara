@@ -141,6 +141,12 @@ struct OPieceGroup : public IPieceInfo
     auto GetFreeText() const -> QString override { return m_freeText; }
     void SetFreeText(const QString &text) override { m_freeText = text; }
 
+    /// A group has no version of its own: it shows the versions of its members, and there is nothing
+    /// here to store — 0 says so, and the setter does nothing. See OPieceInfoWidget, which reads the
+    /// union from the container instead of calling this.
+    auto GetPatternVersion() const -> quint32 override { return 0; }
+    void SetPatternVersion(quint32 /*id*/) override {}
+
     auto GetInfoBlockData() const -> const OInfoBlockData & override { return m_infoBlocks; }
     auto GetInfoBlockData() -> OInfoBlockData & override { return m_infoBlocks; }
     void SetInfoBlockData(const OInfoBlockData &data) override { m_infoBlocks = data; }

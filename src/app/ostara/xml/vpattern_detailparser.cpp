@@ -339,6 +339,10 @@ void VPattern::ParseDetailElement(QDomElement &domElement, const Document &parse
         initData.detail.SetGradedAlignPointId(GetParametrUInt(domElement, AttrGradedAlignPoint, QChar('0')));
         initData.detail.SetGradedAlignPointVId(GetParametrUInt(domElement, AttrGradedAlignPointV, QChar('0')));
         initData.detail.SetPieceNumber(GetParametrUInt(domElement, AttrPieceNumber, QChar('0')));
+        // Absent = the "all versions" entry: a piece of a single-version pattern wears no attribute,
+        // and a piece of a multi-version one keeps the entry it was given.
+        initData.detail.SetPatternVersion(
+            GetParametrUInt(domElement, AttrPatternVersion, QString::number(AllVersionsId())));
         initData.detail.SetCutFabricQty(GetParametrInt(domElement, AttrCutFabricQty, QStringLiteral("0")));
         initData.detail.SetCutFabricOnFold(GetParametrBool(domElement, AttrCutFabricOnFold, falseStr));
         initData.detail.SetCutInterfacingQty(GetParametrInt(domElement, AttrCutInterfacingQty, QStringLiteral("0")));

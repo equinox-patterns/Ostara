@@ -40,6 +40,7 @@ class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPlainTextEdit;
+class QPushButton;
 class QTimer;
 class VAbstractPattern;
 
@@ -79,6 +80,8 @@ private slots:
     void CommitSecondPassmarkOnSeamLine(bool on);
     void CommitCartoucheActivation(bool on);
     void CommitCartoucheTemplate(int index);
+    void CommitMultiVersion(bool on);
+    void OpenVersionsDialog();
     void ScheduleCommit();
     void CommitDelayed();
     void OnFullUpdate();
@@ -102,6 +105,8 @@ private:
     QCheckBox *m_activateInfoBlockCheck{nullptr};
     QLabel *m_infoBlockHint{nullptr}; // explains the scope of the Information block group
     QComboBox *m_cartoucheCombo{nullptr};
+    QCheckBox *m_multiVersionCheck{nullptr};
+    QPushButton *m_versionsButton{nullptr};
     QPlainTextEdit *m_fabricInfoEdit{nullptr};
     QLabel *m_patternNameLabel{nullptr};
     QLabel *m_clientLabel{nullptr};

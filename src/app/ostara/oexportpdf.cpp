@@ -469,7 +469,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         QList<OGradedSvg::LayoutObject> payloadDecor = content.decor;
         payloadDecor += content.payloadDecor;
         recipeElement.appendChild(
-            OExportPieces::Of(recipe, output.layers, displayLabels, pattern, payloadDecor));
+            OExportPieces::Of(recipe, doc, output.layers, displayLabels, pattern, payloadDecor));
     }
 
     // ── Le DESSIN, sans la métadonnée ────────────────────────────────────────────────────────────

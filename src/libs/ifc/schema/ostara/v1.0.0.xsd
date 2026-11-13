@@ -21,6 +21,25 @@
         <xs:element name="collection" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="patternName" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="patternNumber" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <!-- The versions (variants) of the pattern. Absent until the pattern declares several ones: a pattern
+             that never did carries nothing rather than an empty list. The first entry is the "all versions"
+             one — every piece belongs to it, it can be renamed and never deleted; pieces reference it by id.
+             `active="false"` keeps the list without using it, so turning the mode off for a while loses nothing. -->
+        <xs:element name="patternVersions" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="patternVersion" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <!-- A key, never an `id`: the document checks that every id is unique among the objects
+                       of the pattern, and a version is not one of them. -->
+                  <xs:attribute name="key" type="xs:unsignedInt" use="required"/>
+                  <xs:attribute name="name" type="xs:string" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="active" type="xs:boolean"/>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="company" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="customer" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="birthDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
@@ -1290,6 +1309,9 @@
                         <xs:attribute name="gradedAlignPoint" type="xs:unsignedInt"/>
                         <xs:attribute name="gradedAlignPointV" type="xs:unsignedInt"/>
                         <xs:attribute name="pieceNumber" type="xs:unsignedInt"/>
+                        <!-- The pattern version this piece belongs to, by id. Absent = the "all versions"
+                             entry, which is also what every piece of a single-version pattern is. -->
+                        <xs:attribute name="patternVersion" type="xs:unsignedInt"/>
                         <xs:attribute name="cutFabricQty" type="xs:int"/>
                         <xs:attribute name="cutFabricOnFold" type="xs:boolean"/>
                         <xs:attribute name="cutInterfacingQty" type="xs:int"/>

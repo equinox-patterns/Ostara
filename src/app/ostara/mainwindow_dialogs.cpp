@@ -29,6 +29,7 @@
  **
  *************************************************************************/
 
+#include "../../libs/vmisc/def.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "widgets/DrawToolBar.h"
@@ -63,7 +64,7 @@ void MainWindow::AskDefaultSettings()
         VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
         if (not settings->IsLocaleSelected())
         {
-            QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+            QGuiApplication::setOverrideCursor(QCursor(WaitCursorShape()));
             DialogSelectLanguage dialog(this);
             QGuiApplication::restoreOverrideCursor();
             if (dialog.exec() == QDialog::Accepted)
@@ -221,7 +222,7 @@ void MainWindow::Preferences()
     static QPointer<DialogPreferences> guard; // Prevent any second run
     if (guard.isNull())
     {
-        QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        QGuiApplication::setOverrideCursor(QCursor(WaitCursorShape()));
         auto *preferences = new DialogPreferences(this);
         // QScopedPointer needs to be sure any exception will never block guard
         QScopedPointer<DialogPreferences> const dlg(preferences);

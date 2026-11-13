@@ -26,6 +26,8 @@
 
 #include "OInfoBlockResolver.h"
 
+#include "../../core/opatternversions.h"
+
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheOptions.h"
 #include "core/otemplatesection.h"
@@ -480,6 +482,38 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
         lines.append(OCartouchePainter::LogoLine(
             drawing.pixmap, drawing.heightPx, lineSpacing,
             OLogoLibrary::Directory() + QLatin1Char('/') + stored));
+        return lines;
+    }
+
+    if (typeId == QLatin1String("version"))
+    {
+        // A piece wears one version, a group the versions of its members: what this line says is
+        // whatever the object wears, in the pattern's own order.
+        const QList<quint32> ids = OPatternVersions::Ids(*doc, data, piece);
+        const QStringList names = OPatternVersions::Names(*doc, ids);
+
+        // The reader may ask the field to say nothing where it would say "all versions" — the pieces
+        // common to every version are the majority, and naming them on every cut is noise. "All of
+        // them" is about the pieces, not about a spelling: a group whose members all wear the entry
+        // is the same silence.
+        bool allOfThem = not ids.isEmpty();
+        for (const quint32 id : ids)
+        {
+            if (id != doc->AllVersionsId())
+            {
+                allOfThem = false;
+                break;
+            }
+        }
+        if (options.value(QStringLiteral("hideForAllVersions")).toBool() && allOfThem)
+        {
+            return {};
+        }
+        if (names.isEmpty())
+        {
+            return {};  // dead data: nothing to name
+        }
+        lines.append(OCartouchePainter::TextLines(OPatternVersions::Join(names), font, lineSpacing));
         return lines;
     }
 

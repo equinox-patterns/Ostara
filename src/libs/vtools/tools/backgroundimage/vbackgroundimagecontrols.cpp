@@ -330,12 +330,12 @@ void VBackgroundImageControls::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
             else
             {
-                setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+                unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
             }
         }
         else
         {
-            setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+            unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
         }
 
         const qreal sceneScale = SceneScale(scene());
@@ -415,12 +415,12 @@ void VBackgroundImageControls::mouseReleaseEvent(QGraphicsSceneMouseEvent *event
             }
             else
             {
-                setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+                unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
             }
         }
         else
         {
-            setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+            unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
         }
 
         m_customOrigin = false;
@@ -1811,11 +1811,11 @@ void VBackgroundImageControls::UpdateCursor(BIHandleCorner corner)
         }
         else
         {
-            setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+            unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
         }
     }
     else
     {
-        setCursor(VAbstractValApplication::VApp()->getSceneView()->viewport()->cursor());
+        unsetCursor(); // no cursor of its own: the view decides, and a copied bitmap would cross into Cocoa
     }
 }

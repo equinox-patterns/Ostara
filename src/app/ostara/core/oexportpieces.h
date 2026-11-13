@@ -34,6 +34,7 @@
 #include <QVector>
 
 class QDomDocument;
+class VAbstractPattern;
 class VContainer;
 
 struct OExportSizeLayer;
@@ -89,6 +90,10 @@ namespace OExportPieces
  * @brief The pieces of every size layer, as a `<pieces>` element.
  *
  * @param doc     the document the element is created in; the caller owns it
+ * @param patternDoc the pattern, source of the VERSIONS a piece wears. May be nullptr: the payload then
+ *                says nothing about versions, which is what a caller with no document can honestly say.
+ *                Only a pattern that declares several versions writes anything — `<versions>` and a
+ *                `patternVersion` per piece — so a single-version payload keeps its former shape.
  * @param layers  the generation's own geometry, one layer per size
  * @param pattern the pattern, source of the cut quantities; may be nullptr, and the quantities are
  *                then left out rather than guessed — a missing figure is a fact, a wrong one is not
@@ -109,8 +114,9 @@ namespace OExportPieces
  * to 227 px of drift in x on the pieces without a fold, and the drift followed the grading, so no
  * translation could cancel it.
  */
-auto Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layers, const QStringList &labels,
-        const VContainer *pattern, const QList<OGradedSvg::LayoutObject> &decor) -> QDomElement;
+auto Of(QDomDocument &doc, const VAbstractPattern *patternDoc, const QVector<OExportSizeLayer> &layers,
+        const QStringList &labels, const VContainer *pattern,
+        const QList<OGradedSvg::LayoutObject> &decor) -> QDomElement;
 }  // namespace OExportPieces
 
 #endif  // OEXPORTPIECES_H

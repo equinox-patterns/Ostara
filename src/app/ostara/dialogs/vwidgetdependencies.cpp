@@ -27,6 +27,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+#include "../../../libs/vmisc/def.h"
 #include "vwidgetdependencies.h"
 #include "dialogmovesteps.h"
 
@@ -372,7 +373,7 @@ void VWidgetDependencies::ExpandAllChildren(const QModelIndex &index)
         return;
     }
 
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    QGuiApplication::setOverrideCursor(WaitCursorShape());
 
     ui->treeView->expand(index);
 

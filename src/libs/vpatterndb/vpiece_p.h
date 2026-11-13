@@ -119,6 +119,10 @@ public:
     /** @brief Free text shown on the cartouche (piece level). */
     QString m_freeText{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    /** @brief The pattern version this piece belongs to, by id. 1 = the "all versions" entry, which is
+     *  also where every piece of a single-version pattern lives. */
+    quint32 m_patternVersion{1}; // NOLINT(misc-non-private-member-variables-in-classes)
+
     quint32 m_mirrorLineStartPoint{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 m_mirrorLineEndPoint{NULL_ID};   // NOLINT(misc-non-private-member-variables-in-classes)
 

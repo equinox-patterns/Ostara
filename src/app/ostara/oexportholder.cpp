@@ -162,9 +162,9 @@ auto OExportHolderItem::BodyCursor() const -> QCursor
     // The project's own gesture for moving something: the same pair VToolSeamAllowance shows
     // while a piece is dragged. It used to be gated on the pointer mode, which no longer exists.
     //
-    // Through the cache, which is also what strips an ICC profile macOS refuses — the reason
-    // QPixmapFromCache exists at all.
-    return QCursor(QPixmapFromCache(m_dragging ? cursorArrowCloseHand : cursorArrowOpenHand), 1, 1);
+    // The canvas's own hand, through the same factory: on macOS the system hand, because a bitmap
+    // cursor traps on macOS 27.2 (Version120.md §33).
+    return HandCursor(m_dragging ? cursorArrowCloseHand : cursorArrowOpenHand, 1, 1);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -176,7 +176,7 @@ auto OExportHolderItem::HandleCursor() const -> QCursor
     // "move", which is precisely what a corner does not do.
     const QString path = ResolveToolCursorResource(QStringLiteral("toolcursor"),
                                                    QStringLiteral("rotation_cursor.png"));
-    return QCursor(QPixmapFromCache(path), 2, 2);
+    return HandCursor(path, 2, 2);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

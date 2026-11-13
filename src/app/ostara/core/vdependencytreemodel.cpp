@@ -27,6 +27,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  *************************************************************************/
+#include "../../../libs/vmisc/def.h"
 #include "vdependencytreemodel.h"
 
 #include "../ifc/xml/vabstractpattern.h"
@@ -333,7 +334,7 @@ void VDependencyTreeModel::fetchMore(const QModelIndex &parent)
         return;
     }
 
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    QGuiApplication::setOverrideCursor(WaitCursorShape());
 
     LoadDependencies(parent, node);
 

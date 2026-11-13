@@ -757,7 +757,7 @@ auto MakeDecorHost(QGraphicsScene *scene, const DecorFrame &frame) -> QGraphicsI
 /// of its own, with its own spec.
 ///
 /// The cursor is the third promise, and neither of the two lines above takes it back: both
-/// constructors set Qt::SizeAllCursor, and Qt applies an item's cursor whenever the mouse is
+/// constructors set MoveCursorShape(), and Qt applies an item's cursor whenever the mouse is
 /// over it, whether or not the item accepts hover events. Left alone, a cartouche advertised
 /// a drag it could not do.
 template <typename DecorItem> void MakeDecorReadOnly(DecorItem *item)

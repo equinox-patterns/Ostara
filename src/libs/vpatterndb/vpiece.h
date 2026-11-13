@@ -148,6 +148,9 @@ public:
     auto GetFreeText() const -> QString override;
     void SetFreeText(const QString &text) override;
 
+    auto GetPatternVersion() const -> quint32 override;
+    void SetPatternVersion(quint32 id) override;
+
     auto GetInternalPaths() const -> QVector<quint32>;
     auto GetInternalPaths() -> QVector<quint32> &;
     void SetInternalPaths(const QVector<quint32> &iPaths);

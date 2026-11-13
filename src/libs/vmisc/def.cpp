@@ -234,11 +234,62 @@ auto QPixmapFromCache(const QString &pixmapPath) -> QPixmap
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto HandCursor(const QString &pixmapPath, int hotX, int hotY) -> QCursor
+{
+#ifndef QT_NO_CURSOR
+#if defined(Q_OS_MAC)
+    // ── A bitmap cursor is an IMAGE handed to CoreGraphics, and macOS 27.2 traps on it ───────────
+    //
+    // Cocoa converts the cursor's bitmap with `QImage::toCGImage()`, and Qt 6.11.1 can hand CGImageCreate a
+    // colour space that is no longer a live object: `__CF_IS_OBJC` breaks the process (SIGTRAP). macOS 27.2
+    // is the first version that verifies the space it is given, which is why this only started on her
+    // machine — same trap, same diagnosis as the window icon (Version120.md §33).
+    //
+    // **No bitmap cursor on macOS, whatever the artwork.** The drawing items only ever ask for a hand, and
+    // macOS has that gesture natively: the system hand is used by the pan already, follows the reader's
+    // accessibility settings, and is not an image at all. The one other artwork (the export's rotation
+    // handle) becomes a hand here too — a cursor is worth less than a process, and no image crosses that
+    // boundary any more. The closed hand is the one whose file name says so.
+    Q_UNUSED(hotX)
+    Q_UNUSED(hotY)
+    return QCursor(pixmapPath.contains(QStringLiteral("closehand")) ? Qt::ClosedHandCursor : Qt::OpenHandCursor);
+#else
+    return QCursor(QPixmapFromCache(pixmapPath), hotX, hotY);
+#endif
+#else
+    Q_UNUSED(pixmapPath)
+    Q_UNUSED(hotX)
+    Q_UNUSED(hotY)
+    return QCursor(Qt::ArrowCursor);
+#endif
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto MoveCursorShape() -> Qt::CursorShape
+{
+#if defined(Q_OS_MAC)
+    return Qt::OpenHandCursor;
+#else
+    return Qt::SizeAllCursor;
+#endif
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto WaitCursorShape() -> Qt::CursorShape
+{
+#if defined(Q_OS_MAC)
+    return Qt::BusyCursor;
+#else
+    return Qt::WaitCursor;
+#endif
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void SetItemOverrideCursor(QGraphicsItem *item, const QString &pixmapPath, int hotX, int hotY)
 {
 #ifndef QT_NO_CURSOR
     SCASSERT(item != nullptr)
-    item->setCursor(QCursor(QPixmapFromCache(pixmapPath), hotX, hotY));
+    item->setCursor(HandCursor(pixmapPath, hotX, hotY));
 #else
     Q_UNUSED(item)
     Q_UNUSED(pixmapPath)

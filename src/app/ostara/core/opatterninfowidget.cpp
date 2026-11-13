@@ -31,6 +31,7 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../widgets/InfoBlock/OPieceCartoucheStorage.h"
+#include "opatternversionsdialog.h"
 #include "otranslation.h"
 
 #include <algorithm>
@@ -42,6 +43,8 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPlainTextEdit>
+#include <QSignalBlocker>
+#include <QPushButton>
 #include <QTextDocument>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -103,6 +106,14 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
         ScheduleCommit();
     });
     groupLayout->addWidget(m_fabricInfoEdit);
+
+    // Versions — the variants of the pattern (see the version dialog). The switch is the pattern's:
+    // checking it creates the "all versions" entry every piece already belongs to, and the pieces
+    // then choose theirs one by one in the piece page.
+    m_multiVersionCheck = new QCheckBox(tr("Pattern with several versions"), groupBox);
+    groupLayout->addWidget(m_multiVersionCheck);
+    m_versionsButton = new QPushButton(tr("Manage versions…"), groupBox);
+    groupLayout->addWidget(m_versionsButton);
 
     groupLayout->addStretch();
 
@@ -183,6 +194,8 @@ OPatternInfoWidget::OPatternInfoWidget(QWidget *parent)
     connect(m_activateInfoBlockCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitCartoucheActivation);
     connect(m_cartoucheCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &OPatternInfoWidget::CommitCartoucheTemplate);
+    connect(m_multiVersionCheck, &QCheckBox::toggled, this, &OPatternInfoWidget::CommitMultiVersion);
+    connect(m_versionsButton, &QPushButton::clicked, this, &OPatternInfoWidget::OpenVersionsDialog);
     connect(m_commitTimer, &QTimer::timeout, this, &OPatternInfoWidget::CommitDelayed);
 }
 
@@ -303,6 +316,10 @@ void OPatternInfoWidget::Populate()
 
     m_fabricInfoEdit->setPlainText(doc != nullptr ? doc->GetFabricInfo() : QString());
 
+    // Versions — the switch is read from the document, like every other pattern setting here.
+    m_multiVersionCheck->setChecked(doc != nullptr && doc->IsMultiVersion());
+    m_versionsButton->setEnabled(doc != nullptr && doc->IsMultiVersion());
+
     // Seam allowance / cartouche seeds — pattern-level, read at piece creation
     // only. Existing pieces are never rewritten.
     m_activateSACheck->setChecked(doc != nullptr && doc->GetDefaultActivateSA());
@@ -399,6 +416,64 @@ void OPatternInfoWidget::RetranslateUI()
     {
         m_activateInfoBlockCheck->setText(tr("Activate information block"));
     }
+    if (m_multiVersionCheck)
+    {
+        m_multiVersionCheck->setText(tr("Pattern with several versions"));
+    }
+    if (m_versionsButton)
+    {
+        m_versionsButton->setText(tr("Manage versions…"));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPatternInfoWidget::CommitMultiVersion(bool on)
+{
+    if (m_loading)
+    {
+        return;
+    }
+    VAbstractPattern *doc = CurrentDocument();
+    if (doc == nullptr || doc != m_doc)
+    {
+        return;
+    }
+    if (on)
+    {
+        if (!doc->IsMultiVersion())
+        {
+            doc->SetMultiVersion(true);
+            doc->CheckLayout();
+        }
+    }
+    else if (doc->IsMultiVersion())
+    {
+        // The same refusal as the dialog's own switch: a piece must not be left wearing a version
+        // nobody shows any more.
+        if (!OPatternVersionsDialog::SwitchOffWithReassignment(doc, this))
+        {
+            const QSignalBlocker blocker(m_multiVersionCheck);
+            m_multiVersionCheck->setChecked(true);
+            return;
+        }
+        doc->CheckLayout();
+    }
+    m_versionsButton->setEnabled(doc->IsMultiVersion());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPatternInfoWidget::OpenVersionsDialog()
+{
+    VAbstractPattern *doc = CurrentDocument();
+    if (doc == nullptr)
+    {
+        return;
+    }
+
+    OPatternVersionsDialog dialog(doc, this);
+    connect(&dialog, &OPatternVersionsDialog::VersionsChanged, this, [this]() { Populate(); });
+    dialog.exec();
+    Populate();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

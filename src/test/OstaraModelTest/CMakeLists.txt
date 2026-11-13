@@ -57,6 +57,7 @@ set(OSTARA_MODEL_TESTS
     tst_vlockguard:TST_VLockGuard
     tst_vmaingraphicsscene:TST_VMainGraphicsScene
     tst_vmeasurements:TST_VMeasurements
+    tst_patternversions:TST_PatternVersions
     tst_vpatterngraph:TST_VPatternGraph
     tst_vpiece:TST_VPiece
     tst_vpointf:TST_VPointF
@@ -110,6 +111,13 @@ foreach(entry IN LISTS OSTARA_MODEL_TESTS)
     list(GET parts 1 klass)
 
     add_executable(${test} testrunner.cpp ${test}.cpp ${test}.h)
+
+    if(test STREQUAL "tst_patternversions")
+        # The versions module the dock, the information block and the version dialog ask. It lives in the
+        # application, and the model tests link the libraries, so it is compiled into this one target rather
+        # than duplicated: the test must exercise the very code the application runs.
+        target_sources(${test} PRIVATE ${CMAKE_SOURCE_DIR}/src/app/ostara/core/opatternversions.cpp)
+    endif()
 
     target_include_directories(${test} PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}

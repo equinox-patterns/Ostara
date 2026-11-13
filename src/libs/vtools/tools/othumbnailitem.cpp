@@ -51,7 +51,7 @@ OThumbnailItem::OThumbnailItem(QGraphicsItem *parent) : QGraphicsRectItem(parent
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
     setAcceptHoverEvents(true);
-    setCursor(Qt::SizeAllCursor);
+    setCursor(MoveCursorShape());
     setPen(Qt::NoPen);
     setBrush(Qt::NoBrush);
     hide();
@@ -202,7 +202,7 @@ void OThumbnailItem::SetEditing(bool editing)
     m_dragTarget = -2;
     // Leaving the sub-mode puts the cursor back where the block expects it: the handles are the
     // gesture outside, the words are the gesture inside, and the pointer says which one is live.
-    setCursor(m_editing ? Qt::OpenHandCursor : Qt::SizeAllCursor);
+    setCursor(m_editing ? Qt::OpenHandCursor : MoveCursorShape());
     update();
     emit EditingChanged(m_editing);
 }
@@ -687,7 +687,7 @@ auto OThumbnailItem::CursorForHandle(Handle handle) -> Qt::CursorShape
         case Handle::None:
             break;
     }
-    return Qt::SizeAllCursor;
+    return MoveCursorShape();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -965,7 +965,7 @@ void OThumbnailItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     const bool click = m_pendingEnter && travel < QApplication::startDragDistance();
     m_activeHandle = Handle::None;
     m_pendingEnter = false;
-    setCursor(Qt::SizeAllCursor);
+    setCursor(MoveCursorShape());
     event->accept();
 
     if (click)
@@ -1011,7 +1011,7 @@ void OThumbnailItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     if (not m_readOnly)
     {
-        setCursor(m_editing ? Qt::ArrowCursor : Qt::SizeAllCursor);
+        setCursor(m_editing ? Qt::ArrowCursor : MoveCursorShape());
     }
     QGraphicsRectItem::hoverLeaveEvent(event);
 }
