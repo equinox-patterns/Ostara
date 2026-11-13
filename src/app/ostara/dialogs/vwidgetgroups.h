@@ -244,8 +244,12 @@ private:
     void ExplainAddRefusal();
 
     /// The layer the picked objects move to, asked in a dialog. NULL_ID when the user closed it — the selection
-    /// is then left exactly as it was, so Enter can ask again.
-    auto AskTargetLayer(quint32 sourceId) -> quint32;
+    /// is then left exactly as it was, so Enter can ask again. The sentence and the button's word belong to the
+    /// caller: a transfer and a deletion both pick a layer, and they do not promise the same thing.
+    auto AskTargetLayer(quint32 sourceId, const QString &intro, const QString &acceptText) -> quint32;
+    /// Write the objects into the target layer, then take them out of the source. No macro here: the caller owns
+    /// the undo step, because a move may be part of a larger one.
+    void MoveObjectsToLayer(const QMap<quint32, quint32> &objects, quint32 sourceId, quint32 targetId);
     /// Move the picked objects out of one layer and into the chosen one. The target is written first, the source
     /// second, so no object is ever left belonging to nothing, and the whole move is one undoable step.
     void TransferSelectedObjects(quint32 sourceId);

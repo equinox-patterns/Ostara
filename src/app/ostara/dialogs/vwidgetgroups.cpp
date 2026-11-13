@@ -916,29 +916,10 @@ void VWidgetGroups::RefreshGroupEyes() const
 //---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::ActionDeleteLayer(quint32 id)
 {
-    // A layer holding objects is not deletable — it must be emptied first. The icon stays clickable
-    // so the refusal can be explained: a dimmed icon says "no" without telling why.
-    //
-    // What counts as content is settled in ONE place, LayerItems: an `<item>` naming a tool the document no
-    // longer has is not content, and it is not offered by "+", "−" or "↗" either — all three are fed by
-    // LayerItems. Counting the raw entries here made the dock contradict itself: a layer whose only entry was
-    // a leftover was refused the deletion ("still contains 1 object") while the transfer answered "there is
-    // nothing to transfer". A dead end with no way out — measured on a real file.
-    const QVector<QPair<quint32, quint32>> content = LayerItems(id);
-    if (not content.isEmpty())
-    {
-        const int count = static_cast<int>(content.size());
-        QMessageBox::information(this, tr("Layer not empty"),
-                                 tr("The layer \"%1\" still contains %n object(s). Remove them from the layer "
-                                    "first, then delete it.",
-                                    "", count)
-                                     .arg(m_doc->GetGroupName(id)));
-        return;
-    }
-
     // A piece always keeps an active layer, and so at least one layer. With none, the flag would have nowhere to
     // go and every object drawn after that would belong to no layer — the invariant the layers exist for. Said
     // rather than done silently: a layer appearing on its own after a deletion would look like a failed deletion.
+    // Asked FIRST: it is the one refusal no transfer can answer.
     if (m_doc->GetGroups().size() < 2)
     {
         QMessageBox::information(this, tr("Last layer"),
@@ -948,9 +929,64 @@ void VWidgetGroups::ActionDeleteLayer(quint32 id)
         return;
     }
 
+    // A layer holding objects is not deleted from under them: an object no other layer holds would be left
+    // belonging to nothing, and nothing unlayered is ever drawn. It is asked, once, where those objects go —
+    // the layer is deleted in the same move, which is what the user asked for by clicking the trash. What the
+    // OTHER layers hold is not transferred: those objects keep being drawn from there, they simply stop being
+    // listed here, so they need no question and no new home.
+    //
+    // What counts as content is settled in ONE place, LayerItems: an `<item>` naming a tool the document no
+    // longer has is not content, and it is not offered by "+", "−" or "↗" either — all three are fed by
+    // LayerItems. Counting the raw entries here made the dock contradict itself: a layer whose only entry was
+    // a leftover was refused the deletion ("still contains 1 object") while the transfer answered "there is
+    // nothing to transfer". A dead end with no way out — measured on a real file.
+    const QVector<QPair<quint32, quint32>> content = LayerItems(id);
+    const QMap<quint32, quint32> shared = RemovableObjects(content);
+
+    QMap<quint32, quint32> exclusive; // objectId -> toolId, the shape the pattern expects
+    for (const auto &item : content)
+    {
+        if (not shared.contains(item.first))
+        {
+            exclusive.insert(item.first, item.second);
+        }
+    }
+
+    quint32 targetId{NULL_ID};
+    if (not exclusive.isEmpty())
+    {
+        const int count = static_cast<int>(exclusive.size());
+        targetId = AskTargetLayer(id,
+                                  tr("The layer \"%1\" holds %n object(s) that no other layer holds. Choose the "
+                                     "layer that takes them: they move there, and this layer is deleted.",
+                                     "", count)
+                                      .arg(m_doc->GetGroupName(id)),
+                                  tr("Transfer and delete"));
+        if (targetId == NULL_ID)
+        {
+            return; // the dialog was dismissed: nothing was written, the layer stays
+        }
+    }
+
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    const bool transfer = (targetId != NULL_ID);
+
+    // One step: the objects' new home and the layer's disappearance are the same gesture, so one Ctrl+Z brings
+    // the layer back with its objects in it.
+    if (transfer)
+    {
+        undoStack->beginMacro(tr("transfer objects and delete the layer"));
+        MoveObjectsToLayer(exclusive, id, targetId);
+    }
+
     auto *delGroup = new DelGroup(m_doc, id);
     connect(delGroup, &DelGroup::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
-    VAbstractApplication::VApp()->getUndoStack()->push(delGroup);
+    undoStack->push(delGroup);
+
+    if (transfer)
+    {
+        undoStack->endMacro();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1489,18 +1525,16 @@ void VWidgetGroups::ValidateObjectSelection()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VWidgetGroups::AskTargetLayer(quint32 sourceId) -> quint32
+auto VWidgetGroups::AskTargetLayer(quint32 sourceId, const QString &intro, const QString &acceptText) -> quint32
 {
     const QMap<quint32, VGroupData> groups = m_doc->GetGroups();
     const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
 
     OChooseLayerDialog::Config config;
-    config.acceptText = tr("Transfer");
-    // The source layer is named: the dock keeps the highlight on the ACTIVE layer, which is not necessarily this
-    // one, so "this layer" would not say which layer the objects are leaving.
-    config.intro = tr("%n object(s) will leave \"%1\". Choose the layer they move to:", "",
-                      static_cast<int>(m_selectedObjects.size()))
-                       .arg(groups.value(sourceId).name);
+    config.acceptText = acceptText;
+    // The source layer is named by the caller: the dock keeps the highlight on the ACTIVE layer, which is not
+    // necessarily this one, so "this layer" would not say which layer the objects are leaving.
+    config.intro = intro;
 
     for (auto group = groups.constBegin(); group != groups.constEnd(); ++group)
     {
@@ -1513,7 +1547,11 @@ auto VWidgetGroups::AskTargetLayer(quint32 sourceId) -> quint32
 
         config.choices.append({group.key(), group.value().name, MakeColorDot(group.value().color, dark)});
     }
-    config.preselected = m_doc->GetActiveGroup();
+
+    // The active layer is the obvious destination — unless it is the one the objects are leaving, in which case
+    // there is no sensible default and the dialog is left on its first entry.
+    const quint32 active = m_doc->GetActiveGroup();
+    config.preselected = (active == sourceId) ? NULL_ID : active;
 
     OChooseLayerDialog dialog(config, this);
     if (dialog.exec() != QDialog::Accepted)
@@ -1525,26 +1563,11 @@ auto VWidgetGroups::AskTargetLayer(quint32 sourceId) -> quint32
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VWidgetGroups::TransferSelectedObjects(quint32 sourceId)
+void VWidgetGroups::MoveObjectsToLayer(const QMap<quint32, quint32> &objects, quint32 sourceId, quint32 targetId)
 {
-    if (m_selectedObjects.isEmpty())
-    {
-        // Enter with nothing picked leaves the picking, exactly as it does in the two other directions.
-        CancelObjectSelection();
-        UpdateGroups();
-        return;
-    }
-
-    const quint32 targetId = AskTargetLayer(sourceId);
-    if (targetId == NULL_ID)
-    {
-        return; // the dialog was dismissed: the picking is left exactly as it was
-    }
-
     QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
-    undoStack->beginMacro(tr("transfer objects to another layer"));
 
-    for (auto it = m_selectedObjects.constBegin(); it != m_selectedObjects.constEnd(); ++it)
+    for (auto it = objects.constBegin(); it != objects.constEnd(); ++it)
     {
         // The target first, the source second: at no moment does the object belong to no layer. One command per
         // write, and both are the single writers the rest of the layers work already goes through.
@@ -1561,7 +1584,33 @@ void VWidgetGroups::TransferSelectedObjects(quint32 sourceId)
             undoStack->push(new ::RemoveItemFromGroup(removed, m_doc, sourceId));
         }
     }
+}
 
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::TransferSelectedObjects(quint32 sourceId)
+{
+    if (m_selectedObjects.isEmpty())
+    {
+        // Enter with nothing picked leaves the picking, exactly as it does in the two other directions.
+        CancelObjectSelection();
+        UpdateGroups();
+        return;
+    }
+
+    const quint32 targetId = AskTargetLayer(
+        sourceId,
+        tr("%n object(s) will leave \"%1\". Choose the layer they move to:", "",
+           static_cast<int>(m_selectedObjects.size()))
+            .arg(m_doc->GetGroupName(sourceId)),
+        tr("Transfer"));
+    if (targetId == NULL_ID)
+    {
+        return; // the dialog was dismissed: the picking is left exactly as it was
+    }
+
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    undoStack->beginMacro(tr("transfer objects to another layer"));
+    MoveObjectsToLayer(m_selectedObjects, sourceId, targetId);
     undoStack->endMacro();
 
     CancelObjectSelection();
@@ -1991,10 +2040,10 @@ void VWidgetGroups::FillLayerRow(int row, quint32 id, const VGroupData &data, bo
                   tr("Move objects of this layer to another one"));
     SetActionCell(ui->tableWidget, row, kRemove, MakeCellIcon(QStringLiteral("minus"), dark),
                   tr("Remove objects from the layer"));
-    // The trash stays fully visible and clickable even on a layer holding objects: the refusal
-    // is explained by a dialog (ActionDeleteLayer), not by a dimmed icon the reader cannot read.
+    // The trash is one click, always: a layer holding objects is deleted after being asked where they go
+    // (ActionDeleteLayer), never refused — a dimmed icon says "no" without telling why.
     SetActionCell(ui->tableWidget, row, kDelete, MakeCellIcon(QStringLiteral("trash"), dark),
-                  tr("Delete the layer - allowed once it holds no object"));
+                  tr("Delete the layer"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -138,8 +138,13 @@ auto OLayerGroupChooser::NewGroupName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto OLayerGroupChooser::IsValid() const -> bool
 {
-    // Group() answers kCreateGroup only for a name that is filled in and belongs to no group yet.
-    return Group() != kCreateGroup;
+    // "A new group" is an ANSWER, and a good one, as soon as it wears a name: Group() answers kCreateGroup for
+    // exactly that — the combo on that entry AND a name typed. The entry alone, with the field still empty, is
+    // the only thing that is not an answer. Asking `Group() != kCreateGroup` read the opposite: it refused the
+    // new name (the very case the entry exists for) and accepted the empty field (which names nothing), so a
+    // group could not be created from any dialog carrying this row — the OK stayed greyed while the name was
+    // being typed.
+    return Group() != kCreateGroup || not NewGroupName().isEmpty();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

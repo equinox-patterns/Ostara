@@ -27584,27 +27584,27 @@ Voulez-vous continuer ?</translation>
         <translation>Le groupe « %1 » ne contient encore aucun calque - il n’y a rien à afficher ni à masquer.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="931"/>
-        <source>Layer not empty</source>
-        <translation>Calque non vide</translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="932"/>
-        <source>The layer &quot;%1&quot; still contains %n object(s). Remove them from the layer first, then delete it.</source>
-        <translation>
-            <numerusform>Le calque « %1 » contient encore %n objet. Retirez-le du calque avant de supprimer celui-ci.</numerusform>
-            <numerusform>Le calque « %1 » contient encore %n objets. Retirez-les du calque avant de supprimer celui-ci.</numerusform>
-        </translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="944"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="925"/>
         <source>Last layer</source>
         <translation>Dernier calque</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="945"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="926"/>
         <source>The layer &quot;%1&quot; is the only one of this piece. An object must always belong to a layer, so a piece keeps at least one - add another layer first, then delete this one.</source>
         <translation>Le calque « %1 » est le seul de cette pièce de patron. Un objet doit toujours appartenir à un calque, donc une pièce de patron en garde au moins un - ajoutez un autre calque, puis supprimez celui-ci.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="964"/>
+        <source>Transfer and delete</source>
+        <translation>Transférer et supprimer</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="960"/>
+        <source>The layer &quot;%1&quot; holds %n object(s) that no other layer holds. Choose the layer that takes them: they move there, and this layer is deleted.</source>
+        <translation>
+            <numerusform>Le calque « %1 » contient %n objet que nul autre calque ne contient. Choisissez le calque qui le reçoit : il y est transféré, et ce calque-ci est supprimé.</numerusform>
+            <numerusform>Le calque « %1 » contient %n objets que nul autre calque ne contient. Choisissez le calque qui les reçoit : ils y sont transférés, et ce calque-ci est supprimé.</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1099"/>
@@ -27711,9 +27711,9 @@ Voulez-vous continuer ?</translation>
         <translation>Retirer des objets du calque</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1997"/>
-        <source>Delete the layer - allowed once it holds no object</source>
-        <translation>Supprimer le calque - possible une fois qu’il ne contient plus d’objet</translation>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2046"/>
+        <source>Delete the layer</source>
+        <translation>Supprimer le calque</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1369"/>
