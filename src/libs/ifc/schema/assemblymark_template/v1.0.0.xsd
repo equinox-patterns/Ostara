@@ -79,7 +79,13 @@
 
   <xs:attributeGroup name="TextStyleAttributes">
     <xs:attribute name="fontFamily" type="xs:string"/>
-    <xs:attribute name="fontWeight" type="xs:int" default="400"/>
+    <!-- The FACE the text is set in, as a name — "Regular", "SemiBold", "Light Italic" (decided on
+         22-09-2026 : « que les vraies graisses de la font »). A number cannot say which one: Medium
+         and SemiBold both weigh more than Regular and neither is the other.
+         The attribute kept the name it had when it held that number (400, 700), so a template
+         written then still validates here, and both ends resolve it to the face it draws
+         (FillFontFaces). Absent means the family's Regular. -->
+    <xs:attribute name="fontWeight" type="xs:string"/>
     <xs:attribute name="fontSize" type="xs:double" default="16"/>
     <xs:attribute name="opacity" type="Percent" default="100"/>
     <xs:anyAttribute processContents="lax"/>
