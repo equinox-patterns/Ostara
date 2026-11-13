@@ -1133,6 +1133,16 @@ void VContainer::AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierP
             int n = 1;
             while (d->variables->contains(key))
             {
+                // The key is already this segment's: the block is read again without its variables being cleared
+                // (a drag re-reads the active block on every mouse move, VPattern::ParseCurrentPP). The segment
+                // takes its own key back. Taking the next free one instead left the route on the variable of the
+                // first move — read by a formula with the length of that move — and added five keys per segment
+                // per move: the drag grew slower the longer it lasted (profiled 13-11-2026). A key held by another
+                // segment — two curves through the same two points — still sends this one to the next number.
+                if (const auto held = d->variables->value(key); not held.isNull() && held->GetName() == var->GetName())
+                {
+                    break;
+                }
                 key = baseKey + '_' + QString::number(n++);
             }
             AddVariable(var, var->GetName(), key);

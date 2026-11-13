@@ -29,6 +29,9 @@
 #include "tst_linerolenames.h"
 
 #include "vgeometry/vpointf.h"
+#include "vgeometry/vsplinepath.h"
+#include "vgeometry/vsplinepoint.h"
+#include "vpatterndb/variables/vinternalvariable.h"
 #include "vmisc/testvapplication.h"
 #include "vpatterndb/vcontainer.h"
 #include "vpatterndb/vtranslatevars.h"
@@ -154,3 +157,46 @@ int main(int argc, char *argv[])
     return QTest::qExec(&tests, argc, argv);
 }
 
+
+//---------------------------------------------------------------------------------------------------------------------
+// A drag re-reads its block on every mouse move without clearing the variables. Each segment of a spline path must
+// take back the route it holds (`Curve_A_B`) instead of a new one beside it: otherwise the route stays on the
+// variable of the first move — a formula reads that move's length — and five keys are added per segment and per move.
+void TST_LineRoleNames::SegmentTakesItsRouteBackWhenReadAgain()
+{
+    VTranslateVars trVars;
+    Unit unit = Unit::Cm;
+    VContainer data(&trVars, &unit, VContainer::UniqueNamespace());
+
+    const auto Point = [](qreal x, qreal y, const QString &name) -> VSplinePoint
+    {
+        return {VPointF(x, y, name, 0, 0), 0, QStringLiteral("0"), 180, QStringLiteral("180"), 20,
+                QStringLiteral("20"), 20, QStringLiteral("20")};
+    };
+    const auto Path = [&Point](qreal shift) -> QSharedPointer<VSplinePath>
+    {
+        return QSharedPointer<VSplinePath>::create(QVector<VSplinePoint>{
+            Point(0, 0, QStringLiteral("A")), Point(100 + shift, 30, QStringLiteral("B")),
+            Point(200, 0, QStringLiteral("C"))});
+    };
+
+    QSharedPointer<VSplinePath> path = Path(0);
+    const quint32 id = data.AddGObject(path);
+    data.AddCurveWithSegments(path, id);
+
+    const auto *variables = data.DataVariables();
+    const qsizetype registered = variables->size();
+    const QString route = QStringLiteral("Curve_A_B");
+    QVERIFY(variables->contains(route));
+
+    // The same path, moved, registered again: the state of a drag's second mouse move.
+    path = Path(50);
+    data.UpdateGObject(id, path);
+    data.AddCurveWithSegments(path, id);
+
+    QCOMPARE(variables->size(), registered); // no new key
+    const QSharedPointer<VInternalVariable> byRoute = variables->value(route);
+    QVERIFY(not byRoute.isNull());
+    QCOMPARE(variables->value(byRoute->GetName()), byRoute); // the route reads the variable of this move
+    QVERIFY(not variables->contains(route + QStringLiteral("_1")));
+}

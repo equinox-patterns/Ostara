@@ -45,6 +45,8 @@ private slots:
     void NameNoLineBearsIsDropped();
     void UnreadablePairIsKept();
     void NameOfAnotherLineIsTaken();
+    // A segment registered again without the variables being cleared (a drag) takes its own route back
+    void SegmentTakesItsRouteBackWhenReadAgain();
 };
 
 #endif // TST_LINEROLENAMES_H
