@@ -56,6 +56,10 @@ private slots:
     // switch that keeps the list it turns off
     void PatternVersions();
 
+    // Inside a VisibilityIndexScope, IsObjectVisible answers every object exactly as the walk does, and a layer
+    // written during the scope is seen at once. Set OSTARA_VISIBILITY_FILE to a pattern to compare on it too.
+    void VisibilityIndexAnswersLikeTheWalk();
+
 private:
     Q_DISABLE_COPY_MOVE(TST_VAbstractPattern) // NOLINT
 };

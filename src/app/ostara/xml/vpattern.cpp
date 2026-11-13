@@ -203,6 +203,9 @@ void VPattern::CreateEmptyFile()
  */
 void VPattern::Parse(const Document &parse)
 {
+    // Every tool refreshed by this parse asks the layers about the points its tracés join: one index answers them all.
+    const VisibilityIndexScope visibilityIndex(this);
+
     emit PreParseState();
     SCASSERT(sceneDraw != nullptr)
     SCASSERT(sceneDetail != nullptr)
@@ -988,6 +991,9 @@ void VPattern::LiteParseTree(const Document &parse)
 {
     // Save current pattern block name
     QString const namePP = PatternBlockMapper()->GetActive();
+
+    // The parse below and the refresh of every tool after it ask the layers the same questions: one index for both.
+    const VisibilityIndexScope visibilityIndex(this);
 
     try
     {

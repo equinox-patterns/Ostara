@@ -477,6 +477,7 @@ auto VAbstractPattern::GetActivNodeElement(const QString &name, QDomElement &ele
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractPattern::ParseGroups(const QDomElement &domElement)
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
 
     QMap<quint32, quint32> itemTool;
@@ -526,6 +527,22 @@ void VAbstractPattern::ParseGroups(const QDomElement &domElement)
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::IsObjectVisible(quint32 objectId) const -> bool
 {
+    if (m_visibilityIndexScopes > 0)
+    {
+        if (not m_visibilityIndexBuilt)
+        {
+            BuildVisibilityIndex();
+        }
+
+        if (m_visibilityIndexUnreadable)
+        {
+            return true;
+        }
+
+        const auto held = m_visibilityIndex.constFind(objectId);
+        return held == m_visibilityIndex.constEnd() || held.value();
+    }
+
     // The layers of every block, and the object read from each pair the way ParseItemElement reads it: the tool
     // attribute, and an object attribute that defaults to the tool — a pair written as (tool, tool) is the object
     // of that tool, which is how a point of its own is listed.
@@ -568,6 +585,85 @@ auto VAbstractPattern::IsObjectVisible(quint32 objectId) const -> bool
 
     // An object no layer holds is shown: the layer pass never hides it either.
     return not held;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::BuildVisibilityIndex() const
+{
+    // The walk of IsObjectVisible, once for every object instead of once per question, with the same answers:
+    //  - an item read the same way (the object attribute, defaulting to the tool);
+    //  - an object is shown as soon as one layer holding it is shown;
+    //  - a layer whose `visible` cannot be read answers "shown" for what it holds — the walk returns true when it
+    //    reaches it for an object it holds;
+    //  - an item that cannot be read answers "shown" for EVERY object — the walk reaches it for any object it has
+    //    not already found shown, and returns true.
+    m_visibilityIndex.clear();
+    m_visibilityIndexUnreadable = false;
+    m_visibilityIndexBuilt = true;
+
+    try
+    {
+        const QDomElement root = documentElement();
+        for (QDomElement draw = root.firstChildElement(TagDraw); not draw.isNull();
+             draw = draw.nextSiblingElement(TagDraw))
+        {
+            const QDomElement groups = draw.firstChildElement(TagGroups);
+            for (QDomElement group = groups.firstChildElement(TagGroup); not group.isNull();
+                 group = group.nextSiblingElement(TagGroup))
+            {
+                bool shown = true;
+                try
+                {
+                    shown = GetParametrBool(group, AttrVisible, trueStr);
+                }
+                catch (const VException &) // NOLINT(bugprone-empty-catch)
+                {
+                    shown = true; // see above
+                }
+
+                for (QDomElement item = group.firstChildElement(TagGroupItem); not item.isNull();
+                     item = item.nextSiblingElement(TagGroupItem))
+                {
+                    const quint32 tool = GetParametrUInt(item, AttrTool, NULL_ID_STR);
+                    const quint32 object = GetParametrUInt(item, AttrObject, QString::number(tool));
+                    bool &value = m_visibilityIndex[object]; // false when first held
+                    value = value || shown;
+                }
+            }
+        }
+    }
+    catch (const VException &) // NOLINT(bugprone-empty-catch)
+    {
+        m_visibilityIndex.clear();
+        m_visibilityIndexUnreadable = true;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::InvalidateVisibilityIndex() const
+{
+    m_visibilityIndex.clear();
+    m_visibilityIndexBuilt = false;
+    m_visibilityIndexUnreadable = false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+VAbstractPattern::VisibilityIndexScope::VisibilityIndexScope(const VAbstractPattern *doc)
+  : m_doc(doc)
+{
+    if (m_doc != nullptr && m_doc->m_visibilityIndexScopes++ == 0)
+    {
+        m_doc->InvalidateVisibilityIndex(); // a fresh index for every outermost scope
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+VAbstractPattern::VisibilityIndexScope::~VisibilityIndexScope()
+{
+    if (m_doc != nullptr && --m_doc->m_visibilityIndexScopes == 0)
+    {
+        m_doc->InvalidateVisibilityIndex();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1852,6 +1948,7 @@ void VAbstractPattern::SelectedDetail(quint32 id)
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractPattern::UpdateVisiblityGroups()
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     emit UpdateGroups();
 }
 
@@ -2778,6 +2875,7 @@ void VAbstractPattern::NotifyPatternChanged()
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::CreateGroups(const QString &patternPieceName) -> QDomElement
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     QDomElement draw = patternPieceName.isEmpty() ? m_patternBlockMapper->GetActiveElement()
                                                   : m_patternBlockMapper->GetElement(patternPieceName);
 
@@ -2810,6 +2908,7 @@ auto VAbstractPattern::CreateGroups(const QString &patternPieceName) -> QDomElem
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::CreateLayerGroups(const QString &patternPieceName) -> QDomElement
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     QDomElement draw = patternPieceName.isEmpty() ? m_patternBlockMapper->GetActiveElement()
                                                   : m_patternBlockMapper->GetElement(patternPieceName);
 
@@ -2848,6 +2947,7 @@ auto VAbstractPattern::CreateGroup(quint32 id,
                                    const QString &penStyle,
                                    quint32 layerGroup) -> QDomElement
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     if (id == NULL_ID)
     {
         return QDomElement();
@@ -2888,6 +2988,7 @@ auto VAbstractPattern::CreateGroup(quint32 id,
 auto VAbstractPattern::CreateAutomaticGroup(quint32 id, const QString &name,
                                             const QMap<quint32, quint32> &groupData) -> QDomElement
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     QDomElement group = CreateGroup(id, name, groupData);
     if (not group.isNull())
     {
@@ -2981,6 +3082,7 @@ void VAbstractPattern::SetGroupPen(quint32 id, const QString &color, const QStri
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractPattern::SetGroupVisibility(quint32 id, bool visible)
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     QDomElement group = FindElementById(id, TagGroup);
     if (group.isNull())
     {
@@ -4044,6 +4146,7 @@ void VAbstractPattern::CleanDependenciesWatcher()
  */
 auto VAbstractPattern::AddItemToGroup(quint32 toolId, quint32 objectId, quint32 groupId) -> QDomElement
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     if (QDomElement group = FindElementById(groupId, TagGroup); not group.isNull())
     {
         if (objectId == 0)
@@ -4091,6 +4194,7 @@ auto VAbstractPattern::AddItemToGroup(quint32 toolId, quint32 objectId, quint32 
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::AddItemsToGroup(const QVector<QPair<quint32, quint32>> &items, quint32 groupId) -> bool
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     QDomElement group = FindElementById(groupId, TagGroup);
     if (group.isNull() || items.isEmpty())
     {
@@ -4527,6 +4631,7 @@ auto VAbstractPattern::GetActiveGroupPenStyle() -> QString
  */
 auto VAbstractPattern::RemoveItemFromGroup(quint32 toolId, quint32 objectId, quint32 groupId) -> QDomElement
 {
+    InvalidateVisibilityIndex(); // the layers change: IsObjectVisible must not answer from the old index
     if (QDomElement group = FindElementById(groupId, TagGroup); not group.isNull())
     {
         if (objectId == 0)

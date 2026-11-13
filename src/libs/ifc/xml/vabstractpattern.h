@@ -453,8 +453,29 @@ public:
      *  Read rather than remembered: a pass only ever describes the block it is given, and a tool refreshed after
      *  it by another block's pass would be answered with the wrong piece's layers — measured, a layer saved hidden
      *  came back drawn until it was toggled by hand. A tool whose tracés join objects that are not its own needs
-     *  this answer (see VToolLinePoint::ApplySegmentsVisibility). */
+     *  this answer (see VToolLinePoint::ApplySegmentsVisibility).
+     *
+     *  Inside a VisibilityIndexScope the same answer is read from one index of the WHOLE document — every block,
+     *  never one piece's pass — built at the first question and thrown away as soon as a layer is written through
+     *  this class, and when the scope ends. */
     auto IsObjectVisible(quint32 objectId) const -> bool;
+
+    /** @brief While alive, IsObjectVisible answers from an index of the layers instead of walking them again.
+     *
+     *  Each question walked every layer item of every block, twice per tracé of every "point on line" tool, on
+     *  every reparse: 40 % of adding a point or dragging a piece on a 900-object pattern (profiled 13-11-2026). A
+     *  reparse asks the same document hundreds of times; the index is valid for exactly that long. Scopes nest. */
+    class VisibilityIndexScope
+    {
+    public:
+        explicit VisibilityIndexScope(const VAbstractPattern *doc);
+        ~VisibilityIndexScope();
+        VisibilityIndexScope(const VisibilityIndexScope &) = delete;
+        auto operator=(const VisibilityIndexScope &) -> VisibilityIndexScope & = delete;
+
+    private:
+        const VAbstractPattern *m_doc;
+    };
 
     /// The sentinel a "which group?" answer carries when the group named does not exist yet: the dialogs ask for a
     /// new group with it, and the code that writes it creates one. A real id never reaches it — the ids come from
@@ -873,6 +894,17 @@ private:
     VPatternGraph *m_patternGraph;
 
     VPatternBlockMapper *m_patternBlockMapper;
+
+    /// The answers of IsObjectVisible inside a VisibilityIndexScope: object → shown by one of the layers holding it.
+    /// An object absent from it is held by no layer, hence shown.
+    mutable QHash<quint32, bool> m_visibilityIndex{};
+    mutable bool m_visibilityIndexBuilt{false};
+    /// A layer item that cannot be read makes every answer "shown", as the walk does (see IsObjectVisible).
+    mutable bool m_visibilityIndexUnreadable{false};
+    mutable int m_visibilityIndexScopes{0};
+
+    void BuildVisibilityIndex() const;
+    void InvalidateVisibilityIndex() const;
 
     QList<QFutureWatcher<void> *> m_formulaDependenciesWatchers{};
     mutable QMutex m_watchersMutex{};

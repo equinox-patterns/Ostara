@@ -364,3 +364,83 @@ void TST_VAbstractPattern::CopyGivesWayToThePiecesItDraws()
 
     QCOMPARE(pairs, (QVector<QPair<quint32, quint32>>{{2511, 1027}, {2512, 1027}}));
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+// Every object id 0..maxId answered with and without the index; the first difference is reported.
+auto CompareVisibility(const TestDoc &doc, quint32 maxId) -> QString
+{
+    QVector<bool> walked;
+    walked.reserve(static_cast<qsizetype>(maxId) + 1);
+    for (quint32 id = 0; id <= maxId; ++id)
+    {
+        walked.append(doc.IsObjectVisible(id));
+    }
+
+    const VAbstractPattern::VisibilityIndexScope scope(&doc);
+    for (quint32 id = 0; id <= maxId; ++id)
+    {
+        if (doc.IsObjectVisible(id) != walked.at(static_cast<qsizetype>(id)))
+        {
+            return u"object %1: walk %2, index %3"_s.arg(id).arg(walked.at(static_cast<qsizetype>(id)))
+                .arg(doc.IsObjectVisible(id));
+        }
+    }
+    return {};
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VAbstractPattern::VisibilityIndexAnswersLikeTheWalk()
+{
+    // Every rule of the walk: shown as soon as one holding layer shows it (3, 6), hidden when every holding layer
+    // hides it (4, 8), a layer without `visible` shows (7), an object no layer holds is shown (2, 9), and an item
+    // without `object` names the tool's own object (1, 4, 7, 8). Two blocks, so the answer is the document's.
+    TestDoc doc;
+    QVERIFY(doc.setContent(QByteArrayLiteral(
+        "<pattern><version>1.2.0</version><unit>cm</unit>"
+        "<draw name=\"A\"><groups>"
+        "<group id=\"100\" name=\"shown\" visible=\"true\"><item tool=\"1\"/><item tool=\"2\" object=\"3\"/>"
+        "<item tool=\"5\" object=\"6\"/></group>"
+        "<group id=\"101\" name=\"hidden\" visible=\"false\"><item tool=\"2\" object=\"3\"/><item tool=\"4\"/>"
+        "<item tool=\"5\" object=\"6\"/></group>"
+        "</groups></draw>"
+        "<draw name=\"B\"><groups>"
+        "<group id=\"102\" name=\"no attribute\"><item tool=\"7\"/></group>"
+        "<group id=\"103\" name=\"hidden too\" visible=\"false\"><item tool=\"8\"/></group>"
+        "</groups></draw></pattern>")));
+
+    QCOMPARE(CompareVisibility(doc, 12), QString());
+    {
+        const VAbstractPattern::VisibilityIndexScope scope(&doc);
+        QVERIFY(not doc.IsObjectVisible(4));
+        QVERIFY(not doc.IsObjectVisible(8));
+        QVERIFY(doc.IsObjectVisible(6));
+        QVERIFY(doc.IsObjectVisible(9));
+
+        // A layer written during the scope is seen at once: the index is not the answer of a moment ago.
+        doc.SetGroupVisibility(101, true);
+        QVERIFY(doc.IsObjectVisible(4));
+        doc.SetGroupVisibility(101, false);
+        QVERIFY(not doc.IsObjectVisible(4));
+    }
+
+    // An item that cannot be read: the walk answers "shown" for everything, and so does the index.
+    TestDoc unreadable;
+    QVERIFY(unreadable.setContent(QByteArrayLiteral(
+        "<pattern><version>1.2.0</version><unit>cm</unit><draw name=\"A\"><groups>"
+        "<group id=\"100\" name=\"hidden\" visible=\"false\"><item tool=\"4\"/><item tool=\"x\"/></group>"
+        "</groups></draw></pattern>")));
+    QCOMPARE(CompareVisibility(unreadable, 6), QString());
+
+    // A real pattern, when one is given: every id it can hold.
+    if (const QString file = qEnvironmentVariable("OSTARA_VISIBILITY_FILE"); not file.isEmpty())
+    {
+        QFile source(file);
+        QVERIFY(source.open(QIODevice::ReadOnly));
+        TestDoc pattern;
+        QVERIFY(pattern.setContent(source.readAll()));
+        QCOMPARE(CompareVisibility(pattern, 5000), QString());
+    }
+}
