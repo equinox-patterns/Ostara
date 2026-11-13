@@ -203,3 +203,6 @@ bw-output
 !/compile_commands.json
 
 .cache
+
+# Bibliotheques compilees pour macOS 13 (voir Build_Ostara/xerces.sh) : hors depot.
+third_party/

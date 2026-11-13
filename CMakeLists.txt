@@ -2,6 +2,23 @@ cmake_minimum_required(VERSION 3.29)
 project(Ostara VERSION 1.1.2 LANGUAGES CXX)
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# macOS : la version minimale est une POLITIQUE DU PROJET, pas un argument de commande.
+#
+# ⚠️ Sans cette ligne, CMake prend la version de macOS de la machine qui compile. Un build local
+# sortait donc en `minos 27.2` et refusait de démarrer sur macOS 26 et avant — alors qu'Ostara
+# tourne depuis **macOS 13** (Ventura). La CI passait déjà `-DCMAKE_OSX_DEPLOYMENT_TARGET=13.0` ;
+# personne d'autre ne le faisait, et rien ne le rappelait.
+#
+# Défaut posé ici, donc : tout build, local ou CI, vise 13.0. La ligne de commande garde le dernier
+# mot : `-DCMAKE_OSX_DEPLOYMENT_TARGET=…` écrase la valeur du cache.
+# Les API postérieures à 13 sont alors refusées à la compilation — c'est le but.
+# ═══════════════════════════════════════════════════════════════════════════════
+if(APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS version" FORCE)
+    message(STATUS "macOS : cible de déploiement = ${CMAKE_OSX_DEPLOYMENT_TARGET} (voir CMakeLists.txt)")
+endif()
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # Options
 # ═══════════════════════════════════════════════════════════════════════════════
 option(BUILD_TESTING "Build unit tests" OFF)
