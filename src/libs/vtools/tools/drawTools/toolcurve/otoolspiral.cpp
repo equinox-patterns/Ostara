@@ -175,7 +175,7 @@ auto OToolSpiral::Create(OToolSpiralInitData &initData) -> OToolSpiral *
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.formulaRadius, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.formulaLength, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.formulaAngle, initData.id, varData);

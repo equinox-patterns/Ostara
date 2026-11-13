@@ -83,7 +83,7 @@ auto VToolPiecePath::Create(VToolPiecePathInitData initData) -> VToolPiecePath *
 
     if (initData.path.GetType() == PiecePathType::InternalPath)
     {
-        const auto varData = initData.data->DataDependencyVariables();
+        const auto varData = initData.doc->DependencyVariables(initData.data);
         initData.doc->FindFormulaDependencies(initData.path.GetVisibilityTrigger(), initData.id, varData);
     }
 

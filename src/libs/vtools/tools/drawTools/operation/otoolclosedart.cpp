@@ -269,7 +269,7 @@ auto OToolCloseDart::Create(OToolCloseDartInitData &initData) -> OToolCloseDart 
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.divisor, initData.id, varData);
 
     CreateDestination(initData, angle);

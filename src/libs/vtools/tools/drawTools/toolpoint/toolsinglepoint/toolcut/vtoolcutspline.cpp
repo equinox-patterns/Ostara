@@ -348,7 +348,7 @@ auto VToolCutSpline::Create(VToolCutInitData &initData) -> VToolCutSpline *
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.formula, initData.id, varData);
 
     initData.data->AddSpline(initData.data->GeometricObject<VAbstractBezier>(initData.segment1Id), initData.segment1Id);

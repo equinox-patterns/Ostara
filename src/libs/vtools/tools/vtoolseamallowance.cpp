@@ -427,7 +427,7 @@ auto VToolSeamAllowance::Create(VToolSeamAllowanceInitData &initData) -> VToolSe
 
     patternGraph->AddVertex(initData.id, VNodeType::PIECE, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     AddPieceDependencies(initData.id, initData.detail, initData.doc, varData);
 
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)

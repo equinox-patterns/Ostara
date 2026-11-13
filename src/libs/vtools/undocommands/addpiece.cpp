@@ -126,7 +126,7 @@ void AddPiece::redo()
 
         patternGraph->AddVertex(ElementId(), VNodeType::PIECE, Doc()->PatternBlockMapper()->FindId(m_drawName));
 
-        const auto varData = m_data.DataDependencyVariables();
+        const auto varData = Doc()->DependencyVariables(&m_data);
         VToolSeamAllowance::AddPieceDependencies(ElementId(), m_detail, Doc(), varData);
 
         VAbstractPattern::AddTool(ElementId(), m_tool);

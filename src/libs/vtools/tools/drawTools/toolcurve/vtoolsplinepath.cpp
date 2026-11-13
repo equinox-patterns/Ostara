@@ -207,7 +207,7 @@ auto VToolSplinePath::Create(VToolSplinePathInitData &initData, const QSharedPoi
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
 
     for (int i = 0; i < initData.points.size(); ++i)
     {

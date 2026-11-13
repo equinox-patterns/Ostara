@@ -85,7 +85,7 @@ void SavePieceOptions::undo()
     auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(ElementId()));
     SCASSERT(tool != nullptr)
 
-    const auto varData = tool->getData()->DataDependencyVariables();
+    const auto varData = Doc()->DependencyVariables(tool->getData());
     VToolSeamAllowance::AddPieceDependencies(ElementId(), m_oldDet, Doc(), varData);
 
     DisablePieceNodes(m_newDet.GetPath());
@@ -136,7 +136,7 @@ void SavePieceOptions::redo()
     auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(ElementId()));
     SCASSERT(tool != nullptr)
 
-    const auto varData = tool->getData()->DataDependencyVariables();
+    const auto varData = Doc()->DependencyVariables(tool->getData());
     VToolSeamAllowance::AddPieceDependencies(ElementId(), m_newDet, Doc(), varData);
 
     DisablePieceNodes(m_oldDet.GetPath());

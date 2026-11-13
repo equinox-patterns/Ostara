@@ -168,7 +168,7 @@ auto VToolPointFromCircleAndTangent::Create(VToolPointFromCircleAndTangentInitDa
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.circleRadius, initData.id, varData);
 
     patternGraph->AddEdge(initData.circleCenterId, initData.id);

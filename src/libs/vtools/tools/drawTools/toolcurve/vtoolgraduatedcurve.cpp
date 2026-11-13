@@ -206,7 +206,7 @@ auto VToolGraduatedCurve::Create(VToolGraduatedCurveInitData &initData) -> VTool
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     for (const auto &offset : std::as_const(initData.offsets))
     {
         initData.doc->FindFormulaDependencies(offset.formula, initData.id, varData);

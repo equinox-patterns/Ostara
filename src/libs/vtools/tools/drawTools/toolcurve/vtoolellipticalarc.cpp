@@ -203,7 +203,7 @@ auto VToolEllipticalArc::Create(VToolEllipticalArcInitData &initData) -> VToolEl
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.radius1, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.radius2, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.f1, initData.id, varData);

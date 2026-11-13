@@ -579,7 +579,7 @@ auto OToolSpread::Create(OToolSpreadInitData &initData) -> OToolSpread *
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     for (const auto &rotation : std::as_const(initData.rotations))
     {
         initData.doc->FindFormulaDependencies(rotation.angle, initData.id, varData);

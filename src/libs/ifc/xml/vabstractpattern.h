@@ -763,6 +763,12 @@ public:
 
     void FindFormulaDependencies(const QString &formula, quint32 id, const QHash<QString, QList<quint32>> &variables);
 
+    /** @brief The variables FindFormulaDependencies reads, from @a data — or nothing when the graph is not being
+     *  rebuilt, since FindFormulaDependencies then reads none of them. Building the table walks every variable of
+     *  the pattern and is done once per tool: on a drag or a size of the graded range, where the graph is frozen,
+     *  it was half the time of the whole reparse (profiled 13-11-2026), for a table thrown away unread. */
+    auto DependencyVariables(const VContainer *data) const -> QHash<QString, QList<quint32>>;
+
     auto IsPatternGraphComplete() const -> bool;
 
     auto PatternBlockMapper() const -> VPatternBlockMapper *;

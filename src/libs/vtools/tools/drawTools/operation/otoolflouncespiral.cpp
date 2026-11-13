@@ -318,7 +318,7 @@ auto OToolFlounceSpiral::Create(OToolFlounceSpiralInitData &initData) -> OToolFl
     // as "an object depends on one the pattern does not define". Every other operation adds it unconditionally.
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(display.width, initData.id, varData);
     initData.doc->FindFormulaDependencies(display.length, initData.id, varData);
     initData.doc->FindFormulaDependencies(display.angle, initData.id, varData);

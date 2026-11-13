@@ -86,7 +86,7 @@ void SavePiecePathOptions::undo()
 
     if (m_newPath.GetType() == PiecePathType::InternalPath)
     {
-        const auto varData = pathTool->getData()->DataDependencyVariables();
+        const auto varData = Doc()->DependencyVariables(pathTool->getData());
         Doc()->FindFormulaDependencies(m_oldPath.GetVisibilityTrigger(), ElementId(), varData);
     }
 
@@ -138,7 +138,7 @@ void SavePiecePathOptions::redo()
 
     if (m_newPath.GetType() == PiecePathType::InternalPath)
     {
-        const auto varData = pathTool->getData()->DataDependencyVariables();
+        const auto varData = Doc()->DependencyVariables(pathTool->getData());
         Doc()->FindFormulaDependencies(m_newPath.GetVisibilityTrigger(), ElementId(), varData);
     }
 

@@ -137,7 +137,7 @@ auto VToolPlaceLabel::Create(VToolPlaceLabelInitData &initData) -> VToolPlaceLab
 
     patternGraph->AddVertex(initData.id, VNodeType::MODELING_OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.width, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.height, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.angle, initData.id, varData);

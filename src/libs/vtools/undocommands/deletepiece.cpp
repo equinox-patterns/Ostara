@@ -319,7 +319,7 @@ void DeletePiece::undo()
 
     patternGraph->AddVertex(ElementId(), VNodeType::PIECE, m_indexPatternBlock);
 
-    const auto varData = m_data.DataDependencyVariables();
+    const auto varData = Doc()->DependencyVariables(&m_data);
     VToolSeamAllowance::AddPieceDependencies(ElementId(), m_detail, Doc(), varData);
 
     VAbstractTool::AddRecord(m_record, Doc());

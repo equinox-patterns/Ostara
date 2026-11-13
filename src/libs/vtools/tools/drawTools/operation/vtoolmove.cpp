@@ -245,7 +245,7 @@ auto VToolMove::Create(VToolMoveInitData &initData) -> VToolMove *
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.formulaAngle, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.formulaLength, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.formulaRotationAngle, initData.id, varData);

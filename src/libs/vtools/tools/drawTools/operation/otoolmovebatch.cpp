@@ -307,7 +307,7 @@ auto OToolMoveBatch::Create(OToolMoveBatchInitData &initData) -> OToolMoveBatch 
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     for (const auto &move : std::as_const(initData.moves))
     {
         initData.doc->FindFormulaDependencies(move.length, initData.id, varData);

@@ -166,7 +166,7 @@ auto VToolNormal::Create(VToolNormalInitData &initData) -> VToolNormal *
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.formula, initData.id, varData);
 
     if (!initData.lineRoleName.isEmpty())

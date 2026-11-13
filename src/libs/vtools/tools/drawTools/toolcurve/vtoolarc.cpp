@@ -196,7 +196,7 @@ auto VToolArc::Create(VToolArcInitData &initData) -> VToolArc *
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.radius, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.f1, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.f2, initData.id, varData);

@@ -639,7 +639,7 @@ void OToolPleat::RegisterInGraph(OToolPleatInitData &initData)
     // The values are formulas like any other.
     for (const OPleatDeparture &departure : std::as_const(initData.departures))
     {
-        initData.doc->FindFormulaDependencies(departure.value, initData.id, initData.data->DataDependencyVariables());
+        initData.doc->FindFormulaDependencies(departure.value, initData.id, initData.doc->DependencyVariables(initData.data));
     }
 
     // What the copies and the caps are read from: the points of every departure line, the points designated to carry

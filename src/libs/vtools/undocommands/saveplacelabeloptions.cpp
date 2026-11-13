@@ -70,7 +70,7 @@ void SavePlaceLabelOptions::undo()
 
     auto *labelTool = qobject_cast<VToolPlaceLabel *>(VAbstractPattern::getTool(ElementId()));
     SCASSERT(labelTool != nullptr)
-    const auto varData = labelTool->getData()->DataDependencyVariables();
+    const auto varData = Doc()->DependencyVariables(labelTool->getData());
     Doc()->FindFormulaDependencies(m_oldLabel.GetWidthFormula(), ElementId(), varData);
     Doc()->FindFormulaDependencies(m_oldLabel.GetHeightFormula(), ElementId(), varData);
     Doc()->FindFormulaDependencies(m_oldLabel.GetAngleFormula(), ElementId(), varData);
@@ -109,7 +109,7 @@ void SavePlaceLabelOptions::redo()
 
     auto *labelTool = qobject_cast<VToolPlaceLabel *>(VAbstractPattern::getTool(ElementId()));
     SCASSERT(labelTool != nullptr)
-    const auto varData = labelTool->getData()->DataDependencyVariables();
+    const auto varData = Doc()->DependencyVariables(labelTool->getData());
     Doc()->FindFormulaDependencies(m_newLabel.GetWidthFormula(), ElementId(), varData);
     Doc()->FindFormulaDependencies(m_newLabel.GetHeightFormula(), ElementId(), varData);
     Doc()->FindFormulaDependencies(m_newLabel.GetAngleFormula(), ElementId(), varData);

@@ -1945,6 +1945,18 @@ void VAbstractPattern::FindFormulaDependencies(const QString &formula,
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::DependencyVariables(const VContainer *data) const -> QHash<QString, QList<quint32>>
+{
+    // The same condition FindFormulaDependencies returns on: an empty table makes it return as well, earlier.
+    if (data == nullptr || m_patternGraph == nullptr || !m_patternGraph->IsGraphRebuildEnabled())
+    {
+        return {};
+    }
+
+    return data->DataDependencyVariables();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::IsPatternGraphComplete() const -> bool
 {
     if (!m_watchersMutex.tryLock(100))

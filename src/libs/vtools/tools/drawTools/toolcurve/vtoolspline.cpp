@@ -214,7 +214,7 @@ auto VToolSpline::Create(VToolSplineInitData &initData, const QSharedPointer<VSp
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    const auto varData = initData.data->DataDependencyVariables();
+    const auto varData = initData.doc->DependencyVariables(initData.data);
     initData.doc->FindFormulaDependencies(initData.a1, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.a2, initData.id, varData);
     initData.doc->FindFormulaDependencies(initData.l1, initData.id, varData);
