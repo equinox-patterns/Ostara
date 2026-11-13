@@ -370,6 +370,10 @@ VLayoutPiece::~VLayoutPiece() = default;
 auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pattern,
                           VAbstractPattern *doc) -> VLayoutPiece
 {
+    // Nothing below changes the piece or the container: its seam allowance, asked again by every passmark, is
+    // computed once per first node (see VPiece::SeamAllowanceMemoScope).
+    const VPiece::SeamAllowanceMemoScope saMemo;
+
     // Resolved ONCE, here: the application's answer costs a cartouche lookup, and a drawing asks for
     // the caption again on every repaint.
     const QString foldLineCaption = VFoldLine::ResolvedLabel(piece, doc);

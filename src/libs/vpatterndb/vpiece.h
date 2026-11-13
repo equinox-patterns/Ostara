@@ -214,6 +214,26 @@ public:
     auto FullSeamAllowancePointsWithRotation(const VContainer *data, vsizetype makeFirst) const
         -> QVector<VLayoutPoint>;
 
+    /** @brief While alive, on this thread, the seam allowance of a piece is computed once per (piece, container,
+     *  first node) and its mirror line once per (piece, container), then read back.
+     *
+     *  Building the layout piece asks for the same seam allowance over and over: each passmark, on each side, asks
+     *  for the allowance rotated to start at it, for the allowance not rotated, and for the mirror line — which
+     *  computes the allowance once more — first for its base line, then again for its lines. About eight
+     *  Equidistant per passmark for one per passmark and two per piece: 76 % of a piece of the graded range
+     *  (profiled 13-11-2026).
+     *
+     *  Open it only where neither the piece nor the container can change — VLayoutPiece::Create. The piece is told
+     *  apart by its shared data: a copy that is changed detaches and is a new key. Scopes nest. */
+    class SeamAllowanceMemoScope
+    {
+    public:
+        SeamAllowanceMemoScope();
+        ~SeamAllowanceMemoScope();
+        SeamAllowanceMemoScope(const SeamAllowanceMemoScope &) = delete;
+        auto operator=(const SeamAllowanceMemoScope &) -> SeamAllowanceMemoScope & = delete;
+    };
+
     auto IsManualFoldHeight() const -> bool;
     void SetManualFoldHeight(bool value);
 

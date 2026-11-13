@@ -49,6 +49,8 @@
 #include "vpiece_p.h"
 
 #include <algorithm>
+#include <map>
+#include <tuple>
 
 #include <QDebug>
 #include <QJsonArray>
@@ -70,6 +72,15 @@ namespace
 /// the same step before they are compared. Two functions rounding on two different steps would stop
 /// agreeing about what the piece is made of.
 constexpr qreal kSAWidthSteps = 100.0;
+
+//---------------------------------------------------------------------------------------------------------------------
+// The memo of VPiece::SeamAllowanceMemoScope, one per thread: a layout piece is built on one thread from start to end.
+// Keyed by the piece's shared data, the container and the first node (-1: not rotated).
+using SAMemoKey = std::tuple<const void *, const VContainer *, qint64>;
+thread_local int saMemoDepth = 0;
+thread_local std::map<SAMemoKey, std::pair<VPiece, QVector<VLayoutPoint>>> saMemo;   // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+thread_local std::map<SAMemoKey, std::pair<VPiece, QVector<VLayoutPoint>>> fullSaMemo; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+thread_local std::map<SAMemoKey, std::pair<VPiece, QLineF>> saMirrorMemo;         // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 //---------------------------------------------------------------------------------------------------------------------
 auto RoundedMm(qreal mm) -> qreal
@@ -1109,6 +1120,23 @@ auto VPiece::GetMirrorLineEndPoint() const -> quint32
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+VPiece::SeamAllowanceMemoScope::SeamAllowanceMemoScope()
+{
+    ++saMemoDepth;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+VPiece::SeamAllowanceMemoScope::~SeamAllowanceMemoScope()
+{
+    if (--saMemoDepth == 0)
+    {
+        saMemo.clear();
+        fullSaMemo.clear();
+        saMirrorMemo.clear();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::SeamAllowancePointsWithRotation(const VContainer *data, vsizetype makeFirst) const -> QVector<VLayoutPoint>
 {
     SCASSERT(data != nullptr);
@@ -1118,18 +1146,51 @@ auto VPiece::SeamAllowancePointsWithRotation(const VContainer *data, vsizetype m
         return {};
     }
 
+    // See SeamAllowanceMemoScope.
+    const SAMemoKey memoKey{d.constData(), data, static_cast<qint64>(makeFirst > 0 ? makeFirst : -1)};
+    if (saMemoDepth > 0)
+    {
+        if (const auto known = saMemo.find(memoKey); known != saMemo.end())
+        {
+            return known->second.second;
+        }
+    }
+
     const qreal width = ToPixel(GetSAWidth(), *data->GetPatternUnit());
     const QVector<VPieceNode> unitedPath = makeFirst > 0 ? RotatePath(GetUnitedPath(data), makeFirst)
                                                          : GetUnitedPath(data);
     const QVector<VSAPoint> pointsEkv = BuildSeamAllowancePoints(data, unitedPath, width);
 
-    return Equidistant(pointsEkv, width, GetName());
+    QVector<VLayoutPoint> points = Equidistant(pointsEkv, width, GetName());
+    if (saMemoDepth > 0)
+    {
+        saMemo.emplace(memoKey, std::make_pair(*this, points));
+    }
+    return points;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VPiece::FullSeamAllowancePointsWithRotation(const VContainer *data, vsizetype makeFirst) const
     -> QVector<VLayoutPoint>
 {
+    // See SeamAllowanceMemoScope.
+    const SAMemoKey memoKey{d.constData(), data, static_cast<qint64>(makeFirst > 0 ? makeFirst : -1)};
+    if (saMemoDepth > 0)
+    {
+        if (const auto known = fullSaMemo.find(memoKey); known != fullSaMemo.end())
+        {
+            return known->second.second;
+        }
+    }
+    const auto Remember = [this, &memoKey](const QVector<VLayoutPoint> &result) -> QVector<VLayoutPoint>
+    {
+        if (saMemoDepth > 0)
+        {
+            fullSaMemo.emplace(memoKey, std::make_pair(*this, result));
+        }
+        return result;
+    };
+
     QVector<VLayoutPoint> points = SeamAllowancePointsWithRotation(data, makeFirst);
 
     if (QLineF const mirrorLine = SeamAllowanceMirrorLine(data); !mirrorLine.isNull() && IsShowFullPiece())
@@ -1149,7 +1210,7 @@ auto VPiece::FullSeamAllowancePointsWithRotation(const VContainer *data, vsizety
         points = CheckLoops(points); // A path can contains loops
     }
 
-    return points;
+    return Remember(points);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2127,10 +2188,25 @@ auto VPiece::SeamAllowanceMirrorLine(const VContainer *data) const -> QLineF
         return {};
     }
 
+    // See SeamAllowanceMemoScope.
+    const SAMemoKey memoKey{d.constData(), data, -1};
+    if (saMemoDepth > 0)
+    {
+        if (const auto known = saMirrorMemo.find(memoKey); known != saMirrorMemo.end())
+        {
+            return known->second.second;
+        }
+    }
+
     QVector<QPointF> points;
     CastTo(SeamAllowancePoints(data), points);
 
-    return VAbstractPiece::SeamAllowanceMirrorLine(seamMirrorLine, points);
+    const QLineF line = VAbstractPiece::SeamAllowanceMirrorLine(seamMirrorLine, points);
+    if (saMemoDepth > 0)
+    {
+        saMirrorMemo.emplace(memoKey, std::make_pair(*this, line));
+    }
+    return line;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
