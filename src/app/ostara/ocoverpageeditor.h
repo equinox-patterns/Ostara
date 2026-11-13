@@ -89,8 +89,11 @@ public:
     /** @brief Whether the template has been changed since it was last saved or opened. */
     auto IsModified() const -> bool;
 
-    /** @brief Saves the template, under the name in the field. Reports its own failures. */
-    void SaveTemplate();
+    /**
+     * @brief Saves the template, under the name in the field. Reports its own failures.
+     * @return whether the file was written — the window says so, once, when either family saved.
+     */
+    auto SaveTemplate() -> bool;
 
     // What the shared prompt asks of the document it guards.
     auto HasUnsavedChanges() const -> bool override;

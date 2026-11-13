@@ -34,6 +34,7 @@
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheStorage.h"
 #include "oannotationstylespage.h"
+#include "core/osavednotification.h"
 #include "ofoldlinetextpage.h"
 #include "othumbnailstylespage.h"
 
@@ -1568,6 +1569,10 @@ void OInfoBlockEditor::DoSave(const QString &filePath)
     SetModified(false);
     emit StatusMessage(tr("Template saved"));
     emit TemplateSaved();
+
+    // Last, and after the list has been refreshed: the box answers the click, it does not stand in
+    // front of an editor that is still catching up with the file it just wrote.
+    OSavedNotification::Template(this);
 }
 
 void OInfoBlockEditor::OnSave()

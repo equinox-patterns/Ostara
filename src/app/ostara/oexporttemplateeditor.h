@@ -171,7 +171,7 @@ private:
      * SaveTemplate() now answers for the whole window, and the two families are written by two
      * different hands: this is the one that knows about frames, marks and pagination.
      */
-    void SaveAssemblyMarksTemplate();
+    auto SaveAssemblyMarksTemplate() -> bool;
 
     QWidget *MakeAssemblyMarksTab();
     QWidget *MakeCreateTemplatePage();

@@ -32,6 +32,7 @@
 #include "xml/oomtdocument.h"
 #include "xml/ootudocument.h"
 #include "vtheme.h"
+#include "core/osavednotification.h"
 #include "core/otranslation.h"
 
 #include <QDir>
@@ -432,6 +433,7 @@ void MeasurementWorkspace::DoSave(const QString &filePath)
     m_currentFilePath = filePath;
     m_modified = false;
     UpdateTitle();
+    OSavedNotification::Measurements(this);
 }
 
 bool MeasurementWorkspace::ConfirmOverwrite(const QString &filePath) const

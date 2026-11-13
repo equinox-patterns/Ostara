@@ -33,6 +33,7 @@
 #include "oexporttemplatepreview.h"
 #include "oexporttemplatespage.h"
 #include "core/oexporttemplatestorage.h"
+#include "core/osavednotification.h"
 #include "../vmisc/FactoryWidgets.h"
 
 #include <QCheckBox>
@@ -1562,20 +1563,28 @@ void OExportTemplateEditor::SaveTemplate()
     // The window asks for « save », not for « save the cover page »: both families are open in it,
     // and each one that has something to write writes it. A save that fails leaves its own editor
     // modified, which is what the close prompt reads to refuse to close on unsaved work.
+    bool saved = false;
     if (m_coverPage != nullptr && m_coverPage->IsModified())
     {
-        m_coverPage->SaveTemplate();
+        saved = m_coverPage->SaveTemplate();
     }
 
     if (m_modified)
     {
-        SaveAssemblyMarksTemplate();
+        saved = SaveAssemblyMarksTemplate() || saved;
+    }
+
+    // One answer for the whole window, and only when a file was really written: one button that
+    // saves two families must not report twice, and a save that bailed out has already said why.
+    if (saved)
+    {
+        OSavedNotification::Template(this);
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void OExportTemplateEditor::SaveAssemblyMarksTemplate()
+auto OExportTemplateEditor::SaveAssemblyMarksTemplate() -> bool
 {
     const QString name = m_nameEdit->text().trimmed();
     if (name.isEmpty())
@@ -1583,7 +1592,7 @@ void OExportTemplateEditor::SaveAssemblyMarksTemplate()
         QMessageBox::warning(this, tr("Save template"),
                              tr("Give the template a name before saving it."));
         m_nameEdit->setFocus();
-        return;
+        return false;
     }
 
     const QString target = OExportTemplateStorage::PathForName(name);
@@ -1597,7 +1606,7 @@ void OExportTemplateEditor::SaveAssemblyMarksTemplate()
                              tr("A template called \"%1\" already exists.\n\nChoose another name.")
                                  .arg(QFileInfo(target).completeBaseName()));
         m_nameEdit->setFocus();
-        return;
+        return false;
     }
 
     OExportTemplate tpl = Template();
@@ -1611,7 +1620,7 @@ void OExportTemplateEditor::SaveAssemblyMarksTemplate()
         QMessageBox::critical(this, tr("Save template"),
                               tr("Ostara could not save the template.\n\n%1\n\nCheck that the folder allows writing, "
                                  "and that the file is not open in another program.").arg(error));
-        return;
+        return false;
     }
 
     // Written first, moved after: a save that fails must leave the old file where it was rather
@@ -1634,6 +1643,7 @@ void OExportTemplateEditor::SaveAssemblyMarksTemplate()
     // Last, and only on a save that happened: every path above that bailed out has returned
     // already, so this says the file on disk is now what the editor shows.
     emit TemplateSaved();
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
