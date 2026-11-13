@@ -7415,243 +7415,243 @@ ten však nebyl nalezen. Ostara používá formát .omt/.otu. Zvolte, jak postup
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1420"/>
         <source>Point along perpendicular</source>
         <translation>Bod podél kolmice</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1492"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1510"/>
         <source>Perpendicular point along line</source>
         <translation>Kolmý bod na ose úsečky</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1420"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1438"/>
         <source>Point along bisector</source>
         <translation>Bod na ose úhlu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1222"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1240"/>
         <source>Point at distance and angle</source>
         <translation>Bod ve vzdálenosti a úhlu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1384"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
         <source>Point at distance along line</source>
         <translation>Bod ve vzdálenosti podél čáry</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1564"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1582"/>
         <source>Line between points</source>
         <translation>Čára mezi body</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1546"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1564"/>
         <source>Point at line intersection</source>
         <translation>Bod na průsečíku čar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1600"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1618"/>
         <source>Curve</source>
         <translation>Křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1294"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1312"/>
         <source>Arc</source>
         <translation>Oblouk</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="104"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="105"/>
         <source>Measurements</source>
         <translation>Míry</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="143"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="144"/>
         <source>Window</source>
         <translation>Okno</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="375"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="376"/>
         <source>Dependency tree</source>
         <translation>Strom závislostí</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="384"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="385"/>
         <source>New</source>
         <translation>Nový</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="387"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="388"/>
         <source>&amp;New</source>
         <translation>&amp;Nový</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="390"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="391"/>
         <source>Create a new pattern</source>
         <translation>Vytvořit nový střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="401"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="402"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="404"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="405"/>
         <source>&amp;Open</source>
         <translation>&amp;Otevřít</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="408"/>
         <source>Open a pattern from the library</source>
         <translation>Otevřít střih z knihovny</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="422"/>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="971"/>
         <source>Save</source>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="424"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="425"/>
         <source>&amp;Save</source>
         <translation>&amp;Uložit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="427"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="428"/>
         <source>Save pattern</source>
         <translation>Uložit střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="963"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="981"/>
         <source>Export Final Measurements to CSV</source>
         <translation>Vyvést konečné míry do CSV</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="971"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="989"/>
         <source>Load Measurements</source>
         <translation>Načíst míry</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1672"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1690"/>
         <source>Armhole curve</source>
         <translation>Křivka průramku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1870"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1888"/>
         <source>Dart rotation</source>
         <translation>Otočení záševku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1873"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1891"/>
         <source>Rotate a dart: turn one leg onto the other</source>
         <translation>Otočení záševku: přiložit jednu stranu záševku na druhou</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2136"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2154"/>
         <source>Arc start point</source>
         <translation>Počáteční bod oblouku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2154"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2172"/>
         <source>Arc end point</source>
         <translation>Koncový bod oblouku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2168"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2186"/>
         <source>Boundary together with notches</source>
         <translation>Zahrnout přídavek na šev do zářezů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2176"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2194"/>
         <source>Settings Directory</source>
         <translation>Adresář s nastavením</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2222"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2240"/>
         <source>Elliptical arc with given length</source>
         <translation>Elipsovitý oblouk s danou délkou</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2240"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2258"/>
         <source>Parallel curve tool</source>
         <translation>Nástroj Rovnoběžná křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2258"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2261"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2276"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2279"/>
         <source>Graduated curve tool</source>
         <translation>Nástroj Odstupňovaná křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="444"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="445"/>
         <source>Save not yet saved pattern</source>
         <translation>Uložit dosud neuložený střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="468"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="469"/>
         <source>Draw</source>
         <translation>Výkres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="492"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="493"/>
         <source>Details</source>
         <translation>Jednotlivosti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="519"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="520"/>
         <source>Pointer tools</source>
         <translation>Nástroje ukazovátka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="537"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="538"/>
         <source>New pattern piece</source>
         <translation>Nový díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="540"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="541"/>
         <source>Add new pattern piece</source>
         <translation>Přidat nový díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="647"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="648"/>
         <source>About &amp;Qt</source>
         <translation>O &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="669"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="670"/>
         <source>E&amp;xit</source>
         <translation>&amp;Ukončit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="672"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="673"/>
         <source>Exit the application</source>
         <translation>Ukončit program</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="683"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="684"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="184"/>
         <source>Preferences</source>
         <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="310"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="697"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="311"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="715"/>
         <source>Zoom in</source>
         <translation>Přiblížit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="700"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="718"/>
         <source>zoom in</source>
         <translation>přiblížit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="320"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="714"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="717"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="321"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="732"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="735"/>
         <source>Zoom out</source>
         <translation>Oddálit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="748"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="766"/>
         <source>Zoom fit best</source>
         <translation>Přizpůsobit velikost oknu aplikace</translation>
     </message>
@@ -7837,7 +7837,7 @@ ten však nebyl nalezen. Ostara používá formát .omt/.otu. Zvolte, jak postup
         <translation>Vybrat křivku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="422"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="429"/>
         <source>About Qt</source>
         <translation>O Qt</translation>
     </message>
@@ -7914,14 +7914,14 @@ ten však nebyl nalezen. Ostara používá formát .omt/.otu. Zvolte, jak postup
         <translation>Soubor uložen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="329"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="864"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="332"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="872"/>
         <source>&amp;Undo</source>
         <translation>&amp;Zpět</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="336"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="865"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="339"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="873"/>
         <source>&amp;Redo</source>
         <translation>&amp;Znovu</translation>
     </message>
@@ -7947,67 +7947,67 @@ ten však nebyl nalezen. Ostara používá formát .omt/.otu. Zvolte, jak postup
         <translation>Znovu otevřít soubory.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1438"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1456"/>
         <source>Special point on shoulder</source>
         <translation>Zvláštní bod na rameni</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1456"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1474"/>
         <source>Triangle tool</source>
         <translation>Nástroj trojúhelníku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1474"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1492"/>
         <source>Point from X and Y of two other points</source>
         <translation>Bod se stejným X jednoho bodu a stejným Y jiného</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1510"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1528"/>
         <source>Point intersect line and axis</source>
         <translation>Bod průsečíku čáry a osy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1582"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1600"/>
         <source>Simple curve</source>
         <translation>Jednoduchá křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1690"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1708"/>
         <source>Curved path</source>
         <translation>Složená křivka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1618"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1636"/>
         <source>Segmenting a simple curve</source>
         <translation>Rozdělit jednoduchou křivku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1366"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1384"/>
         <source>Segment a curved path</source>
         <translation>Rozdělit složenou křivku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1312"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1330"/>
         <source>Point intersect curve and axis</source>
         <translation>Bod průsečíku křivky a osy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1276"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1294"/>
         <source>Segment an arc</source>
         <translation>Rozdělit oblouk</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2029"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2047"/>
         <source>Union tool</source>
         <translation>Nástroj Spojení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="779"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="797"/>
         <source>Last Tool</source>
         <translation>Naposledy použitý nástroj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="782"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="800"/>
         <source>Activate last used tool again</source>
         <translation>Zapnout znovu naposledy použitý nástroj</translation>
     </message>
@@ -8017,47 +8017,47 @@ ten však nebyl nalezen. Ostara používá formát .omt/.otu. Zvolte, jak postup
         <translation>Vybrat bod pro hodnotu X (svislý)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="516"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="517"/>
         <source>Pointer</source>
         <translation>Ukazovátko</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="568"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="569"/>
         <source>Config pattern piece</source>
         <translation>Nastavit díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="799"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="817"/>
         <source>Show Curve Details</source>
         <translation>Ukázat podrobnosti křivky</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="802"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="820"/>
         <source>Show/hide control points and curve direction</source>
         <translation>Ukázat/Skrýt ovládací body a směr křivky</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1240"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1258"/>
         <source>Point of intersection arcs</source>
         <translation>Bod průsečíku oblouků</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1744"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1762"/>
         <source>Point of intersection circles</source>
         <translation>Bod průsečíku kruhů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1780"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1798"/>
         <source>Point from circle and tangent</source>
         <translation>Bod průsečíku kruhu a tangenty</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1762"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1780"/>
         <source>Point from arc and tangent</source>
         <translation>Bod průsečíku oblouku a tangenty</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1726"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1744"/>
         <source>Arc with given length</source>
         <translation>Oblouk s danou délkou</translation>
     </message>
@@ -8217,17 +8217,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Poskytněte, prosím, jeden vstupní soubor.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="471"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="472"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Režim pro práci s díly střihu. Tyto díly střihu jsou základem pro další krok v &amp;quot;režimu jednotlivosti&amp;quot;. Předtím než můžete dále pracovat v &amp;quot;režimu jednotlivosti&amp;quot;, musíte vytvořit alespoň jednu jednotlivost (díl střihu).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="495"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="496"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with details. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail on the stage &amp;quot;Draw mode&amp;quot;. Details created on this stage will be used for creating a layout. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Režim pro práci s jednotlivostmi (díly střihu). Předtím než můžete dále pracovat v &amp;quot;režimu jednotlivosti&amp;quot;, musíte alespoň jednu jednotlivost (díl střihu) vytvořit v &amp;quot;režimu výkresu&amp;quot;. Jednotlivosti (díly střihu) vytvořené v tomto kroku se použijí na vytvoření rozvržení.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1993"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2011"/>
         <source>True darts</source>
         <translation>Vyrovnat délku záševku</translation>
     </message>
@@ -8297,7 +8297,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Neukládat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1330"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1348"/>
         <source>Point intersection curves</source>
         <translation>Bod průsečíku křivek</translation>
     </message>
@@ -8307,7 +8307,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Vybrat první křivku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1654"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1672"/>
         <source>Curve tool which uses point as control handle</source>
         <translation>Nástroj pro jednoduchou křivku s použitím bodů jako řídicích úchytů</translation>
     </message>
@@ -8322,19 +8322,19 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Vybrat bod cesty kubické bézierovy křivky</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1852"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1870"/>
         <source>Rotate objects</source>
         <translation>Otočit předměty</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="759"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="762"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="765"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="777"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="780"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="783"/>
         <source>Close pattern</source>
         <translation>Zavřít střih</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1528"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1546"/>
         <source>Midpoint between two points</source>
         <translation>Středový bod mezi dvěma body</translation>
     </message>
@@ -8350,22 +8350,22 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Vybrat bod na tangentě</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1834"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1852"/>
         <source>Flipping objects by line</source>
         <translation>Převrátit předměty podle čáry</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1816"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1834"/>
         <source>Flipping objects by axis</source>
         <translation>Převrátit předměty podle osy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1975"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1993"/>
         <source>Move objects</source>
         <translation>Posunout předměty</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1708"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1726"/>
         <source>Elliptical Arc</source>
         <translation>Elipsovitý oblouk</translation>
     </message>
@@ -8400,17 +8400,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Pouze pro čtení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="592"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="593"/>
         <source>Variables Table</source>
         <translation>Tabulka proměnných</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="595"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="596"/>
         <source>Contains information about increments and internal variables</source>
         <translation>Obsahuje údaje o přídavcích a vnitřních proměnných</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="988"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1006"/>
         <source>Edit Current</source>
         <translation>Upravit nynější</translation>
     </message>
@@ -8420,7 +8420,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Soubory se střihem</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2083"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2101"/>
         <source>Insert node tool</source>
         <translation>Nástroj Vložit uzel</translation>
     </message>
@@ -8430,17 +8430,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Nyní nemůžete použít Režim jednotlivosti. Vytvořte, prosím, alespoň jeden střihový díl.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="836"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="854"/>
         <source>Zoom fit best current</source>
         <translation>Přizpůsobit nynější pohled</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="839"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="857"/>
         <source>zoom fit best current pattern piece</source>
         <translation>Přizpůsobit pohled nejlépe na nynější díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2118"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2136"/>
         <source>Export details skiping the Layout stage</source>
         <translation>Vyvést jednotlivosti (díly střihu) a přeskočit krok rozvržení</translation>
     </message>
@@ -8458,17 +8458,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation type="vanished">Nelze vyvést jednotlivosti (díly střihu).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2011"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2029"/>
         <source>Workpiece tool</source>
         <translation>Nástroj pro vytažení hlavního obrysu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2065"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2083"/>
         <source>Internal path tool</source>
         <translation>Nástroj Vnitřní cesta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="441"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="442"/>
         <source>Save &amp;As…</source>
         <translation>Uložit j&amp;ako…</translation>
     </message>
@@ -8493,42 +8493,42 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Cílová cesta je prázdná.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1019"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1037"/>
         <source>Next pattern piece</source>
         <translation>Další díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1022"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1040"/>
         <source>Ctrl+PgDown</source>
         <translation>Ctrl+PgDown</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1033"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1051"/>
         <source>Previous pattern piece</source>
         <translation>Předchozí díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1036"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1054"/>
         <source>Ctrl+PgUp</source>
         <translation>Ctrl+PgUp</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1201"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1219"/>
         <source>Tool &quot;Select&quot;</source>
         <translation>Nástroj Výběr</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1636"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1654"/>
         <source>Segment a curve</source>
         <translation>Rozdělit křivku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2101"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2119"/>
         <source>Place label tool</source>
         <translation>Nástroj pro umístění popisu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2047"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2065"/>
         <source>Duplicate detail tool</source>
         <translation>Nástroj Zdvojit jednotlivost (díl střihu)</translation>
     </message>
@@ -8549,7 +8549,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Ostara</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="866"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="874"/>
         <source>Changes applied.</source>
         <translation>Změny použity.</translation>
     </message>
@@ -8559,7 +8559,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Nelze uložit nastavení. Přístup odepřen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="410"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="411"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
@@ -8569,12 +8569,12 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Nelze číst nastavení z poškozeného souboru .INI.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1798"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1816"/>
         <source>Point of intersection circle and segment</source>
         <translation>Průsečík kruhu a části</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1097"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1115"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="236"/>
         <source>Export recipe</source>
         <translation>Vyvést Recipe</translation>
@@ -8595,38 +8595,38 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Nepodařilo se uložit Recipe. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1348"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1366"/>
         <source>Curved path tool which uses point as control handle</source>
         <translation>Nástroj pro složenou křivku s použitím bodů jako řídicích úchytů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1258"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1276"/>
         <source>Point of intersection arc and axis</source>
         <translation>Bod průsečíku oblouku a osy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1111"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1129"/>
         <source>Show main path</source>
         <translation>Ukázat hlavní cestu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1114"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1132"/>
         <source>Globally show pieces main path</source>
         <translation>Ukázat celkově hlavní cestu dílu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="253"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="254"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="487"/>
         <source>Pattern messages</source>
         <translation>Zprávy střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="265"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="266"/>
         <source>Clear all messages</source>
         <translation>Smazat všechny zprávy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="303"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="304"/>
         <source>Filter</source>
         <translation>Filtr</translation>
     </message>
@@ -8707,12 +8707,12 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Díl vložen: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="275"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="276"/>
         <source>Auto refresh the list with each parse</source>
         <translation>Automaticky při každém zpracování obnovit seznam</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="153"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="154"/>
         <source>Watermark</source>
         <translation>Vodoznak</translation>
     </message>
@@ -8732,380 +8732,390 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>&amp;Zobrazení</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="115"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="116"/>
         <source>&amp;Libraries</source>
         <translation>&amp;Knihovny</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="173"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="174"/>
         <source>Top bar</source>
         <translation>Horní lišta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="190"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="191"/>
         <source>Options</source>
         <translation>Volby</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="205"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="206"/>
         <source>Layer</source>
         <translation>Vrstva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="571"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="572"/>
         <source>Change the name of pattern piece</source>
         <translation>Změnit název dílu střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="658"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="659"/>
         <source>&amp;About Ostara</source>
         <translation>&amp;O aplikaci Ostara</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="731"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="734"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="749"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="752"/>
         <source>Zoom 100%</source>
         <translation>Zoom 100 %</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="822"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="840"/>
         <source>Show segment point names</source>
         <translation>Zobrazit názvy bodů segmentů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="825"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="843"/>
         <source>Allow segment point names to appear. Uncheck to hide them in all cases.</source>
         <translation>Povolit zobrazování názvů bodů segmentů. Zrušte zaškrtnutí pro jejich skrytí ve všech případech.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="123"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="124"/>
         <source>Information block</source>
         <translation>Blok informací</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="136"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="137"/>
         <source>PDF editor</source>
         <translation>Editor PDF</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="214"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="215"/>
         <source>Size Ranges</source>
         <translation>Rozsahy velikostí</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="223"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="224"/>
         <source>Size Styles</source>
         <translation>Styly velikostí</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="232"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="233"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="241"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="864"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="242"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="882"/>
         <source>Cover page</source>
         <translation>Titulní strana</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="554"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="555"/>
         <source>Save piece to library</source>
         <translation>Uložit díl do knihovny</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="557"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="558"/>
         <source>Save the active pattern piece to the piece library</source>
         <translation>Uložit aktivní díl střihu do knihovny dílů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="612"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="613"/>
         <source>Graded</source>
         <translation>Gradace</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="615"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="616"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with graded sizes of the details. To enable &amp;quot;Graded mode&amp;quot; you need at least one detail on the stage &amp;quot;Details mode&amp;quot; and a multi-size measurements table loaded.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Fáze gradace dílů podle velikostí. Pro aktivaci &amp;quot;režimu gradace&amp;quot; je třeba mít extrahován alespoň jeden díl v &amp;quot;režimu Dílů&amp;quot; a mít načtenou tabulku měření pro více velikostí.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="636"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="637"/>
         <source>Export</source>
         <translation>Vyvést</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="639"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="640"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for nesting the details and producing the printable PDF, without leaving Ostara.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Režim vnořování dílů a vytváření tisknutelného PDF bez opuštění Ostary.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="853"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="698"/>
+        <source>Full screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="701"/>
+        <source>full screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="871"/>
         <source>Final Measurements</source>
         <translation>Konečné míry</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="890"/>
         <source>PDF layout</source>
         <translation>Rozvržení PDF</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="898"/>
         <source>Export templates</source>
         <translation>Šablony exportu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="888"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="906"/>
         <source>Export as image...</source>
         <translation>Exportovat jako obrázek…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="896"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="914"/>
         <source>Existing templates</source>
         <translation>Existující šablony</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="904"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="922"/>
         <source>Create new</source>
         <translation>Vytvořit nový</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="912"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="930"/>
         <source>Logo</source>
         <translation>Logo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="920"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="938"/>
         <source>Clients</source>
         <translation>Klienti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="928"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="946"/>
         <source>Collections</source>
         <translation>Kolekce</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="936"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="954"/>
         <source>Annotations</source>
         <translation>Anotace</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="944"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="962"/>
         <source>Thumbnail</source>
         <translation>Miniatura</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="952"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="970"/>
         <source>Foldline text</source>
         <translation>Text linie přehybu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="974"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="992"/>
         <source>Load a measurement table (.omt/.otu) and connect it to the pattern</source>
         <translation>Načíst tabulku měření (.omt/.otu) a připojit ji ke střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="991"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1009"/>
         <source>Edit the measurement table currently loaded in the pattern</source>
         <translation>Upravit tabulku měření aktuálně načtenou ve střihu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1002"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1020"/>
         <source>Create New</source>
         <translation>Vytvořit nový</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1005"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1023"/>
         <source>Create a new measurement table</source>
         <translation>Vytvořit novou tabulku měření</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1047"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1065"/>
         <source>Increase point name font</source>
         <translation>Zvětšit písmo názvů bodů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1058"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1076"/>
         <source>Decrease point name font</source>
         <translation>Zmenšit písmo názvů bodů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1069"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1087"/>
         <source>Original point name font</source>
         <translation>Původní písmo názvů bodů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1083"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1101"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="104"/>
         <source>Hide point names</source>
         <translation>Skrýt názvy bodů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1125"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1143"/>
         <source>Load</source>
         <translation>Nahrát</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1136"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1154"/>
         <source>Remove</source>
         <translation>Odstranit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1147"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1165"/>
         <source>Edit current</source>
         <translation>Upravit nynější</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1155"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1173"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1158"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1176"/>
         <source>Create or edit a watermark</source>
         <translation>Vytvořit nebo upravit vodoznak</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1891"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1909"/>
         <source>Dart cap</source>
         <translation>Špička záševku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1894"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1912"/>
         <source>Dart cap: draw the cap of a dart</source>
         <translation>Špička záševku: nakreslit špičku záševku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1912"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1930"/>
         <source>Rectangle</source>
         <translation>Obdélník</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1915"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1933"/>
         <source>Rectangle: a base point, a width and a height</source>
         <translation>Obdélník: výchozí bod, šířka a výška</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1933"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1951"/>
         <source>Transfer</source>
         <translation>Přenos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1936"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1954"/>
         <source>Transfer: graft a portion of one part onto another</source>
         <translation>Přenos: naroubovat část jednoho dílu na jiný</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1954"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1972"/>
         <source>Spiral</source>
         <translation>Spirála</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1957"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1975"/>
         <source>Spiral: a golden spiral of the length you ask for, drawn from an existing point</source>
         <translation>Spirála: zlatá spirála požadované délky, tažená z existujícího bodu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2104"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2122"/>
         <source>Internal mark</source>
         <translation>Vnitřní značka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2187"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2205"/>
         <source>Reload point names</source>
         <translation>Znovu načíst názvy bodů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2190"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2208"/>
         <source>Reload piece point names</source>
         <translation>Znovu načíst názvy bodů dílu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2201"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2219"/>
         <source>Auto-arrange point names</source>
         <translation>Automaticky uspořádat názvy bodů</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2204"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2222"/>
         <source>Auto-arrange point names to reduce overlaps</source>
         <translation>Automaticky uspořádat názvy bodů, aby se omezilo překrývání</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2269"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2287"/>
         <source>Measurement Tables</source>
         <translation>Tabulky měření</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2272"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2290"/>
         <source>Browse, open, and manage measurement tables in the library</source>
         <translation>Procházet, otevírat a spravovat tabulky měření v knihovně</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2280"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2298"/>
         <source>Pieces</source>
         <translation>Díly</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2283"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2301"/>
         <source>Browse the pieces saved in the library, and see what each of them needs</source>
         <translation>Procházet díly uložené v knihovně a zjistit, co každý z nich potřebuje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2291"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2309"/>
         <source>Patterns</source>
         <translation>Střihy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2294"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2312"/>
         <source>Browse the patterns saved in the library, and manage what each folder holds</source>
         <translation>Procházet střihy uložené v knihovně a spravovat obsah jednotlivých složek</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2312"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2330"/>
         <source>Slash and spread</source>
         <translation>Rozstřihnout a rozevřít</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2315"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2333"/>
         <source>Slash and spread: open a piece along cut lines by rotating its parts</source>
         <translation>Rozstřihnout a rozevřít: otevřít díl podél linií řezu otáčením jeho částí</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2333"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2351"/>
         <source>Flounce spiral</source>
         <translation>Šnekový volán</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2336"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2354"/>
         <source>Flounce spiral: a band of constant width wound as a snail</source>
         <translation>Šnekový volán: pruh konstantní šířky stočený do spirály</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2354"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2372"/>
         <source>Pleat</source>
         <translation>Záhyb</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2357"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2375"/>
         <source>Pleat: fold the fabric back on itself along a departure line</source>
         <translation>Záhyb: přehnout látku přes sebe podél výchozí linie</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2375"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2393"/>
         <source>Middle pleat</source>
         <translation>Středový záhyb</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2378"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2396"/>
         <source>Middle pleat: lay a pleat at the centre of a piece, on the line of its middle</source>
         <translation>Středový záhyb: umístit záhyb do středu dílu, na linii jeho středu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2396"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2414"/>
         <source>Move by batch</source>
         <translation>Přesunout dávkově</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2399"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2417"/>
         <source>Move by batch: move the parts of a piece along cut lines</source>
         <translation>Přesunout dávkově: posunout části dílu podél linií řezu</translation>
     </message>
@@ -9265,12 +9275,12 @@ Ostara používá formát .omt/.otu. Zvolte, jak postupovat:</translation>
         <translation type="vanished">Vyvedení výkresu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="366"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="367"/>
         <source>Background images</source>
         <translation>Obrázky pozadí</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1169"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1187"/>
         <source>Add background image</source>
         <translation>Přidat obrázek pozadí</translation>
     </message>
@@ -9289,12 +9299,12 @@ Ostara používá formát .omt/.otu. Zvolte, jak postupovat:</translation>
         <translation>Vyberte bod středu elipsovitého oblouku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="894"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="902"/>
         <source>Pen style:</source>
         <translation>Styl pera:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="898"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="906"/>
         <source>Color:</source>
         <translation>Barva:</translation>
     </message>
@@ -9330,12 +9340,12 @@ Ostara používá formát .omt/.otu. Zvolte, jak postupovat:</translation>
         <translation>Uložit obrázek</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1183"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1201"/>
         <source>Show accuracy radius</source>
         <translation>Ukázat poloměr přesnosti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="867"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="875"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="146"/>
         <source>Piece:</source>
         <translation>Díl:</translation>
@@ -11019,86 +11029,86 @@ Označte hvězdičkou velikostní rozsah v panelu Velikostní rozsahy, abyste je
 <context>
     <name>OCoverPageEditor</name>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="209"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="211"/>
         <source>Name:</source>
         <translation>Název:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="210"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="212"/>
         <source>Template name</source>
         <translation>Název předlohy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="211"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="213"/>
         <source>Save</source>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="213"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="215"/>
         <source>Existing templates</source>
         <translation>Existující předlohy</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="214"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="216"/>
         <source>Create a template</source>
         <translation>Vytvořit předlohu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="215"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="217"/>
         <source>Logo</source>
         <translation>Logo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="216"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="218"/>
         <source>Symbols</source>
         <translation>Symboly</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="217"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="219"/>
         <source>Seam allowances</source>
         <translation>Švové záložky</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="221"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="223"/>
         <source>Cover page language</source>
         <translation>Jazyk titulní strany</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="222"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="224"/>
         <source>You can choose several for a multilingual page</source>
         <translation>Pro vícejazyčnou stránku jich můžete vybrat několik</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="531"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="540"/>
         <source>Unsaved template</source>
         <translation>Neuložená předloha</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="624"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="633"/>
         <source>Changes kept</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="625"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="634"/>
         <source>The saved template could not be read back, so your changes were kept.
 
 %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="654"/>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="671"/>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="678"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="663"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="680"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="687"/>
         <source>Save template</source>
         <translation>Uložit předlohu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="655"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="664"/>
         <source>Give the template a name before saving it.</source>
         <translation>Než předlohu uložíte, dejte jí název.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="672"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="681"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
@@ -11107,7 +11117,7 @@ Choose another name.</source>
 Zvolte jiný název.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="679"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="688"/>
         <source>Ostara could not save the template.
 
 %1
@@ -11116,7 +11126,7 @@ Check that the folder allows writing, and that the file is not open in another p
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="721"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="730"/>
         <source>Ostara could not open the template.
 
 %1
@@ -11133,7 +11143,7 @@ The file may have been moved, renamed, or written by a newer version of Ostara.<
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="720"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="729"/>
         <source>Open template</source>
         <translation>Otevřít předlohu</translation>
     </message>
@@ -21504,145 +21514,151 @@ Chcete pokračovat?</translation>
 <context>
     <name>VAbstractShortcutManager</name>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="308"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="310"/>
         <source>Zoom in</source>
         <comment>shortcut for action</comment>
         <translation>Přiblížit</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="310"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="312"/>
         <source>Zoom out</source>
         <comment>shortcut for action</comment>
         <translation>Oddálit</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="312"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="314"/>
+        <source>Full screen</source>
+        <comment>shortcut for action</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="316"/>
         <source>Zoom original</source>
         <comment>shortcut for action</comment>
         <translation>Výchozí zvětšení</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="314"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="318"/>
         <source>Zoom fit best</source>
         <comment>shortcut for action</comment>
         <translation>Přizpůsobit velikost oknu aplikace</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="316"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="320"/>
         <source>Zoom fit best current</source>
         <comment>shortcut for action</comment>
         <translation>Přizpůsobit nynější pohled</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="318"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="322"/>
         <source>Increase point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Zvětšit velikost písma názvů bodů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="320"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="324"/>
         <source>Decrease point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Zmenšit velikost písma názvů bodů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="322"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="326"/>
         <source>Original point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Původní velikost písma názvů bodů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="324"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="328"/>
         <source>Show all point names</source>
         <comment>shortcut for action</comment>
         <translation>Zobrazit všechny názvy bodů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="326"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="330"/>
         <source>Undo</source>
         <comment>shortcut for action</comment>
         <translation>Zpět</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="328"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="332"/>
         <source>Redo</source>
         <comment>shortcut for action</comment>
         <translation>Znovu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="330"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="334"/>
         <source>New</source>
         <comment>shortcut for action</comment>
         <translation>Nový</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="332"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="336"/>
         <source>Open</source>
         <comment>shortcut for action</comment>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="334"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="338"/>
         <source>Save</source>
         <comment>shortcut for action</comment>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="336"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
         <source>Save as</source>
         <comment>shortcut for action</comment>
         <translation>Uložit jako</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="338"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
         <source>Draw mode</source>
         <comment>shortcut for action</comment>
         <translation>Režim výkresu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
         <source>Details mode</source>
         <comment>shortcut for action</comment>
         <translation>Režim jednotlivostí</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
         <source>Graded mode</source>
         <comment>shortcut for action</comment>
         <translation>Režim gradace</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
         <source>Export mode</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="350"/>
         <source>New pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Nový díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="352"/>
         <source>Next pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Další díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="350"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="354"/>
         <source>Previous pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Předchozí díl střihu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="442"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="446"/>
         <source>Export templates</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished">Šablony exportu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="444"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="448"/>
         <source>Export as image</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished"></translation>
@@ -21653,25 +21669,25 @@ Chcete pokračovat?</translation>
         <translation type="vanished">Režim interaktivních nástrojů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="354"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="358"/>
         <source>Open Table of variables dialog</source>
         <comment>shortcut for action</comment>
         <translation>Otevřít tabulku proměnných</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="356"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="360"/>
         <source>Quit app</source>
         <comment>shortcut for action</comment>
         <translation>Ukončit program</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="358"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="362"/>
         <source>Activate last used tool</source>
         <comment>shortcut for action</comment>
         <translation>Zapnout naposledy použitý nástroj</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="360"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
         <source>Show curve details</source>
         <comment>shortcut for action</comment>
         <translation>Zobrazit podrobnosti křivky</translation>
@@ -21682,7 +21698,7 @@ Chcete pokračovat?</translation>
         <translation type="vanished">Zobrazit/skrýt popisy částí</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="362"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
         <source>Open final measurements dialog</source>
         <comment>shortcut for action</comment>
         <translation>Otevřít tabulku konečných měření</translation>
@@ -21728,43 +21744,43 @@ Chcete pokračovat?</translation>
         <translation type="vanished">Najít předchozí shodu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="368"/>
         <source>Tool &apos;Point at distance and angle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod ve vzdálenosti a úhlu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="370"/>
         <source>Tool &apos;Line between points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Čára mezi body</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="368"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="372"/>
         <source>Tool &apos;Point at distance along line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod ve vzdálenosti podél čáry</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="370"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="374"/>
         <source>Tool &apos;Special point on shoulder&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Zvláštní bod na rameni</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="372"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="376"/>
         <source>Tool &apos;Point along perpendicular&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod podél kolmice</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="374"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="378"/>
         <source>Tool &apos;Point along bisector&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod na ose úhlu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="376"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="380"/>
         <source>Tool &apos;Point at line intersection&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod na průsečíku čar</translation>
@@ -21775,13 +21791,13 @@ Chcete pokračovat?</translation>
         <translation type="vanished">Nástroj pro jednoduchou křivku</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="378"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="382"/>
         <source>Tool &apos;Curve which uses point as control handle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Jednoduchá křivka s použitím bodů jako řídicích úchytů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="382"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="386"/>
         <source>Tool &apos;Arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Oblouk</translation>
@@ -21792,43 +21808,43 @@ Chcete pokračovat?</translation>
         <translation type="vanished">Nástroj pro složenou křivku</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="384"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="388"/>
         <source>Tool &apos;Curved path which uses point as control handle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Složená křivka s použitím bodů jako řídicích úchytů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="386"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="390"/>
         <source>Tool &apos;Point of intersection circle and segment&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj pro bod průsečíku kruhu a části</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="388"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="392"/>
         <source>Tool &apos;Workpiece tool&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj pro vytažení hlavního obrysu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="390"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="394"/>
         <source>Tool &apos;Internal path tool&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Vnitřní cesta</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="392"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="396"/>
         <source>Tool &apos;Perpendicular point along line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Kolmý bod na ose úsečky</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="394"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="398"/>
         <source>Tool &apos;Triangle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Trojúhelník</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="396"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="400"/>
         <source>Tool &apos;Point from X and Y of two other points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod z X a Y dvou jiných bodů</translation>
@@ -21844,91 +21860,91 @@ Chcete pokračovat?</translation>
         <translation type="vanished">Nástroj pro rozdělení složené křivky</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="398"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="402"/>
         <source>Tool &apos;Piece union&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Spojení dílů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="400"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="404"/>
         <source>Tool &apos;Duplicate piece&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Zdvojení dílů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="402"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="406"/>
         <source>Tool &apos;Segment an arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj pro rozdělení oblouku</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="404"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="408"/>
         <source>Tool &apos;Point of intersection line and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod průsečíku čáry a úhlu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="406"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="410"/>
         <source>Tool &apos;Point of intersection curve and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod průsečíku křivky a osy</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="408"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="412"/>
         <source>Tool &apos;Point of intersection arc and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod průsečíku oblouku a osy</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="410"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="414"/>
         <source>Tool &apos;Point of intersection arcs&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod průsečíku oblouků</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="412"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="416"/>
         <source>Tool &apos;Point of intersection circles&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod průsečíku kruhů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="414"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="418"/>
         <source>Tool &apos;Point intersection curves&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod průsečíku křivek</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="416"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
         <source>Tool &apos;Point from circle and tangent&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod průsečíku kruhu a tangenty</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="418"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="422"/>
         <source>Tool &apos;Point from arc and tangent&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Bod průsečíku oblouku a tangenty</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="424"/>
         <source>Tool &apos;Arc with given length&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Oblouk s danou délkou</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="422"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="426"/>
         <source>Tool &apos;True darts&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Vyrovnat délku záševku</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="428"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="432"/>
         <source>Tool &apos;Dart cap&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Zakončení záševku“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="430"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="434"/>
         <source>Tool &apos;Rectangle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Obdélník“</translation>
@@ -21939,109 +21955,109 @@ Chcete pokračovat?</translation>
         <translation type="vanished">Automaticky uspořádat názvy bodů</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="464"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="468"/>
         <source>Tool &apos;Select&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Vybrat“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="466"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
         <source>Tool &apos;Curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Křivka“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="468"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
         <source>Tool &apos;Segment a curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Rozdělit křivku“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
         <source>Tool &apos;Spiral&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Spirála“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
         <source>Tool &apos;Slash and spread&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Střihnout a otočit“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
         <source>Tool &apos;Move by batch&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Přesunout dávkově“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
         <source>Tool &apos;Pleat&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Sklad“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="482"/>
         <source>Tool &apos;Flounce spiral&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Šnekový volán“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="484"/>
         <source>Tool &apos;Middle pleat&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Středový sklad“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="424"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="428"/>
         <source>Tool &apos;Rotate objects&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Otočit předměty</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="352"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="356"/>
         <source>Save piece to library</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished">Uložit díl do knihovny</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="380"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="384"/>
         <source>Tool &apos;Armhole curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Křivka průramku“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="426"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="430"/>
         <source>Tool &apos;Dart rotation&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Otáčení záševku“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="432"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="436"/>
         <source>Tool &apos;Transfer&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj „Přenos“</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="434"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="438"/>
         <source>Tool &apos;Flipping objects by line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj pro převrácení předmětů podle čáry</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="436"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="440"/>
         <source>Tool &apos;Flipping objects by axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj pro převrácení předmětů podle osy</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="438"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="442"/>
         <source>Tool &apos;Move objects&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Posunout předměty</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="440"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="444"/>
         <source>Tool &apos;Midpoint between two points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Středový bod mezi dvěma body</translation>
@@ -22052,55 +22068,55 @@ Chcete pokračovat?</translation>
         <translation type="vanished">Vyvést výkres jako</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="446"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="450"/>
         <source>Export details as</source>
         <comment>shortcut for action</comment>
         <translation>Vyvést jednotlivosti (díly střihu) jako</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="448"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="452"/>
         <source>Tool &apos;Elliptical Arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Elipsovitý oblouk</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="450"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="454"/>
         <source>Tool &apos;Insert node&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Vložit uzel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="452"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="456"/>
         <source>Tool &apos;Place label&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Umístit popis</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="454"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="458"/>
         <source>Tool &apos;Arc start&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Začátek oblouku</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="456"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="460"/>
         <source>Tool &apos;Arc end&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Konec oblouku</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="458"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="462"/>
         <source>Tool &apos;Elliptical arc with given length&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Elipsovitý oblouk s danou délkou</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="460"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="464"/>
         <source>Tool &apos;Parallel curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Rovnoběžná křivka</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="462"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="466"/>
         <source>Tool &apos;Graduated curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Nástroj Odstupňovaná křivka</translation>
@@ -22172,52 +22188,52 @@ Chcete pokračovat?</translation>
 <context>
     <name>VApplication</name>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="722"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="729"/>
         <source>Error parsing file. Program will be terminated.</source>
         <translation>Chyba při zpracování souboru. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="728"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="735"/>
         <source>Error bad id. Program will be terminated.</source>
         <translation>Chyba. Špatný identifikátor. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="734"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="741"/>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
         <translation>Chyba. Nelze převést hodnotu. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="740"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="747"/>
         <source>Error empty parameter. Program will be terminated.</source>
         <translation>Chyba. Prázdný parametr. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="746"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="753"/>
         <source>Error wrong id. Program will be terminated.</source>
         <translation>Chyba. Špatný identifikátor. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="767"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="774"/>
         <source>Something&apos;s wrong!!</source>
         <translation>Něco je špatně!</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="781"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="788"/>
         <source>Parser error: %1. Program will be terminated.</source>
         <translation>Chyba při zpracování: %1. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="786"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="793"/>
         <source>Exception thrown: %1. Program will be terminated.</source>
         <translation>Způsobena chyba: %1. Program bude ukončen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="761"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="768"/>
         <source>Invalid notch.</source>
         <translation>Neplatný zářez.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="773"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="780"/>
         <source>Formula warning: %1. Program will be terminated.</source>
         <translation>Upozornění na vzorec: %1. Program bude ukončen.</translation>
     </message>

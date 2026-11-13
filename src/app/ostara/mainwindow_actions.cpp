@@ -38,6 +38,7 @@
 #include "widgets/TopBar.h"
 #include "widgets/DrawToolBar.h"
 #include "core/vapplication.h"
+#include "core/ofullscreen.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "dialogs/oaboutdialog.h"
 #include "vabstractapplication.h"
@@ -51,6 +52,7 @@
 #include <QAction>
 #include <QComboBox>
 #include <QGuiApplication>
+#include <QKeySequence>
 #include <QMessageBox>
 #include <QTabWidget>
 #include <QUndoStack>
@@ -75,6 +77,7 @@ void MainWindow::InitActionShortcuts()
     m_shortcutActions.insert(VShortcutAction::LastTool, ui->actionLast_tool);
     m_shortcutActions.insert(VShortcutAction::CurveDetails, ui->actionShowCurveDetails);
     m_shortcutActions.insert(VShortcutAction::FinalMeasurements, ui->actionFinalMeasurements);
+    m_shortcutActions.insert(VShortcutAction::FullScreen, ui->actionFullScreen);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -395,6 +398,10 @@ void MainWindow::CreateActions()
     connect(ui->actionExportRecipe, &QAction::triggered, this, &MainWindow::ActionExportRecipe_triggered);
     connect(ui->actionNewDraw, &QAction::triggered, this, &MainWindow::ActionNewDraw_triggered);
     connect(ui->actionSavePiece, &QAction::triggered, this, &MainWindow::ActionSavePiece_triggered);
+
+    m_actionFullScreen = ui->actionFullScreen;
+    connect(ui->actionFullScreen, &QAction::triggered, this, &MainWindow::ActionFullScreen_triggered);
+
     connect(ui->actionExportFinalMeasurementsToCSV, &QAction::triggered, this, &MainWindow::ExportFMeasurementsToCSV);
     connect(ui->actionTable, &QAction::triggered, this, &MainWindow::ActionTable_triggered);
     connect(ui->actionFinalMeasurements, &QAction::triggered, this, &MainWindow::ActionFinalMeasurements_triggered);
@@ -668,4 +675,19 @@ void MainWindow::RetranslateActions()
 #if defined(Q_OS_MAC)
     BuildDockMenu();
 #endif
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ActionFullScreen_triggered(bool checked)
+{
+    if (checked)
+    {
+        // `Enter()` échoue quand la fenêtre n'a pas encore d'écran connu : la case doit dire ce qui
+        // s'est vraiment passé, pas ce qui a été demandé.
+        ui->actionFullScreen->setChecked(OFullScreen::Enter(this));
+        return;
+    }
+
+    OFullScreen::Exit(this);
+    ui->actionFullScreen->setChecked(false);
 }

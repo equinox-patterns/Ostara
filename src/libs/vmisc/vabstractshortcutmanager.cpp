@@ -110,7 +110,7 @@ auto VAbstractShortcutManager::GetShortcutsList() const -> QList<VAbstractShortc
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 87, "Convert all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Convert all actions.");
 
     switch (type)
     {
@@ -118,6 +118,8 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "zoomin"_L1;
         case VShortcutAction::ZoomOut:
             return "zoomout"_L1;
+        case VShortcutAction::FullScreen:
+            return "fullscreen"_L1;
         case VShortcutAction::ZoomOriginal:
             return "zoomoriginal"_L1;
         case VShortcutAction::ZoomFitBest:
@@ -300,7 +302,7 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 87, "Translate all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Translate all actions.");
 
     switch (type)
     {
@@ -308,6 +310,8 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Zoom in", "shortcut for action");
         case VShortcutAction::ZoomOut:
             return tr("Zoom out", "shortcut for action");
+        case VShortcutAction::FullScreen:
+            return tr("Full screen", "shortcut for action");
         case VShortcutAction::ZoomOriginal:
             return tr("Zoom original", "shortcut for action");
         case VShortcutAction::ZoomFitBest:

@@ -7415,243 +7415,243 @@ no ona nije pronađena. Ostara koristi format .omt/.otu. Odaberite kako nastavit
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1420"/>
         <source>Point along perpendicular</source>
         <translation>Točka duž okomice</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1492"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1510"/>
         <source>Perpendicular point along line</source>
         <translation>Okomita točka duž linije</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1420"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1438"/>
         <source>Point along bisector</source>
         <translation>Točka duž simetrale</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1222"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1240"/>
         <source>Point at distance and angle</source>
         <translation>Točka na udaljenosti i pod kutom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1384"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
         <source>Point at distance along line</source>
         <translation>Točka na udaljenosti duž linije</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1564"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1582"/>
         <source>Line between points</source>
         <translation>Linija između točaka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1546"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1564"/>
         <source>Point at line intersection</source>
         <translation>Točka na presjeku linija</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1600"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1618"/>
         <source>Curve</source>
         <translation>Krivulja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1294"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1312"/>
         <source>Arc</source>
         <translation>Luk</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="104"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="105"/>
         <source>Measurements</source>
         <translation>Mjerenja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="143"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="144"/>
         <source>Window</source>
         <translation>Prozor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="375"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="376"/>
         <source>Dependency tree</source>
         <translation>Stablo ovisnosti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="384"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="385"/>
         <source>New</source>
         <translation>Novi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="387"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="388"/>
         <source>&amp;New</source>
         <translation>&amp;Novi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="390"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="391"/>
         <source>Create a new pattern</source>
         <translation>Izradi novi kroj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="401"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="402"/>
         <source>Open</source>
         <translation>Otvori</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="404"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="405"/>
         <source>&amp;Open</source>
         <translation>&amp;Otvori</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="408"/>
         <source>Open a pattern from the library</source>
         <translation>Otvori kroj iz biblioteke</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="422"/>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="971"/>
         <source>Save</source>
         <translation>Spremi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="424"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="425"/>
         <source>&amp;Save</source>
         <translation>&amp;Spremi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="427"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="428"/>
         <source>Save pattern</source>
         <translation>Spremi kroj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="963"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="981"/>
         <source>Export Final Measurements to CSV</source>
         <translation>Izvezi završna mjerenja u CSV</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="971"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="989"/>
         <source>Load Measurements</source>
         <translation>Učitaj mjerenja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1672"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1690"/>
         <source>Armhole curve</source>
         <translation>Krivulja otvora za ruku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1870"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1888"/>
         <source>Dart rotation</source>
         <translation>Pivot ušitka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1873"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1891"/>
         <source>Rotate a dart: turn one leg onto the other</source>
         <translation>Pivot ušitka: prebaci jedan krak na drugi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2136"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2154"/>
         <source>Arc start point</source>
         <translation>Početna točka luka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2154"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2172"/>
         <source>Arc end point</source>
         <translation>Završna točka luka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2168"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2186"/>
         <source>Boundary together with notches</source>
         <translation>Granica zajedno s oznakama</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2176"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2194"/>
         <source>Settings Directory</source>
         <translation>Direktorij postavki</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2222"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2240"/>
         <source>Elliptical arc with given length</source>
         <translation>Eliptični luk zadane duljine</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2240"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2258"/>
         <source>Parallel curve tool</source>
         <translation>Alat paralelna krivulja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2258"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2261"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2276"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2279"/>
         <source>Graduated curve tool</source>
         <translation>Alat graduirana krivulja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="444"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="445"/>
         <source>Save not yet saved pattern</source>
         <translation>Spremi kroj koji još nije spremljen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="468"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="469"/>
         <source>Draw</source>
         <translation>Crtaj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="492"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="493"/>
         <source>Details</source>
         <translation>Detalji</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="519"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="520"/>
         <source>Pointer tools</source>
         <translation>Alati za pokazivač</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="537"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="538"/>
         <source>New pattern piece</source>
         <translation>Novi krojni dio</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="540"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="541"/>
         <source>Add new pattern piece</source>
         <translation>Dodaj novi krojni dio</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="647"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="648"/>
         <source>About &amp;Qt</source>
         <translation>O &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="669"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="670"/>
         <source>E&amp;xit</source>
         <translation>Izlaz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="672"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="673"/>
         <source>Exit the application</source>
         <translation>Izađi iz aplikacije</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="683"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="684"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="184"/>
         <source>Preferences</source>
         <translation>Postavke</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="310"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="697"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="311"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="715"/>
         <source>Zoom in</source>
         <translation>Povećaj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="700"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="718"/>
         <source>zoom in</source>
         <translation>Povećaj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="320"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="714"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="717"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="321"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="732"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="735"/>
         <source>Zoom out</source>
         <translation>Smanji</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="748"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="766"/>
         <source>Zoom fit best</source>
         <translation>Prilagodi najboljem prikazu</translation>
     </message>
@@ -7837,7 +7837,7 @@ no ona nije pronađena. Ostara koristi format .omt/.otu. Odaberite kako nastavit
         <translation>Odaberite krivulju</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="422"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="429"/>
         <source>About Qt</source>
         <translation>O Qt</translation>
     </message>
@@ -7914,14 +7914,14 @@ no ona nije pronađena. Ostara koristi format .omt/.otu. Odaberite kako nastavit
         <translation>Datoteka spremljena</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="329"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="864"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="332"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="872"/>
         <source>&amp;Undo</source>
         <translation>&amp;Poništi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="336"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="865"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="339"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="873"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ponovi</translation>
     </message>
@@ -7947,67 +7947,67 @@ no ona nije pronađena. Ostara koristi format .omt/.otu. Odaberite kako nastavit
         <translation>Ponovno otvori datoteke.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1438"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1456"/>
         <source>Special point on shoulder</source>
         <translation>Posebna točka na ramenu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1456"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1474"/>
         <source>Triangle tool</source>
         <translation>Alat za trokut</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1474"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1492"/>
         <source>Point from X and Y of two other points</source>
         <translation>Točka iz X i Y dviju drugih točaka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1510"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1528"/>
         <source>Point intersect line and axis</source>
         <translation>Točka na presjeku linije i osi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1582"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1600"/>
         <source>Simple curve</source>
         <translation>Jednostavna krivulja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1690"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1708"/>
         <source>Curved path</source>
         <translation>Zakrivljena putanja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1618"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1636"/>
         <source>Segmenting a simple curve</source>
         <translation>Segmentiranje jednostavne krivulje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1366"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1384"/>
         <source>Segment a curved path</source>
         <translation>Segment zakrivljene putanje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1312"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1330"/>
         <source>Point intersect curve and axis</source>
         <translation>Točka na presjeku krivulje i osi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1276"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1294"/>
         <source>Segment an arc</source>
         <translation>Segmentiranje luka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2029"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2047"/>
         <source>Union tool</source>
         <translation>Alat za spajanje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="779"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="797"/>
         <source>Last Tool</source>
         <translation>Posljednji alat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="782"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="800"/>
         <source>Activate last used tool again</source>
         <translation>Ponovno aktiviraj zadnje korišteni alat</translation>
     </message>
@@ -8017,47 +8017,47 @@ no ona nije pronađena. Ostara koristi format .omt/.otu. Odaberite kako nastavit
         <translation>Odaberite točku za X vrijednost (vertikalno)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="516"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="517"/>
         <source>Pointer</source>
         <translation>Pokazivač</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="568"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="569"/>
         <source>Config pattern piece</source>
         <translation>Konfiguracija krojnog dijela</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="799"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="817"/>
         <source>Show Curve Details</source>
         <translation>Prikaži detalje krivulje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="802"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="820"/>
         <source>Show/hide control points and curve direction</source>
         <translation>Prikaži/sakrij kontrolne točke i smjer krivulje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1240"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1258"/>
         <source>Point of intersection arcs</source>
         <translation>Točka presjeka lukova</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1744"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1762"/>
         <source>Point of intersection circles</source>
         <translation>Točka presjeka krugova</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1780"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1798"/>
         <source>Point from circle and tangent</source>
         <translation>Točka s kružnice i tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1762"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1780"/>
         <source>Point from arc and tangent</source>
         <translation>Točka s luka i tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1726"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1744"/>
         <source>Arc with given length</source>
         <translation>Luk s određenom duljinom</translation>
     </message>
@@ -8217,17 +8217,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Molimo, navedite jednu ulaznu datoteku.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="471"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="472"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Način rada s krojnim dijelovima. Prije nego što možete omogućiti &apos;Način rada s detaljima&apos; potrebno je kreirati barem jedan krojni dio u &apos;Načinu crtanja&apos;. Krojni dijelovi kreirani u ovoj fazi koristit će se za izradu krojne slike&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="495"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="496"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with details. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail on the stage &amp;quot;Draw mode&amp;quot;. Details created on this stage will be used for creating a layout. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Način rada s detaljima. Prije uključivanja &quot;Načina rada s detaljima&quot; potrebno je kreirati barem jedan detalj u fazi &quot;Način crtanja&quot;. Detalji kreirani u ovoj fazi koristit će se za izradu rasporeda.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1993"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2011"/>
         <source>True darts</source>
         <translation>Pravi ušitci</translation>
     </message>
@@ -8297,7 +8297,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Nemoj spremiti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1330"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1348"/>
         <source>Point intersection curves</source>
         <translation>Presjek krivulja</translation>
     </message>
@@ -8307,7 +8307,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Odaberite prvu krivulju</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1654"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1672"/>
         <source>Curve tool which uses point as control handle</source>
         <translation>Alat za krivulje koji koristi točku kao kontrolnu ručku</translation>
     </message>
@@ -8322,19 +8322,19 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Odaberite točku putanje kubične Bezierove krivulje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1852"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1870"/>
         <source>Rotate objects</source>
         <translation>Rotiraj objekte</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="759"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="762"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="765"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="777"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="780"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="783"/>
         <source>Close pattern</source>
         <translation>Zatvori trenutni kroj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1528"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1546"/>
         <source>Midpoint between two points</source>
         <translation>Srednja točka između dviju točaka</translation>
     </message>
@@ -8350,22 +8350,22 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Odaberite točku na tangenti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1834"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1852"/>
         <source>Flipping objects by line</source>
         <translation>Okretanje objekata prema liniji</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1816"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1834"/>
         <source>Flipping objects by axis</source>
         <translation>Okretanje objekata prema osi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1975"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1993"/>
         <source>Move objects</source>
         <translation>Pomicanje objekata</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1708"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1726"/>
         <source>Elliptical Arc</source>
         <translation>Eliptični luk</translation>
     </message>
@@ -8400,17 +8400,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>samo za čitanje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="592"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="593"/>
         <source>Variables Table</source>
         <translation>Tablica varijabli</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="595"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="596"/>
         <source>Contains information about increments and internal variables</source>
         <translation>Sadrži informacije o povećanjima i unutarnjim varijablama</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="988"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1006"/>
         <source>Edit Current</source>
         <translation>Uredi trenutno</translation>
     </message>
@@ -8420,7 +8420,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Datoteke krojeva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2083"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2101"/>
         <source>Insert node tool</source>
         <translation>Alat za umetanje čvora</translation>
     </message>
@@ -8430,17 +8430,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Još ne možete koristiti način detalja. Molimo, izradite barem jedan radni dio.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="836"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="854"/>
         <source>Zoom fit best current</source>
         <translation>Prikaz trenutnog krojnog dijela u najboljoj mjeri</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="839"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="857"/>
         <source>zoom fit best current pattern piece</source>
         <translation>Povećaj najbolje trenutni krojni dio</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2118"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2136"/>
         <source>Export details skiping the Layout stage</source>
         <translation>Izvoz detalja preskačući fazu rasporeda</translation>
     </message>
@@ -8458,17 +8458,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation type="vanished">Nije moguće izvesti detalje.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2011"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2029"/>
         <source>Workpiece tool</source>
         <translation>Alati za radne dijelove</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2065"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2083"/>
         <source>Internal path tool</source>
         <translation>Alat za unutarnju putanju</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="441"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="442"/>
         <source>Save &amp;As…</source>
         <translation>Spremi kao…</translation>
     </message>
@@ -8493,42 +8493,42 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Ciljna putanja je prazna.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1019"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1037"/>
         <source>Next pattern piece</source>
         <translation>Sljedeći krojni dio</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1022"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1040"/>
         <source>Ctrl+PgDown</source>
         <translation>Ctrl+PgDown</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1033"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1051"/>
         <source>Previous pattern piece</source>
         <translation>Prethodni krojni dio</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1036"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1054"/>
         <source>Ctrl+PgUp</source>
         <translation>Ctrl+PgUp</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1201"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1219"/>
         <source>Tool &quot;Select&quot;</source>
         <translation>Alat &quot;Odaberi&quot;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1636"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1654"/>
         <source>Segment a curve</source>
         <translation>Segmentiraj krivulju</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2101"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2119"/>
         <source>Place label tool</source>
         <translation>Alat za oznake</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2047"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2065"/>
         <source>Duplicate detail tool</source>
         <translation>Alat za dupliciranje detalja</translation>
     </message>
@@ -8549,7 +8549,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Ostara</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="866"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="874"/>
         <source>Changes applied.</source>
         <translation>Promjene su primijenjene.</translation>
     </message>
@@ -8559,7 +8559,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Ne mogu spremiti postavke. Pristup odbijen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="410"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="411"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
@@ -8569,12 +8569,12 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Ne mogu čitati postavke iz neispravno oblikovane .INI datoteke.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1798"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1816"/>
         <source>Point of intersection circle and segment</source>
         <translation>Točka presjeka kruga i segmenta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1097"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1115"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="236"/>
         <source>Export recipe</source>
         <translation>Izvoz recepta</translation>
@@ -8595,38 +8595,38 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Nije moguće spremiti recept. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1348"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1366"/>
         <source>Curved path tool which uses point as control handle</source>
         <translation>Alat za zakrivljenu putanju koji koristi točku kao kontrolnu ručku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1258"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1276"/>
         <source>Point of intersection arc and axis</source>
         <translation>Točka presjeka luka i osi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1111"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1129"/>
         <source>Show main path</source>
         <translation>Prikaži glavnu putanju</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1114"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1132"/>
         <source>Globally show pieces main path</source>
         <translation>Globalno prikaži glavne putanje komada</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="253"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="254"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="487"/>
         <source>Pattern messages</source>
         <translation>Poruke kroja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="265"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="266"/>
         <source>Clear all messages</source>
         <translation>Obriši sve poruke</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="303"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="304"/>
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
@@ -8707,12 +8707,12 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Dio umetnut: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="275"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="276"/>
         <source>Auto refresh the list with each parse</source>
         <translation>Automatski osvježi popis nakon svake obrade</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="153"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="154"/>
         <source>Watermark</source>
         <translation>Vodeni žig</translation>
     </message>
@@ -8732,380 +8732,390 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>&amp;Prikaz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="115"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="116"/>
         <source>&amp;Libraries</source>
         <translation>&amp;Biblioteke</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="173"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="174"/>
         <source>Top bar</source>
         <translation>Gornja traka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="190"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="191"/>
         <source>Options</source>
         <translation>Opcije</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="205"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="206"/>
         <source>Layer</source>
         <translation>Sloj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="571"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="572"/>
         <source>Change the name of pattern piece</source>
         <translation>Promijeni naziv krojnog dijela</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="658"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="659"/>
         <source>&amp;About Ostara</source>
         <translation>&amp;O Ostari</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="731"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="734"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="749"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="752"/>
         <source>Zoom 100%</source>
         <translation>Povećanje 100 %</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="822"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="840"/>
         <source>Show segment point names</source>
         <translation>Prikaži nazive točaka segmenata</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="825"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="843"/>
         <source>Allow segment point names to appear. Uncheck to hide them in all cases.</source>
         <translation>Dopusti prikazivanje naziva točaka segmenata. Odznačite da biste ih u svim slučajevima sakrili.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="123"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="124"/>
         <source>Information block</source>
         <translation>Informacijski blok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="136"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="137"/>
         <source>PDF editor</source>
         <translation>PDF uređivač</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="214"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="215"/>
         <source>Size Ranges</source>
         <translation>Rasponi veličina</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="223"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="224"/>
         <source>Size Styles</source>
         <translation>Stilovi veličina</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="232"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="233"/>
         <source>Outputs</source>
         <translation>Izlazi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="241"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="864"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="242"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="882"/>
         <source>Cover page</source>
         <translation>Naslovna stranica</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="554"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="555"/>
         <source>Save piece to library</source>
         <translation>Spremi dio u biblioteku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="557"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="558"/>
         <source>Save the active pattern piece to the piece library</source>
         <translation>Spremi aktivni krojni dio u biblioteku dijelova</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="612"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="613"/>
         <source>Graded</source>
         <translation>Gradacija</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="615"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="616"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with graded sizes of the details. To enable &amp;quot;Graded mode&amp;quot; you need at least one detail on the stage &amp;quot;Details mode&amp;quot; and a multi-size measurements table loaded.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Način rada s gradiranim veličinama detalja. Za uključivanje „načina gradacije“ potreban je barem jedan detalj u fazi „način detalja“ i učitana tablica mjerenja za više veličina.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="636"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="637"/>
         <source>Export</source>
         <translation>Izvezi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="639"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="640"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for nesting the details and producing the printable PDF, without leaving Ostara.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Način ugnježđivanja detalja i izrade PDF-a za ispis, bez napuštanja Ostare.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="853"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="698"/>
+        <source>Full screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="701"/>
+        <source>full screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="871"/>
         <source>Final Measurements</source>
         <translation>Završna mjerenja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="890"/>
         <source>PDF layout</source>
         <translation>Raspored PDF-a</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="898"/>
         <source>Export templates</source>
         <translation>Predlošci za izvoz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="888"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="906"/>
         <source>Export as image...</source>
         <translation>Izvezi kao sliku…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="896"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="914"/>
         <source>Existing templates</source>
         <translation>Postojeći predlošci</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="904"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="922"/>
         <source>Create new</source>
         <translation>Stvori novi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="912"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="930"/>
         <source>Logo</source>
         <translation>Logotip</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="920"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="938"/>
         <source>Clients</source>
         <translation>Klijenti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="928"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="946"/>
         <source>Collections</source>
         <translation>Kolekcije</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="936"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="954"/>
         <source>Annotations</source>
         <translation>Napomene</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="944"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="962"/>
         <source>Thumbnail</source>
         <translation>Sličica</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="952"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="970"/>
         <source>Foldline text</source>
         <translation>Tekst linije preklopa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="974"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="992"/>
         <source>Load a measurement table (.omt/.otu) and connect it to the pattern</source>
         <translation>Učitaj tablicu mjerenja (.omt/.otu) i poveži je s krojom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="991"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1009"/>
         <source>Edit the measurement table currently loaded in the pattern</source>
         <translation>Uredi tablicu mjerenja koja je trenutačno učitana u kroj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1002"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1020"/>
         <source>Create New</source>
         <translation>Stvori novi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1005"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1023"/>
         <source>Create a new measurement table</source>
         <translation>Stvori novu tablicu mjerenja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1047"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1065"/>
         <source>Increase point name font</source>
         <translation>Povećaj font naziva točaka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1058"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1076"/>
         <source>Decrease point name font</source>
         <translation>Smanji font naziva točaka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1069"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1087"/>
         <source>Original point name font</source>
         <translation>Izvorni font naziva točaka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1083"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1101"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="104"/>
         <source>Hide point names</source>
         <translation>Sakrij nazive točaka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1125"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1143"/>
         <source>Load</source>
         <translation>Učitaj</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1136"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1154"/>
         <source>Remove</source>
         <translation>Ukloni</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1147"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1165"/>
         <source>Edit current</source>
         <translation>Uredi trenutačno</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1155"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1173"/>
         <source>Editor</source>
         <translation>Urednik</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1158"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1176"/>
         <source>Create or edit a watermark</source>
         <translation>Stvori ili uredi vodeni žig</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1891"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1909"/>
         <source>Dart cap</source>
         <translation>Vrh ušitka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1894"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1912"/>
         <source>Dart cap: draw the cap of a dart</source>
         <translation>Vrh ušitka: nacrtaj vrh ušitka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1912"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1930"/>
         <source>Rectangle</source>
         <translation>Pravokutnik</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1915"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1933"/>
         <source>Rectangle: a base point, a width and a height</source>
         <translation>Pravokutnik: početna točka, širina i visina</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1933"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1951"/>
         <source>Transfer</source>
         <translation>Prijenos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1936"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1954"/>
         <source>Transfer: graft a portion of one part onto another</source>
         <translation>Prijenos: presadi dio s jednog krojnog dijela na drugi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1954"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1972"/>
         <source>Spiral</source>
         <translation>Spirala</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1957"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1975"/>
         <source>Spiral: a golden spiral of the length you ask for, drawn from an existing point</source>
         <translation>Spirala: zlatna spirala tražene duljine, povučena iz postojeće točke</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2104"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2122"/>
         <source>Internal mark</source>
         <translation>Unutarnja oznaka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2187"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2205"/>
         <source>Reload point names</source>
         <translation>Ponovno učitaj nazive točaka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2190"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2208"/>
         <source>Reload piece point names</source>
         <translation>Ponovno učitaj nazive točaka dijela</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2201"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2219"/>
         <source>Auto-arrange point names</source>
         <translation>Automatski rasporedi nazive točaka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2204"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2222"/>
         <source>Auto-arrange point names to reduce overlaps</source>
         <translation>Automatski rasporedi nazive točaka radi smanjenja preklapanja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2269"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2287"/>
         <source>Measurement Tables</source>
         <translation>Tablice mjerenja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2272"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2290"/>
         <source>Browse, open, and manage measurement tables in the library</source>
         <translation>Pregledaj, otvori i upravljaj tablicama mjerenja u biblioteci</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2280"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2298"/>
         <source>Pieces</source>
         <translation>Dijelovi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2283"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2301"/>
         <source>Browse the pieces saved in the library, and see what each of them needs</source>
         <translation>Pregledaj dijelove spremljene u biblioteci i pogledaj što svakome od njih treba</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2291"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2309"/>
         <source>Patterns</source>
         <translation>Krojevi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2294"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2312"/>
         <source>Browse the patterns saved in the library, and manage what each folder holds</source>
         <translation>Pregledaj krojeve spremljene u biblioteci i upravljaj sadržajem svake mape</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2312"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2330"/>
         <source>Slash and spread</source>
         <translation>Rasijecanje i razmicanje</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2315"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2333"/>
         <source>Slash and spread: open a piece along cut lines by rotating its parts</source>
         <translation>Rasijecanje i razmicanje: otvori dio duž linija reza zakretanjem njegovih dijelova</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2333"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2351"/>
         <source>Flounce spiral</source>
         <translation>Spiralni volan</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2336"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2354"/>
         <source>Flounce spiral: a band of constant width wound as a snail</source>
         <translation>Spiralni volan: traka stalne širine namotana poput puža</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2354"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2372"/>
         <source>Pleat</source>
         <translation>Nabor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2357"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2375"/>
         <source>Pleat: fold the fabric back on itself along a departure line</source>
         <translation>Nabor: presavij tkaninu na sebe duž početne linije nabora</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2375"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2393"/>
         <source>Middle pleat</source>
         <translation>Srednji nabor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2378"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2396"/>
         <source>Middle pleat: lay a pleat at the centre of a piece, on the line of its middle</source>
         <translation>Srednji nabor: postavi nabor u središte dijela, na liniju njegove sredine</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2396"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2414"/>
         <source>Move by batch</source>
         <translation>Premjesti skupno</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2399"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2417"/>
         <source>Move by batch: move the parts of a piece along cut lines</source>
         <translation>Premjesti skupno: premjesti dijelove jednog krojnog dijela duž linija reza</translation>
     </message>
@@ -9265,12 +9275,12 @@ Ostara upotrebljava format .omt/.otu. Odaberite kako nastaviti:</translation>
         <translation type="vanished">Izvoz crtanja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="366"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="367"/>
         <source>Background images</source>
         <translation>Pozadinske slike</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1169"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1187"/>
         <source>Add background image</source>
         <translation>Dodaj pozadinsku sliku</translation>
     </message>
@@ -9289,12 +9299,12 @@ Ostara upotrebljava format .omt/.otu. Odaberite kako nastaviti:</translation>
         <translation>Odaberite točku središta eliptičnog luka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="894"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="902"/>
         <source>Pen style:</source>
         <translation>Stil pera:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="898"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="906"/>
         <source>Color:</source>
         <translation>Boja:</translation>
     </message>
@@ -9330,12 +9340,12 @@ Ostara upotrebljava format .omt/.otu. Odaberite kako nastaviti:</translation>
         <translation>Spremi sliku</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1183"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1201"/>
         <source>Show accuracy radius</source>
         <translation>Prikaži radijus točnosti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="867"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="875"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="146"/>
         <source>Piece:</source>
         <translation>Dio:</translation>
@@ -11019,86 +11029,86 @@ Označite zvjezdicom raspon veličina u panelu Rasponi veličina da bi njegova d
 <context>
     <name>OCoverPageEditor</name>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="209"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="211"/>
         <source>Name:</source>
         <translation>Naziv:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="210"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="212"/>
         <source>Template name</source>
         <translation>Naziv predloška</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="211"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="213"/>
         <source>Save</source>
         <translation>Spremi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="213"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="215"/>
         <source>Existing templates</source>
         <translation>Postojeći predlošci</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="214"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="216"/>
         <source>Create a template</source>
         <translation>Stvori predložak</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="215"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="217"/>
         <source>Logo</source>
         <translation>Logotip</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="216"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="218"/>
         <source>Symbols</source>
         <translation>Simboli</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="217"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="219"/>
         <source>Seam allowances</source>
         <translation>Dodaci za šavove</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="221"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="223"/>
         <source>Cover page language</source>
         <translation>Jezik naslovnice</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="222"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="224"/>
         <source>You can choose several for a multilingual page</source>
         <translation>Možete odabrati više njih za višejezičnu stranicu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="531"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="540"/>
         <source>Unsaved template</source>
         <translation>Nespremljeni predložak</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="624"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="633"/>
         <source>Changes kept</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="625"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="634"/>
         <source>The saved template could not be read back, so your changes were kept.
 
 %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="654"/>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="671"/>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="678"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="663"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="680"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="687"/>
         <source>Save template</source>
         <translation>Spremi predložak</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="655"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="664"/>
         <source>Give the template a name before saving it.</source>
         <translation>Dajte predlošku naziv prije spremanja.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="672"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="681"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
@@ -11107,7 +11117,7 @@ Choose another name.</source>
 Odaberite drugi naziv.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="679"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="688"/>
         <source>Ostara could not save the template.
 
 %1
@@ -11116,7 +11126,7 @@ Check that the folder allows writing, and that the file is not open in another p
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="721"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="730"/>
         <source>Ostara could not open the template.
 
 %1
@@ -11133,7 +11143,7 @@ The file may have been moved, renamed, or written by a newer version of Ostara.<
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="720"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="729"/>
         <source>Open template</source>
         <translation>Otvori predložak</translation>
     </message>
@@ -21508,145 +21518,151 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
 <context>
     <name>VAbstractShortcutManager</name>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="308"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="310"/>
         <source>Zoom in</source>
         <comment>shortcut for action</comment>
         <translation>Povećaj</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="310"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="312"/>
         <source>Zoom out</source>
         <comment>shortcut for action</comment>
         <translation>Smanji</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="312"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="314"/>
+        <source>Full screen</source>
+        <comment>shortcut for action</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="316"/>
         <source>Zoom original</source>
         <comment>shortcut for action</comment>
         <translation>Izvorno povećanje</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="314"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="318"/>
         <source>Zoom fit best</source>
         <comment>shortcut for action</comment>
         <translation>Prilagodi najboljem prikazu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="316"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="320"/>
         <source>Zoom fit best current</source>
         <comment>shortcut for action</comment>
         <translation>Prikaz trenutnog krojnog dijela u najboljoj mjeri</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="318"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="322"/>
         <source>Increase point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Povećaj veličinu fonta naziva točaka</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="320"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="324"/>
         <source>Decrease point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Smanji veličinu fonta naziva točaka</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="322"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="326"/>
         <source>Original point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Izvorna veličina fonta naziva točaka</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="324"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="328"/>
         <source>Show all point names</source>
         <comment>shortcut for action</comment>
         <translation>Prikaži sve nazive točaka</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="326"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="330"/>
         <source>Undo</source>
         <comment>shortcut for action</comment>
         <translation>Poništi</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="328"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="332"/>
         <source>Redo</source>
         <comment>shortcut for action</comment>
         <translation>Ponovi</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="330"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="334"/>
         <source>New</source>
         <comment>shortcut for action</comment>
         <translation>Novi</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="332"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="336"/>
         <source>Open</source>
         <comment>shortcut for action</comment>
         <translation>Otvori</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="334"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="338"/>
         <source>Save</source>
         <comment>shortcut for action</comment>
         <translation>Spremi</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="336"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
         <source>Save as</source>
         <comment>shortcut for action</comment>
         <translation>Spremi kao</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="338"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
         <source>Draw mode</source>
         <comment>shortcut for action</comment>
         <translation>Način crtanja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
         <source>Details mode</source>
         <comment>shortcut for action</comment>
         <translation>Način detalja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
         <source>Graded mode</source>
         <comment>shortcut for action</comment>
         <translation>Način gradiranja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
         <source>Export mode</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished">Način izvoza</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="350"/>
         <source>New pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Novi krojni dio</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="352"/>
         <source>Next pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Sljedeći krojni dio</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="350"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="354"/>
         <source>Previous pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Prethodni krojni dio</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="442"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="446"/>
         <source>Export templates</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="444"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="448"/>
         <source>Export as image</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished"></translation>
@@ -21657,25 +21673,25 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
         <translation type="vanished">Način interaktivnih alata</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="354"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="358"/>
         <source>Open Table of variables dialog</source>
         <comment>shortcut for action</comment>
         <translation>Otvori tablicu varijabli</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="356"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="360"/>
         <source>Quit app</source>
         <comment>shortcut for action</comment>
         <translation>Izlazak iz aplikacije</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="358"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="362"/>
         <source>Activate last used tool</source>
         <comment>shortcut for action</comment>
         <translation>Aktiviraj posljednji korišteni alat</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="360"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
         <source>Show curve details</source>
         <comment>shortcut for action</comment>
         <translation>Prikaz detalja krivulje</translation>
@@ -21686,7 +21702,7 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
         <translation type="vanished">Prikaži/sakrij oznake segmenata</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="362"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
         <source>Open final measurements dialog</source>
         <comment>shortcut for action</comment>
         <translation>Otvori dijalog za završna mjerenja</translation>
@@ -21732,43 +21748,43 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
         <translation type="vanished">Pronađi prethodno podudaranje</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="368"/>
         <source>Tool &apos;Point at distance and angle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka na udaljenosti i pod kutom&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="370"/>
         <source>Tool &apos;Line between points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Linija između točaka&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="368"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="372"/>
         <source>Tool &apos;Point at distance along line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka na udaljenosti uzduž linije&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="370"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="374"/>
         <source>Tool &apos;Special point on shoulder&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Posebna točka na ramenu&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="372"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="376"/>
         <source>Tool &apos;Point along perpendicular&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka duž okomice&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="374"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="378"/>
         <source>Tool &apos;Point along bisector&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka duž simetrale&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="376"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="380"/>
         <source>Tool &apos;Point at line intersection&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka na presjeku linija&apos;</translation>
@@ -21779,13 +21795,13 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
         <translation type="vanished">Alat &apos;Jednostavna krivulja&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="378"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="382"/>
         <source>Tool &apos;Curve which uses point as control handle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Krivulja koja koristi točku kao kontrolnu ručku&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="382"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="386"/>
         <source>Tool &apos;Arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Luk&apos;</translation>
@@ -21796,43 +21812,43 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
         <translation type="vanished">Alat &apos;Zakrivljena putanja&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="384"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="388"/>
         <source>Tool &apos;Curved path which uses point as control handle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Zakrivljena putanja koja koristi točku kao kontrolnu ručku&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="386"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="390"/>
         <source>Tool &apos;Point of intersection circle and segment&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka presjeka kružnice i segmenta&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="388"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="392"/>
         <source>Tool &apos;Workpiece tool&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Alat za krojni dio&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="390"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="394"/>
         <source>Tool &apos;Internal path tool&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Unutarnja putanja&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="392"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="396"/>
         <source>Tool &apos;Perpendicular point along line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Okomita točka uzduž linije&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="394"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="398"/>
         <source>Tool &apos;Triangle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Trokut&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="396"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="400"/>
         <source>Tool &apos;Point from X and Y of two other points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka od X i Y vrijednosti dviju drugih točaka&apos;</translation>
@@ -21848,91 +21864,91 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
         <translation type="vanished">Alat &apos;Segmentiranje zakrivljene putanje&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="398"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="402"/>
         <source>Tool &apos;Piece union&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Spajanje krojnih dijelova&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="400"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="404"/>
         <source>Tool &apos;Duplicate piece&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Dupliciranje krojnog dijela&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="402"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="406"/>
         <source>Tool &apos;Segment an arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Segmentiranje luka&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="404"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="408"/>
         <source>Tool &apos;Point of intersection line and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka presjeka linije i osi&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="406"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="410"/>
         <source>Tool &apos;Point of intersection curve and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka presjeka krivulje i osi&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="408"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="412"/>
         <source>Tool &apos;Point of intersection arc and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka presjeka luka i osi&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="410"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="414"/>
         <source>Tool &apos;Point of intersection arcs&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka presjeka lukova&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="412"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="416"/>
         <source>Tool &apos;Point of intersection circles&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka presjeka kružnica&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="414"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="418"/>
         <source>Tool &apos;Point intersection curves&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka presjeka krivulja&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="416"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
         <source>Tool &apos;Point from circle and tangent&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka od kružnice i tangente&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="418"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="422"/>
         <source>Tool &apos;Point from arc and tangent&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Točka od luka i tangente&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="424"/>
         <source>Tool &apos;Arc with given length&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Luk s određenom duljinom&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="422"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="426"/>
         <source>Tool &apos;True darts&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Pravi ušitci&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="428"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="432"/>
         <source>Tool &apos;Dart cap&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Ušitak”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="430"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="434"/>
         <source>Tool &apos;Rectangle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Pravokutnik”</translation>
@@ -21943,109 +21959,109 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
         <translation type="vanished">Automatski rasporedi nazive točaka</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="464"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="468"/>
         <source>Tool &apos;Select&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Odaberi”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="466"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
         <source>Tool &apos;Curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Krivulja”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="468"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
         <source>Tool &apos;Segment a curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Segmentiraj krivulju”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
         <source>Tool &apos;Spiral&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Spirala”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
         <source>Tool &apos;Slash and spread&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Reži i zakreni”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
         <source>Tool &apos;Move by batch&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Premjesti grupno”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
         <source>Tool &apos;Pleat&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Nabor”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="482"/>
         <source>Tool &apos;Flounce spiral&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Spiralni volan”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="484"/>
         <source>Tool &apos;Middle pleat&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Srednji nabor”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="424"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="428"/>
         <source>Tool &apos;Rotate objects&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Rotiranje objekata&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="352"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="356"/>
         <source>Save piece to library</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished">Spremi dio u biblioteku</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="380"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="384"/>
         <source>Tool &apos;Armhole curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Krivulja otvora za ruku”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="426"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="430"/>
         <source>Tool &apos;Dart rotation&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Rotacija ušitka”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="432"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="436"/>
         <source>Tool &apos;Transfer&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat „Prijenos”</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="434"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="438"/>
         <source>Tool &apos;Flipping objects by line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Zrcaljenje objekata uzduž linije&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="436"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="440"/>
         <source>Tool &apos;Flipping objects by axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Zrcaljenje objekata uzduž osi&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="438"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="442"/>
         <source>Tool &apos;Move objects&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Pomicanje objekata&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="440"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="444"/>
         <source>Tool &apos;Midpoint between two points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Srednja točka između dviju točaka&apos;</translation>
@@ -22056,55 +22072,55 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
         <translation type="vanished">Izvoz crteža kao</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="446"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="450"/>
         <source>Export details as</source>
         <comment>shortcut for action</comment>
         <translation>Izvoz detalja kao</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="448"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="452"/>
         <source>Tool &apos;Elliptical Arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Eliptični luk&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="450"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="454"/>
         <source>Tool &apos;Insert node&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Umetanje čvora&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="452"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="456"/>
         <source>Tool &apos;Place label&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Postavljanje oznake&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="454"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="458"/>
         <source>Tool &apos;Arc start&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Početak luka&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="456"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="460"/>
         <source>Tool &apos;Arc end&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Kraj luka&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="458"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="462"/>
         <source>Tool &apos;Elliptical arc with given length&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Eliptični luk zadane duljine&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="460"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="464"/>
         <source>Tool &apos;Parallel curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Paralelna krivulja&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="462"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="466"/>
         <source>Tool &apos;Graduated curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Alat &apos;Graduirana krivulja&apos;</translation>
@@ -22176,52 +22192,52 @@ Brisanjem grupe obrisat će se i sva njezina mjerenja.
 <context>
     <name>VApplication</name>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="722"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="729"/>
         <source>Error parsing file. Program will be terminated.</source>
         <translation>Greška pri obradi datoteke. Program će se zatvoriti.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="728"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="735"/>
         <source>Error bad id. Program will be terminated.</source>
         <translation>Pogrešan ID. Program će se prekinuti.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="734"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="741"/>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
         <translation>Ne mogu pretvoriti vrijednost. Program će se prekinuti.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="740"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="747"/>
         <source>Error empty parameter. Program will be terminated.</source>
         <translation>Prazan parametar. Program će se prekinuti.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="746"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="753"/>
         <source>Error wrong id. Program will be terminated.</source>
         <translation>Pogrešan ID. Program će se prekinuti.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="767"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="774"/>
         <source>Something&apos;s wrong!!</source>
         <translation>Nešto nije u redu!!</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="781"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="788"/>
         <source>Parser error: %1. Program will be terminated.</source>
         <translation>Pogreška u parseru: %1. Program će se zatvoriti.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="786"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="793"/>
         <source>Exception thrown: %1. Program will be terminated.</source>
         <translation>Iznimka bačena: %1. Program će se prekinuti.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="761"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="768"/>
         <source>Invalid notch.</source>
         <translation>Neispravna ureza.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="773"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="780"/>
         <source>Formula warning: %1. Program will be terminated.</source>
         <translation>Upozorenje o formuli: %1. Program će se zatvoriti.</translation>
     </message>

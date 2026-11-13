@@ -35,6 +35,7 @@
 #include <QPoint>
 #include <QRect>
 #include <QScreen>
+#include <QShortcut>
 #include <QShowEvent>
 #include <QSize>
 
@@ -44,6 +45,22 @@ OExportTemplateWindow::OExportTemplateWindow(QWidget *parent) : QMainWindow(pare
     // Without this, on macOS a native QFileDialog sheet attached later can leave the
     // window deactivated behind its parent MainWindow.
     setWindowModality(Qt::NonModal);
+
+    // Le type « dialogue » dit au système ce que cette fenêtre est : un dialogue de la fenêtre
+    // principale, comme toutes les autres boîtes de l'application — et non une fenêtre ordinaire, que
+    // le gestionnaire de fenêtres peut laisser derrière un plein écran (X11, Wayland) ou afficher
+    // plein écran (macOS, où une fenêtre ouverte depuis une fenêtre en plein écran hérite de son
+    // espace).
+    setWindowFlags(windowFlags() | Qt::Dialog);
+
+    // Un dialogue, donc **modal** : la fenêtre principale est bloquée tant que l'éditeur est ouvert,
+    // comme les options d'une ligne. Sophie, 13-11-2026.
+    setWindowModality(Qt::ApplicationModal);
+
+    // Une fenêtre bloquante sans issue au clavier serait un piège : la barre de titre en donne une,
+    // la touche Échap doit en donner une seconde, comme toutes les boîtes de l'application.
+    auto *const escape = new QShortcut(QKeySequence(Qt::Key_Escape), this);
+    connect(escape, &QShortcut::activated, this, &QWidget::close);
 
     m_editor = new OExportTemplateEditor(this);
     setCentralWidget(m_editor);

@@ -7413,243 +7413,243 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1420"/>
         <source>Point along perpendicular</source>
         <translation>Σημείο κατα μήκος της κάθετης γραμμής</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1492"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1510"/>
         <source>Perpendicular point along line</source>
         <translation>Κάθετο σημείο κατα μήκος της γραμμής</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1420"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1438"/>
         <source>Point along bisector</source>
         <translation>Σημείο κατα μήκος της διχοτόμου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1222"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1240"/>
         <source>Point at distance and angle</source>
         <translation>Σημείο με απόσταση και γωνία</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1384"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
         <source>Point at distance along line</source>
         <translation>Σημείο με απόσταση κατα μήκος της γραμμής</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1564"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1582"/>
         <source>Line between points</source>
         <translation>Γραμμή ανάμεσα σε σημεία</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1546"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1564"/>
         <source>Point at line intersection</source>
         <translation>Σημείο στην τομή γραμμής</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1600"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1618"/>
         <source>Curve</source>
         <translation>Καμπύλη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1294"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1312"/>
         <source>Arc</source>
         <translation>Τόξο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="104"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="105"/>
         <source>Measurements</source>
         <translation>Μετρήσεις</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="143"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="144"/>
         <source>Window</source>
         <translation>Παράθυρο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="375"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="376"/>
         <source>Dependency tree</source>
         <translation>Δέντρο εξαρτήσεων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="384"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="385"/>
         <source>New</source>
         <translation>Νέο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="387"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="388"/>
         <source>&amp;New</source>
         <translation>&amp;Νέο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="390"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="391"/>
         <source>Create a new pattern</source>
         <translation>Δημιουργία νέου πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="401"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="402"/>
         <source>Open</source>
         <translation>Άνοιγμα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="404"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="405"/>
         <source>&amp;Open</source>
         <translation>&amp;Άνοιγμα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="408"/>
         <source>Open a pattern from the library</source>
         <translation>Άνοιγμα πατρόν από τη βιβλιοθήκη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="422"/>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="971"/>
         <source>Save</source>
         <translation>Αποθήκευση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="424"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="425"/>
         <source>&amp;Save</source>
         <translation>&amp;Αποθήκευση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="427"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="428"/>
         <source>Save pattern</source>
         <translation>Αποθήκευση πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="963"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="981"/>
         <source>Export Final Measurements to CSV</source>
         <translation>Εξαγωγή τελικών μετρήσεων σε CSV</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="971"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="989"/>
         <source>Load Measurements</source>
         <translation>Φόρτωση πίνακα μετρήσεων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1672"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1690"/>
         <source>Armhole curve</source>
         <translation>Καμπύλη μασχάλης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1870"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1888"/>
         <source>Dart rotation</source>
         <translation>Περιστροφή πένσας</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1873"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1891"/>
         <source>Rotate a dart: turn one leg onto the other</source>
         <translation>Περιστροφή πένσας: μετακίνηση του ενός σκέλους πάνω στο άλλο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2136"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2154"/>
         <source>Arc start point</source>
         <translation>Σημείο εκκίνησης του τόξου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2154"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2172"/>
         <source>Arc end point</source>
         <translation>Σημείο άφιξης του τόξου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2168"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2186"/>
         <source>Boundary together with notches</source>
         <translation>Ενσωμάτωση του περιθωρίου ραφής στις χαραγές συναρμογής</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2176"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2194"/>
         <source>Settings Directory</source>
         <translation>Φάκελος ρυθμίσεων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2222"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2240"/>
         <source>Elliptical arc with given length</source>
         <translation>Ελλειπτικό τόξο δεδομένου μήκους</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2240"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2258"/>
         <source>Parallel curve tool</source>
         <translation>Παράλληλη καμπύλη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2258"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2261"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2276"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2279"/>
         <source>Graduated curve tool</source>
         <translation>Διαβάθμιση καμπύλης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="444"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="445"/>
         <source>Save not yet saved pattern</source>
         <translation>Το πατρόν δεν έχει αποθηκευθεί ακόμα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="468"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="469"/>
         <source>Draw</source>
         <translation>Σχεδίαση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="492"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="493"/>
         <source>Details</source>
         <translation>Λεπτομέρειες</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="519"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="520"/>
         <source>Pointer tools</source>
         <translation>Εργαλεία δείκτη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="537"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="538"/>
         <source>New pattern piece</source>
         <translation>Νέο κομμάτι πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="540"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="541"/>
         <source>Add new pattern piece</source>
         <translation>Προσθήκη νέου κομματιού πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="647"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="648"/>
         <source>About &amp;Qt</source>
         <translation>Σχετικά &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="669"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="670"/>
         <source>E&amp;xit</source>
         <translation>Έ&amp;ξοδος</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="672"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="673"/>
         <source>Exit the application</source>
         <translation>Έξοδος απο την εφαρμογή</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="683"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="684"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="184"/>
         <source>Preferences</source>
         <translation>Προτιμήσεις</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="310"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="697"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="311"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="715"/>
         <source>Zoom in</source>
         <translation>Μεγέθυνση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="700"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="718"/>
         <source>zoom in</source>
         <translation>μεγέθυνση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="320"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="714"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="717"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="321"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="732"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="735"/>
         <source>Zoom out</source>
         <translation>Σμίκρυνση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="748"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="766"/>
         <source>Zoom fit best</source>
         <translation>Προσαρμογή zoom</translation>
     </message>
@@ -7835,7 +7835,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Επιλέξτε καμπύλη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="422"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="429"/>
         <source>About Qt</source>
         <translation>Σχετικά με το Qt</translation>
     </message>
@@ -7912,14 +7912,14 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Αποθηκευμένο αρχείο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="329"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="864"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="332"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="872"/>
         <source>&amp;Undo</source>
         <translation>&amp;Αναίρεση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="336"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="865"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="339"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="873"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ακύρωση αναίρεσης</translation>
     </message>
@@ -7945,67 +7945,67 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Άνοιγμα αρχείων εκ νέου.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1438"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1456"/>
         <source>Special point on shoulder</source>
         <translation>Ειδικό σημειο στον ώμο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1456"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1474"/>
         <source>Triangle tool</source>
         <translation>Εργαλείο τριγώνου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1474"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1492"/>
         <source>Point from X and Y of two other points</source>
         <translation>Σημείο απο τα Χ και Υ δύο άλλων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1510"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1528"/>
         <source>Point intersect line and axis</source>
         <translation>Σημείο στην τομή γραμμής και άξονα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1582"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1600"/>
         <source>Simple curve</source>
         <translation>Απλή καμπύλη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1690"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1708"/>
         <source>Curved path</source>
         <translation>Καμπύλο μονοπάτι</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1618"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1636"/>
         <source>Segmenting a simple curve</source>
         <translation>Διατομή απλής καμπύλης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1366"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1384"/>
         <source>Segment a curved path</source>
         <translation>Διαχωρίστε ένα καμπύλο μονοπάτι</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1312"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1330"/>
         <source>Point intersect curve and axis</source>
         <translation>Σημείο τομής καμπύλης και άξονα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1276"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1294"/>
         <source>Segment an arc</source>
         <translation>Κόψιμο τόξου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2029"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2047"/>
         <source>Union tool</source>
         <translation>Εργαλείο ένωσης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="779"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="797"/>
         <source>Last Tool</source>
         <translation>Τελευταίο Εργαλείο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="782"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="800"/>
         <source>Activate last used tool again</source>
         <translation>Επανενεργοποίηση τελευταίου εργαλείου</translation>
     </message>
@@ -8015,47 +8015,47 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Επιλέξτε σημείο για τιμή Χ (κάθετα)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="516"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="517"/>
         <source>Pointer</source>
         <translation>Δείκτης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="568"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="569"/>
         <source>Config pattern piece</source>
         <translation>Διαμόρφωση κομματιού πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="799"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="817"/>
         <source>Show Curve Details</source>
         <translation>Εμφάνιση λεπτομερειών καμπύλης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="802"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="820"/>
         <source>Show/hide control points and curve direction</source>
         <translation>Εμφάνιση/απόκρυψη σημείων ελέγχου και κατεύθυνσης καμπύλης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1240"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1258"/>
         <source>Point of intersection arcs</source>
         <translation>Σημείο σε τομή τόξων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1744"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1762"/>
         <source>Point of intersection circles</source>
         <translation>Σημείο σε τομή κύκλων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1780"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1798"/>
         <source>Point from circle and tangent</source>
         <translation>Σημείο από κύκλο και εφαπτομένη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1762"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1780"/>
         <source>Point from arc and tangent</source>
         <translation>Σημείο από τόξο και εφαπτόμενη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1726"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1744"/>
         <source>Arc with given length</source>
         <translation>Τόξο με δεδομένο μήκος</translation>
     </message>
@@ -8215,17 +8215,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Παρακαλώ, δώστε ένα αρχείο εισόδου.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="471"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="472"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Φάση σχεδίασης και κατασκευής των κομματιών του πατρόν. Αυτά τα κομμάτια αποτελούν το προηγούμενο βήμα για να περάσετε στο επόμενο: την εξαγωγή και τη διαμόρφωση των κομματιών σε &amp;quot;λειτουργία Κομμάτια&amp;quot;. Για να μπορέσετε να περάσετε σε &amp;quot;λειτουργία Κομμάτια&amp;quot;, θα πρέπει να έχετε εξαγάγει τουλάχιστον ένα κύριο περίγραμμα κομματιού από τη λειτουργία Σχεδίαση.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="495"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="496"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with details. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail on the stage &amp;quot;Draw mode&amp;quot;. Details created on this stage will be used for creating a layout. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Φάση διαμόρφωσης των κομματιών του πατρόν. Για να μπορέσετε να περάσετε σε &amp;quot;λειτουργία Κομμάτια&amp;quot;, θα πρέπει να έχετε εξαγάγει τουλάχιστον ένα κύριο περίγραμμα από τη &amp;quot;λειτουργία Σχεδίαση&amp;quot;. Τα κομμάτια που διαμορφώνονται σε αυτό το στάδιο θα μπορούν στη συνέχεια να ενσωματωθούν στο σχέδιο κοπής. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1993"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2011"/>
         <source>True darts</source>
         <translation>Εξομάλυνση πενσών</translation>
     </message>
@@ -8295,7 +8295,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Χωρίς αποθήκευση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1330"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1348"/>
         <source>Point intersection curves</source>
         <translation>Σημείο τομής καμπυλών</translation>
     </message>
@@ -8305,7 +8305,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Επιλογή πρώτης καμπύλης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1654"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1672"/>
         <source>Curve tool which uses point as control handle</source>
         <translation>Απλή καμπύλη με τα σημεία ως λαβές ελέγχου</translation>
     </message>
@@ -8320,19 +8320,19 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Επιλογή σημείου στην καμπύλη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1852"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1870"/>
         <source>Rotate objects</source>
         <translation>Περιστροφή αντικειμένων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="759"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="762"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="765"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="777"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="780"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="783"/>
         <source>Close pattern</source>
         <translation>Κλείσιμο πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1528"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1546"/>
         <source>Midpoint between two points</source>
         <translation>Μεσαίο σημείο ανάμεσα απο δύο σημεία</translation>
     </message>
@@ -8348,22 +8348,22 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Επιλέξτε σημείο στην εφαπτομένη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1834"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1852"/>
         <source>Flipping objects by line</source>
         <translation>Αντιστροφή αντικειμένων με γραμμή</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1816"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1834"/>
         <source>Flipping objects by axis</source>
         <translation>Αντιστροφή αντικειμένων με άξονα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1975"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1993"/>
         <source>Move objects</source>
         <translation>Μετακίνηση αντικειμένων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1708"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1726"/>
         <source>Elliptical Arc</source>
         <translation>Ελλειπτικό Τόξο</translation>
     </message>
@@ -8398,17 +8398,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>μόνο για ανάγνωση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="592"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="593"/>
         <source>Variables Table</source>
         <translation>Πίνακας μεταβλητών</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="595"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="596"/>
         <source>Contains information about increments and internal variables</source>
         <translation>Περιέχει τα δεδομένα των μεταβλητών χρήστη και των εσωτερικών μεταβλητών του προγράμματος</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="988"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1006"/>
         <source>Edit Current</source>
         <translation>Επεξεργασία Τρέχοντος</translation>
     </message>
@@ -8418,7 +8418,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Αρχεία πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2083"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2101"/>
         <source>Insert node tool</source>
         <translation>Εισάγετε εργαλείο κόμβου</translation>
     </message>
@@ -8428,17 +8428,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Δεν μπορείτε να χρησιμοποιήσετε τη λειτουργία Κομμάτια σε αυτό το στάδιο. Δημιουργήστε παρακαλώ τουλάχιστον ένα κομμάτι πατρόν χρησιμοποιώντας το εργαλείο «Εξαγωγή κύριου περιγράμματος» στη λειτουργία Σχεδίαση.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="836"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="854"/>
         <source>Zoom fit best current</source>
         <translation>Βέλτιστο ζουμ</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="839"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="857"/>
         <source>zoom fit best current pattern piece</source>
         <translation>Βέλτιστο ζουμ στο ενεργό κομμάτι πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2118"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2136"/>
         <source>Export details skiping the Layout stage</source>
         <translation>Εξαγωγή κομματιών παρακάμπτοντας το στάδιο σχεδίου κοπής</translation>
     </message>
@@ -8456,17 +8456,17 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation type="vanished">Δεν μπορεί να γίνει εξαγωγή λεπτομερειών.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2011"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2029"/>
         <source>Workpiece tool</source>
         <translation>Εξαγωγή κύριου περιγράμματος</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2065"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2083"/>
         <source>Internal path tool</source>
         <translation>Εξαγωγή εσωτερικής διαδρομής</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="441"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="442"/>
         <source>Save &amp;As…</source>
         <translation>Αποθήκευση &amp;ως …</translation>
     </message>
@@ -8491,42 +8491,42 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Η διαδρομή προορισμού είναι κενή.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1019"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1037"/>
         <source>Next pattern piece</source>
         <translation>Επόμενο κομμάτι πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1022"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1040"/>
         <source>Ctrl+PgDown</source>
         <translation>Ctrl+PgDown</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1033"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1051"/>
         <source>Previous pattern piece</source>
         <translation>Προηγούμενο κομμάτι πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1036"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1054"/>
         <source>Ctrl+PgUp</source>
         <translation>Ctrl+PgUp</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1201"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1219"/>
         <source>Tool &quot;Select&quot;</source>
         <translation>Εργαλείο &quot;Επιλογή&quot;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1636"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1654"/>
         <source>Segment a curve</source>
         <translation>Κόψιμο καμπύλης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2101"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2119"/>
         <source>Place label tool</source>
         <translation>Εργαλείο τοποθέτησης σημαδιού</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2047"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2065"/>
         <source>Duplicate detail tool</source>
         <translation>Εργαλείο αντιγραφής κομματιού</translation>
     </message>
@@ -8547,7 +8547,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Ostara</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="866"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="874"/>
         <source>Changes applied.</source>
         <translation>Οι αλλαγές εφαρμόστηκαν.</translation>
     </message>
@@ -8557,7 +8557,7 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Αδυναμία αποθήκευσης ρυθμίσεων. Η πρόσβαση απορρίφθηκε.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="410"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="411"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
@@ -8567,12 +8567,12 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Αδυναμία ανάγνωσης ρυθμίσεων, μη έγκυρο αρχείο .INI.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1798"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1816"/>
         <source>Point of intersection circle and segment</source>
         <translation>Σημείο τομής κύκλου και τμήματος</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1097"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1115"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="236"/>
         <source>Export recipe</source>
         <translation>Εξαγωγή βημάτων σχεδίασης</translation>
@@ -8593,38 +8593,38 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Αδυναμία εξαγωγής ιστορικού. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1348"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1366"/>
         <source>Curved path tool which uses point as control handle</source>
         <translation>Σύνθετη καμπύλη με τα σημεία ως λαβές ελέγχου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1258"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1276"/>
         <source>Point of intersection arc and axis</source>
         <translation>Σημείο τομής τόξου και άξονα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1111"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1129"/>
         <source>Show main path</source>
         <translation>Εμφάνιση κύριου περιγράμματος</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1114"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1132"/>
         <source>Globally show pieces main path</source>
         <translation>Εμφάνιση κύριου περιγράμματος</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="253"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="254"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="487"/>
         <source>Pattern messages</source>
         <translation>Μηνύματα προειδοποίησης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="265"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="266"/>
         <source>Clear all messages</source>
         <translation>Διαγραφή όλων των μηνυμάτων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="303"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="304"/>
         <source>Filter</source>
         <translation>Φίλτρο</translation>
     </message>
@@ -8705,12 +8705,12 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>Το κομμάτι εισήχθη: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="275"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="276"/>
         <source>Auto refresh the list with each parse</source>
         <translation>Αυτόματη ανανέωση της λίστας σε κάθε ανάλυση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="153"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="154"/>
         <source>Watermark</source>
         <translation>Υδατογράφημα</translation>
     </message>
@@ -8730,380 +8730,390 @@ It does not allow writing — a read-only key, a protected share, a folder that 
         <translation>&amp;Προβολή</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="115"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="116"/>
         <source>&amp;Libraries</source>
         <translation>&amp;Βιβλιοθήκες</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="173"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="174"/>
         <source>Top bar</source>
         <translation>Επάνω γραμμή</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="190"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="191"/>
         <source>Options</source>
         <translation>Επιλογές</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="205"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="206"/>
         <source>Layer</source>
         <translation>Επίπεδο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="571"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="572"/>
         <source>Change the name of pattern piece</source>
         <translation>Αλλαγή ονόματος κομματιού πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="658"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="659"/>
         <source>&amp;About Ostara</source>
         <translation>&amp;Σχετικά με το Ostara</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="731"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="734"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="749"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="752"/>
         <source>Zoom 100%</source>
         <translation>Ζουμ 100 %</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="822"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="840"/>
         <source>Show segment point names</source>
         <translation>Εμφάνιση ονομάτων σημείων των τμημάτων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="825"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="843"/>
         <source>Allow segment point names to appear. Uncheck to hide them in all cases.</source>
         <translation>Επιτρέψτε την εμφάνιση των ονομάτων σημείων των τμημάτων. Αποεπιλέξτε για να τα κρύψετε σε κάθε περίπτωση.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="123"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="124"/>
         <source>Information block</source>
         <translation>Μπλοκ πληροφοριών</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="136"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="137"/>
         <source>PDF editor</source>
         <translation>Επεξεργαστής PDF</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="214"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="215"/>
         <source>Size Ranges</source>
         <translation>Πάνελ μεγεθών</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="223"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="224"/>
         <source>Size Styles</source>
         <translation>Στυλ μεγεθών</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="232"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="233"/>
         <source>Outputs</source>
         <translation>Έξοδοι</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="241"/>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="864"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="242"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="882"/>
         <source>Cover page</source>
         <translation>Σελίδα εξωφύλλου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="554"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="555"/>
         <source>Save piece to library</source>
         <translation>Αποθήκευση κομματιού στη βιβλιοθήκη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="557"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="558"/>
         <source>Save the active pattern piece to the piece library</source>
         <translation>Αποθήκευση του ενεργού κομματιού πατρόν στη βιβλιοθήκη κομματιών</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="612"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="613"/>
         <source>Graded</source>
         <translation>Διαβάθμιση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="615"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="616"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with graded sizes of the details. To enable &amp;quot;Graded mode&amp;quot; you need at least one detail on the stage &amp;quot;Details mode&amp;quot; and a multi-size measurements table loaded.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Φάση διαβάθμισης των κομματιών ανά μέγεθος. Για να ενεργοποιήσετε τη &amp;quot;λειτουργία διαβάθμισης&amp;quot;, πρέπει να έχετε εξαγάγει τουλάχιστον ένα κομμάτι πατρόν σε &amp;quot;λειτουργία Κομμάτια&amp;quot; και να έχετε φορτώσει έναν πίνακα μετρήσεων πολλαπλών μεγεθών.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="636"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="637"/>
         <source>Export</source>
         <translation>Εξαγωγή</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="639"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="640"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for nesting the details and producing the printable PDF, without leaving Ostara.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Λειτουργία χωροθέτησης των κομματιών και παραγωγής του εκτυπώσιμου PDF, χωρίς να εγκαταλείψετε το Ostara.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="853"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="698"/>
+        <source>Full screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="701"/>
+        <source>full screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="871"/>
         <source>Final Measurements</source>
         <translation>Τελικές μετρήσεις</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="890"/>
         <source>PDF layout</source>
         <translation>Διάταξη PDF</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="898"/>
         <source>Export templates</source>
         <translation>Πρότυπα εξαγωγής</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="888"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="906"/>
         <source>Export as image...</source>
         <translation>Εξαγωγή ως εικόνα…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="896"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="914"/>
         <source>Existing templates</source>
         <translation>Υπάρχοντα πρότυπα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="904"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="922"/>
         <source>Create new</source>
         <translation>Δημιουργία νέου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="912"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="930"/>
         <source>Logo</source>
         <translation>Λογότυπο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="920"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="938"/>
         <source>Clients</source>
         <translation>Πελάτες</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="928"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="946"/>
         <source>Collections</source>
         <translation>Συλλογές</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="936"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="954"/>
         <source>Annotations</source>
         <translation>Επισημάνσεις</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="944"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="962"/>
         <source>Thumbnail</source>
         <translation>Μικρογραφία</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="952"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="970"/>
         <source>Foldline text</source>
         <translation>Κείμενο γραμμής δίπλωσης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="974"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="992"/>
         <source>Load a measurement table (.omt/.otu) and connect it to the pattern</source>
         <translation>Φόρτωση πίνακα μετρήσεων (.omt/.otu) και σύνδεσή του με το πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="991"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1009"/>
         <source>Edit the measurement table currently loaded in the pattern</source>
         <translation>Επεξεργασία του πίνακα μετρήσεων που είναι φορτωμένος στο πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1002"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1020"/>
         <source>Create New</source>
         <translation>Δημιουργία νέου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1005"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1023"/>
         <source>Create a new measurement table</source>
         <translation>Δημιουργία νέου πίνακα μετρήσεων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1047"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1065"/>
         <source>Increase point name font</source>
         <translation>Αύξηση γραμματοσειράς ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1058"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1076"/>
         <source>Decrease point name font</source>
         <translation>Μείωση γραμματοσειράς ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1069"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1087"/>
         <source>Original point name font</source>
         <translation>Αρχική γραμματοσειρά ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1083"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1101"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="104"/>
         <source>Hide point names</source>
         <translation>Απόκρυψη ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1125"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1143"/>
         <source>Load</source>
         <translation>Φόρτωση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1136"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1154"/>
         <source>Remove</source>
         <translation>Αφαίρεση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1147"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1165"/>
         <source>Edit current</source>
         <translation>Επεξεργασία του υδατογραφήματος σε χρήση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1155"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1173"/>
         <source>Editor</source>
         <translation>Επεξεργαστής</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1158"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1176"/>
         <source>Create or edit a watermark</source>
         <translation>Δημιουργία ή επεξεργασία υδατογραφήματος</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1891"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1909"/>
         <source>Dart cap</source>
         <translation>Κάλυμμα πένσας</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1894"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1912"/>
         <source>Dart cap: draw the cap of a dart</source>
         <translation>Κάλυμμα πένσας: σχεδίαση του καλύμματος</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1912"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1930"/>
         <source>Rectangle</source>
         <translation>Ορθογώνιο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1915"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1933"/>
         <source>Rectangle: a base point, a width and a height</source>
         <translation>Ορθογώνιο: ένα σημείο αφετηρίας, ένα πλάτος και ένα ύψος</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1933"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1951"/>
         <source>Transfer</source>
         <translation>Μεταφορά</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1936"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1954"/>
         <source>Transfer: graft a portion of one part onto another</source>
         <translation>Μεταφορά: μεταμόσχευση τμήματος ενός κομματιού σε άλλο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1954"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1972"/>
         <source>Spiral</source>
         <translation>Σπείρα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1957"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1975"/>
         <source>Spiral: a golden spiral of the length you ask for, drawn from an existing point</source>
         <translation>Σπείρα: μια χρυσή σπείρα του ζητούμενου μήκους, σχεδιασμένη από υπάρχον σημείο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2104"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2122"/>
         <source>Internal mark</source>
         <translation>Εσωτερικό σημάδι</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2187"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2205"/>
         <source>Reload point names</source>
         <translation>Επαναφόρτωση ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2190"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2208"/>
         <source>Reload piece point names</source>
         <translation>Επαναφόρτωση ονομάτων σημείων του κομματιού</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2201"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2219"/>
         <source>Auto-arrange point names</source>
         <translation>Αυτόματη τακτοποίηση ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2204"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2222"/>
         <source>Auto-arrange point names to reduce overlaps</source>
         <translation>Αυτόματη τακτοποίηση ονομάτων σημείων για λιγότερες επικαλύψεις</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2269"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2287"/>
         <source>Measurement Tables</source>
         <translation>Πίνακες μετρήσεων</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2272"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2290"/>
         <source>Browse, open, and manage measurement tables in the library</source>
         <translation>Περιήγηση, άνοιγμα και διαχείριση των πινάκων μετρήσεων στη βιβλιοθήκη</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2280"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2298"/>
         <source>Pieces</source>
         <translation>Κομμάτια</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2283"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2301"/>
         <source>Browse the pieces saved in the library, and see what each of them needs</source>
         <translation>Περιήγηση στα κομμάτια που είναι αποθηκευμένα στη βιβλιοθήκη και προβολή του τι χρειάζεται το καθένα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2291"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2309"/>
         <source>Patterns</source>
         <translation>Πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2294"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2312"/>
         <source>Browse the patterns saved in the library, and manage what each folder holds</source>
         <translation>Περιήγηση στα πατρόν που είναι αποθηκευμένα στη βιβλιοθήκη και διαχείριση του περιεχομένου κάθε φακέλου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2312"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2330"/>
         <source>Slash and spread</source>
         <translation>Κόψιμο και περιστροφή</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2315"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2333"/>
         <source>Slash and spread: open a piece along cut lines by rotating its parts</source>
         <translation>Κόψιμο και περιστροφή: άνοιγμα ενός κομματιού κατά μήκος γραμμών κοπής με περιστροφή των τμημάτων του</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2333"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2351"/>
         <source>Flounce spiral</source>
         <translation>Σπείρα βολάν</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2336"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2354"/>
         <source>Flounce spiral: a band of constant width wound as a snail</source>
         <translation>Σπείρα βολάν: μια λωρίδα σταθερού πλάτους τυλιγμένη σε σπείρα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2354"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2372"/>
         <source>Pleat</source>
         <translation>Πιέτα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2357"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2375"/>
         <source>Pleat: fold the fabric back on itself along a departure line</source>
         <translation>Πιέτα: δίπλωση του υφάσματος πάνω στον εαυτό του κατά μήκος γραμμής εκκίνησης της πιέτας</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2375"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2393"/>
         <source>Middle pleat</source>
         <translation>Μεσαία πιέτα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2378"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2396"/>
         <source>Middle pleat: lay a pleat at the centre of a piece, on the line of its middle</source>
         <translation>Μεσαία πιέτα: τοποθέτηση πιέτας στο κέντρο ενός κομματιού, πάνω στη γραμμή του μέσου του</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2396"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2414"/>
         <source>Move by batch</source>
         <translation>Μετακίνηση κατά παρτίδα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="2399"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2417"/>
         <source>Move by batch: move the parts of a piece along cut lines</source>
         <translation>Μετακίνηση κατά παρτίδα: μετακίνηση των τμημάτων ενός κομματιού κατά μήκος γραμμών κοπής</translation>
     </message>
@@ -9263,12 +9273,12 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation type="vanished">Εξαγωγή SVG από τη λειτουργία σχεδίασης</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="366"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="367"/>
         <source>Background images</source>
         <translation>Εικόνες φόντου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1169"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1187"/>
         <source>Add background image</source>
         <translation>Προσθήκη εικόνας φόντου</translation>
     </message>
@@ -9287,12 +9297,12 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Επιλέξτε το κεντρικό σημείο του ελλειπτικού τόξου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="894"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="902"/>
         <source>Pen style:</source>
         <translation>Στυλ μαρκαδόρου:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="898"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="906"/>
         <source>Color:</source>
         <translation>Χρώμα:</translation>
     </message>
@@ -9328,12 +9338,12 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Αποθήκευση εικόνας</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1183"/>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1201"/>
         <source>Show accuracy radius</source>
         <translation>Εμφάνιση του οδηγού ακρίβειας</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="867"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="875"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="146"/>
         <source>Piece:</source>
         <translation>Κομμάτι:</translation>
@@ -11009,86 +11019,86 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
 <context>
     <name>OCoverPageEditor</name>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="209"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="211"/>
         <source>Name:</source>
         <translation>Όνομα:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="210"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="212"/>
         <source>Template name</source>
         <translation>Όνομα προτύπου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="211"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="213"/>
         <source>Save</source>
         <translation>Αποθήκευση</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="213"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="215"/>
         <source>Existing templates</source>
         <translation>Υπάρχοντα πρότυπα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="214"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="216"/>
         <source>Create a template</source>
         <translation>Δημιουργία προτύπου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="215"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="217"/>
         <source>Logo</source>
         <translation>Λογότυπο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="216"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="218"/>
         <source>Symbols</source>
         <translation>Σύμβολα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="217"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="219"/>
         <source>Seam allowances</source>
         <translation>Περιθώρια ραφής</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="221"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="223"/>
         <source>Cover page language</source>
         <translation>Γλώσσα της σελίδας εξωφύλλου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="222"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="224"/>
         <source>You can choose several for a multilingual page</source>
         <translation>Μπορείτε να επιλέξετε πολλές για μια πολύγλωσση σελίδα</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="531"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="540"/>
         <source>Unsaved template</source>
         <translation>Μη αποθηκευμένο πρότυπο</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="624"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="633"/>
         <source>Changes kept</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="625"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="634"/>
         <source>The saved template could not be read back, so your changes were kept.
 
 %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="654"/>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="671"/>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="678"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="663"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="680"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="687"/>
         <source>Save template</source>
         <translation>Αποθήκευση προτύπου</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="655"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="664"/>
         <source>Give the template a name before saving it.</source>
         <translation>Δώστε ένα όνομα στο πρότυπο πριν την αποθήκευση.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="672"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="681"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
@@ -11097,7 +11107,7 @@ Choose another name.</source>
 Επιλέξτε άλλο όνομα.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="679"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="688"/>
         <source>Ostara could not save the template.
 
 %1
@@ -11106,7 +11116,7 @@ Check that the folder allows writing, and that the file is not open in another p
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="721"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="730"/>
         <source>Ostara could not open the template.
 
 %1
@@ -11123,7 +11133,7 @@ The file may have been moved, renamed, or written by a newer version of Ostara.<
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="720"/>
+        <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="729"/>
         <source>Open template</source>
         <translation>Άνοιγμα προτύπου</translation>
     </message>
@@ -21486,145 +21496,151 @@ Do you want to continue?</source>
 <context>
     <name>VAbstractShortcutManager</name>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="308"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="310"/>
         <source>Zoom in</source>
         <comment>shortcut for action</comment>
         <translation>Μεγέθυνση</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="310"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="312"/>
         <source>Zoom out</source>
         <comment>shortcut for action</comment>
         <translation>Σμίκρυνση</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="312"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="314"/>
+        <source>Full screen</source>
+        <comment>shortcut for action</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="316"/>
         <source>Zoom original</source>
         <comment>shortcut for action</comment>
         <translation>Προεπιλεγμένο ζουμ</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="314"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="318"/>
         <source>Zoom fit best</source>
         <comment>shortcut for action</comment>
         <translation>Προσαρμογή zoom</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="316"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="320"/>
         <source>Zoom fit best current</source>
         <comment>shortcut for action</comment>
         <translation>Βέλτιστο ζουμ</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="318"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="322"/>
         <source>Increase point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Αύξηση μεγέθους γραμματοσειράς των ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="320"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="324"/>
         <source>Decrease point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Μείωση μεγέθους γραμματοσειράς των ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="322"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="326"/>
         <source>Original point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Αρχικό μέγεθος γραμματοσειράς των ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="324"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="328"/>
         <source>Show all point names</source>
         <comment>shortcut for action</comment>
         <translation>Εμφάνιση όλων των ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="326"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="330"/>
         <source>Undo</source>
         <comment>shortcut for action</comment>
         <translation>Αναίρεση</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="328"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="332"/>
         <source>Redo</source>
         <comment>shortcut for action</comment>
         <translation>Επανάληψη</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="330"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="334"/>
         <source>New</source>
         <comment>shortcut for action</comment>
         <translation>Νέο</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="332"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="336"/>
         <source>Open</source>
         <comment>shortcut for action</comment>
         <translation>Άνοιγμα</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="334"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="338"/>
         <source>Save</source>
         <comment>shortcut for action</comment>
         <translation>Αποθήκευση</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="336"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
         <source>Save as</source>
         <comment>shortcut for action</comment>
         <translation>Αποθήκευση ως</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="338"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
         <source>Draw mode</source>
         <comment>shortcut for action</comment>
         <translation>Λειτουργία σχεδίασης</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
         <source>Details mode</source>
         <comment>shortcut for action</comment>
         <translation>Λειτουργία κομματιών</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
         <source>Graded mode</source>
         <comment>shortcut for action</comment>
         <translation>Λειτουργία διαβάθμισης</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
         <source>Export mode</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="350"/>
         <source>New pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Νέο κομμάτι πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="352"/>
         <source>Next pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Επόμενο κομμάτι πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="350"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="354"/>
         <source>Previous pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Προηγούμενο κομμάτι πατρόν</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="442"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="446"/>
         <source>Export templates</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished">Πρότυπα εξαγωγής</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="444"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="448"/>
         <source>Export as image</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished"></translation>
@@ -21635,25 +21651,25 @@ Do you want to continue?</source>
         <translation type="vanished">Λειτουργία « Διαδραστικά εργαλεία »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="354"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="358"/>
         <source>Open Table of variables dialog</source>
         <comment>shortcut for action</comment>
         <translation>Άνοιγμα πίνακα μεταβλητών</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="356"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="360"/>
         <source>Quit app</source>
         <comment>shortcut for action</comment>
         <translation>Έξοδος</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="358"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="362"/>
         <source>Activate last used tool</source>
         <comment>shortcut for action</comment>
         <translation>Επανενεργοποίηση του προηγούμενου εργαλείου</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="360"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
         <source>Show curve details</source>
         <comment>shortcut for action</comment>
         <translation>Εμφάνιση λεπτομερειών της καμπύλης</translation>
@@ -21664,7 +21680,7 @@ Do you want to continue?</source>
         <translation type="vanished">Εμφάνιση / απόκρυψη ετικετών τμημάτων</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="362"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
         <source>Open final measurements dialog</source>
         <comment>shortcut for action</comment>
         <translation>Άνοιγμα πίνακα τελικών μετρήσεων</translation>
@@ -21710,43 +21726,43 @@ Do you want to continue?</source>
         <translation type="vanished">Αναζήτηση, προηγούμενο αποτέλεσμα</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="368"/>
         <source>Tool &apos;Point at distance and angle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο με απόσταση και γωνία »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="370"/>
         <source>Tool &apos;Line between points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Γραμμή μεταξύ 2 σημείων »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="368"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="372"/>
         <source>Tool &apos;Point at distance along line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο σε απόσταση κατά μήκος γραμμής »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="370"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="374"/>
         <source>Tool &apos;Special point on shoulder&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο ώμου »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="372"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="376"/>
         <source>Tool &apos;Point along perpendicular&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο σε κάθετο »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="374"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="378"/>
         <source>Tool &apos;Point along bisector&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο κατά μήκος της διχοτόμου »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="376"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="380"/>
         <source>Tool &apos;Point at line intersection&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο τομής 2 γραμμών »</translation>
@@ -21757,13 +21773,13 @@ Do you want to continue?</source>
         <translation type="vanished">Εργαλείο « Απλή κυβική καμπύλη »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="378"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="382"/>
         <source>Tool &apos;Curve which uses point as control handle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Απλή καμπύλη με σημεία ως λαβές ελέγχου »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="382"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="386"/>
         <source>Tool &apos;Arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Τόξο »</translation>
@@ -21774,43 +21790,43 @@ Do you want to continue?</source>
         <translation type="vanished">Εργαλείο « Σύνθετη κυβική καμπύλη »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="384"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="388"/>
         <source>Tool &apos;Curved path which uses point as control handle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σύνθετη καμπύλη με σημεία ως λαβές ελέγχου »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="386"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="390"/>
         <source>Tool &apos;Point of intersection circle and segment&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο τομής κύκλου και γραμμής »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="388"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="392"/>
         <source>Tool &apos;Workpiece tool&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Εξαγωγή κύριου περιγράμματος »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="390"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="394"/>
         <source>Tool &apos;Internal path tool&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Εξαγωγή εσωτερικής διαδρομής »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="392"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="396"/>
         <source>Tool &apos;Perpendicular point along line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Κάθετο σημείο στον άξονα γραμμής »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="394"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="398"/>
         <source>Tool &apos;Triangle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Τρίγωνο »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="396"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="400"/>
         <source>Tool &apos;Point from X and Y of two other points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο από X και Y δύο άλλων σημείων »</translation>
@@ -21826,91 +21842,91 @@ Do you want to continue?</source>
         <translation type="vanished">Εργαλείο « Κατάτμηση σύνθετης καμπύλης »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="398"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="402"/>
         <source>Tool &apos;Piece union&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Συγχώνευση κομματιών »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="400"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="404"/>
         <source>Tool &apos;Duplicate piece&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Αντιγραφή κομματιού »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="402"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="406"/>
         <source>Tool &apos;Segment an arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Κόψιμο τόξου »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="404"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="408"/>
         <source>Tool &apos;Point of intersection line and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο στην τομή γραμμής και άξονα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="406"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="410"/>
         <source>Tool &apos;Point of intersection curve and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο στην τομή καμπύλης και άξονα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="408"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="412"/>
         <source>Tool &apos;Point of intersection arc and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο στην τομή τόξου και άξονα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="410"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="414"/>
         <source>Tool &apos;Point of intersection arcs&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο στην τομή 2 τόξων »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="412"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="416"/>
         <source>Tool &apos;Point of intersection circles&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο στην τομή 2 κύκλων »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="414"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="418"/>
         <source>Tool &apos;Point intersection curves&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο στην τομή 2 καμπυλών »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="416"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
         <source>Tool &apos;Point from circle and tangent&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο στην τομή κύκλου και εφαπτομένης »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="418"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="422"/>
         <source>Tool &apos;Point from arc and tangent&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο στην τομή τόξου και εφαπτομένης »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="424"/>
         <source>Tool &apos;Arc with given length&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Τόξο δεδομένου μήκους »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="422"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="426"/>
         <source>Tool &apos;True darts&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Αυτόματη πένσα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="428"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="432"/>
         <source>Tool &apos;Dart cap&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Πένσα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="430"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="434"/>
         <source>Tool &apos;Rectangle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Ορθογώνιο »</translation>
@@ -21921,109 +21937,109 @@ Do you want to continue?</source>
         <translation type="vanished">Αυτόματη αναδιάταξη ονομάτων σημείων</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="464"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="468"/>
         <source>Tool &apos;Select&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Επιλογή »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="466"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
         <source>Tool &apos;Curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Καμπύλη »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="468"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
         <source>Tool &apos;Segment a curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Κόψιμο καμπύλης »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
         <source>Tool &apos;Spiral&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σπείρα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
         <source>Tool &apos;Slash and spread&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Κόψιμο και περιστροφή »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
         <source>Tool &apos;Move by batch&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Μετακίνηση κατά παρτίδα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
         <source>Tool &apos;Pleat&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Πιέτα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="482"/>
         <source>Tool &apos;Flounce spiral&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σπείρα βολάν »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="484"/>
         <source>Tool &apos;Middle pleat&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Μεσαία πιέτα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="424"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="428"/>
         <source>Tool &apos;Rotate objects&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Περιστροφή αντικειμένων »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="352"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="356"/>
         <source>Save piece to library</source>
         <comment>shortcut for action</comment>
         <translation type="unfinished">Αποθήκευση κομματιού στη βιβλιοθήκη</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="380"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="384"/>
         <source>Tool &apos;Armhole curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Καμπύλη μασχάλης »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="426"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="430"/>
         <source>Tool &apos;Dart rotation&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Περιστροφή πένσας »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="432"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="436"/>
         <source>Tool &apos;Transfer&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Μεταφορά »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="434"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="438"/>
         <source>Tool &apos;Flipping objects by line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Αναστροφή αντικειμένων κατά γραμμή »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="436"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="440"/>
         <source>Tool &apos;Flipping objects by axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Αναστροφή αντικειμένων κατά άξονα »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="438"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="442"/>
         <source>Tool &apos;Move objects&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Μετακίνηση αντικειμένων »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="440"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="444"/>
         <source>Tool &apos;Midpoint between two points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο στο μέσο μεταξύ δύο σημείων »</translation>
@@ -22034,55 +22050,55 @@ Do you want to continue?</source>
         <translation type="vanished">Εξαγωγή από τη λειτουργία Σχεδίαση ως</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="446"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="450"/>
         <source>Export details as</source>
         <comment>shortcut for action</comment>
         <translation>Εξαγωγή από τη λειτουργία Κομμάτια ως</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="448"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="452"/>
         <source>Tool &apos;Elliptical Arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Ελλειπτικό τόξο »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="450"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="454"/>
         <source>Tool &apos;Insert node&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Εισαγωγή κόμβου »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="452"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="456"/>
         <source>Tool &apos;Place label&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Τοποθέτηση σημαδιού »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="454"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="458"/>
         <source>Tool &apos;Arc start&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο αρχής τόξου »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="456"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="460"/>
         <source>Tool &apos;Arc end&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Σημείο τέλους τόξου »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="458"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="462"/>
         <source>Tool &apos;Elliptical arc with given length&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Ελλειπτικό τόξο δεδομένου μήκους »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="460"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="464"/>
         <source>Tool &apos;Parallel curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Παράλληλη καμπύλη »</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="462"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="466"/>
         <source>Tool &apos;Graduated curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Εργαλείο « Διαβάθμιση καμπύλης »</translation>
@@ -22154,52 +22170,52 @@ Do you want to continue?</source>
 <context>
     <name>VApplication</name>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="722"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="729"/>
         <source>Error parsing file. Program will be terminated.</source>
         <translation>Σφάλμα ανάλυσης του αρχείου. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="728"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="735"/>
         <source>Error bad id. Program will be terminated.</source>
         <translation>Σφάλμα κακής ταυτότητας. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="734"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="741"/>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
         <translation>Σφάλμα λόγω αδυναμίας μετατροπής της τιμής. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="740"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="747"/>
         <source>Error empty parameter. Program will be terminated.</source>
         <translation>Σφάλμα λόγω κενής παραμέτρου. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="746"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="753"/>
         <source>Error wrong id. Program will be terminated.</source>
         <translation>Σφάλμα λόγω λάθους ταυτότητας. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="767"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="774"/>
         <source>Something&apos;s wrong!!</source>
         <translation>Υπάρχει σφάλμα!!</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="781"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="788"/>
         <source>Parser error: %1. Program will be terminated.</source>
         <translation>Σφάλμα αναλυτή: %1. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="786"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="793"/>
         <source>Exception thrown: %1. Program will be terminated.</source>
         <translation>Παρουσιάστηκε εξαίρεση: %1. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="761"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="768"/>
         <source>Invalid notch.</source>
         <translation>Μη έγκυρη χαραγή.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="773"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="780"/>
         <source>Formula warning: %1. Program will be terminated.</source>
         <translation>Πρόβλημα φόρμουλας: %1. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>

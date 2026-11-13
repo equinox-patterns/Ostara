@@ -34,6 +34,7 @@
 #include <QByteArray>
 #include <QCloseEvent>
 #include <QEvent>
+#include <QShortcut>
 #include <QMessageBox>
 
 OInfoBlockWindow::OInfoBlockWindow(QWidget *parent) : QMainWindow(parent)
@@ -42,6 +43,22 @@ OInfoBlockWindow::OInfoBlockWindow(QWidget *parent) : QMainWindow(parent)
     // Without this, on macOS the native QFileDialog sheet attached during Save
     // can leave the window deactivated behind its parent MainWindow.
     setWindowModality(Qt::NonModal);
+
+    // Le type « dialogue » dit au système ce que cette fenêtre est : un dialogue de la fenêtre
+    // principale, comme toutes les autres boîtes de l'application — et non une fenêtre ordinaire, que
+    // le gestionnaire de fenêtres peut laisser derrière un plein écran (X11, Wayland) ou afficher
+    // plein écran (macOS, où une fenêtre ouverte depuis une fenêtre en plein écran hérite de son
+    // espace).
+    setWindowFlags(windowFlags() | Qt::Dialog);
+
+    // Un dialogue, donc **modal** : la fenêtre principale est bloquée tant que l'éditeur est ouvert,
+    // comme les options d'une ligne. Sophie, 13-11-2026.
+    setWindowModality(Qt::ApplicationModal);
+
+    // Une fenêtre bloquante sans issue au clavier serait un piège : la barre de titre en donne une,
+    // la touche Échap doit en donner une seconde, comme toutes les boîtes de l'application.
+    auto *const escape = new QShortcut(QKeySequence(Qt::Key_Escape), this);
+    connect(escape, &QShortcut::activated, this, &QWidget::close);
 
     m_editor = new OInfoBlockEditor(this);
     setCentralWidget(m_editor);
@@ -60,11 +77,24 @@ OInfoBlockWindow::OInfoBlockWindow(QWidget *parent) : QMainWindow(parent)
                                           ->ValentinaSettings()
                                           ->value(QStringLiteral("infoBlockWindowGeometry"))
                                           .toByteArray();
+    bool restored = false;
+
     if (!savedGeometry.isEmpty())
     {
-        restoreGeometry(savedGeometry);
+        restored = restoreGeometry(savedGeometry);
+
+        // ⚠️ `saveGeometry()` enregistre aussi l'ÉTAT de la fenêtre, pas seulement sa taille et sa
+        // place. Une fenêtre mise en plein écran ou agrandie un jour se rouvrirait ainsi — et un
+        // dialogue en plein écran n'est plus un dialogue. L'état d'hier ne décide donc pas de la
+        // taille d'aujourd'hui : on repart de la taille par défaut.
+        if (restored && (isFullScreen() || isMaximized()))
+        {
+            setWindowState(Qt::WindowNoState);
+            restored = false;
+        }
     }
-    else
+
+    if (!restored)
     {
         resize(920, 620);
     }

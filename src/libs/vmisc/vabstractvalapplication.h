@@ -31,6 +31,7 @@
 #include "vabstractapplication.h"
 
 #include <QDate>
+#include <QPointer>
 
 class VAbstractValApplication; // use in define
 class VAbstractPattern;
@@ -163,7 +164,10 @@ protected:
      * @brief mainWindow pointer to main window. Usefull if need create modal dialog. Without pointer to main window
      * modality doesn't work.
      */
-    QWidget *mainWindow{nullptr};
+    /// Un `QPointer` et non un pointeur brut : la fenêtre principale vit avec `Qt::WA_DeleteOnClose`,
+    /// et un filtre d'événements d'application peut encore interroger ce pointeur pendant sa
+    /// destruction. Un pointeur brut y laissait une adresse morte ; celui-ci se met à nul tout seul.
+    QPointer<QWidget> mainWindow{nullptr};
 
     /** @brief mode keep current draw mode. */
     Draw m_mode{Draw::Calculation};

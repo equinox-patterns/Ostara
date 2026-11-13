@@ -39,6 +39,7 @@
 
 #include "WelcomeScreen.h"
 #include "core/odetailspropertybrowser.h"
+#include "core/ofullscreen.h"
 #include "core/opiececommonpoint.h"
 #include "core/opiecegroupholderitem.h"
 #include "core/vapplication.h"
@@ -245,6 +246,13 @@ void MainWindow::changeEvent(QEvent *event)
         {
             ApplyGradedSizeStylesToScene();
         }
+    }
+
+    if (event->type() == QEvent::WindowStateChange && m_actionFullScreen != nullptr)
+    {
+        // La case du menu dit l'état réel, y compris quand c'est la fenêtre elle-même qui change
+        // d'état : sous macOS, Échap quitte le plein écran sans passer par l'action.
+        m_actionFullScreen->setChecked(OFullScreen::IsActive(this));
     }
 
     // remember to call base class implementation

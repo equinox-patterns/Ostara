@@ -41,6 +41,7 @@
 #include "../vformat/knownmeasurements/vknownmeasurementsdatabase.h"
 #include "../vganalytics/vganalytics.h"
 #include "../vdispatch/qt_dispatch.h"
+#include "ofullscreenkeeper.h"
 #include "otranslation.h"
 #include "vwidgets/odialogfit.h"
 #include "vtheme.h"
@@ -630,6 +631,12 @@ VApplication::VApplication(int &argc, char **argv)
     // dépasse, barre de boutons toujours dans le cadre — donc elle vit à un seul endroit et ne
     // s'oublie dans aucune dialogue. Voir `odialogfit.h`.
     ODialogFit::Install();
+
+    // Le filet du plein écran, installé une fois pour toute l'application : sous X11 comme sous
+    // Wayland, plusieurs compositeurs retirent le plein écran d'une fenêtre dès qu'une de ses
+    // dialogues s'affiche, et rien dans l'application ne peut l'en empêcher. Installé à côté du
+    // cadrage, qui est le seul autre endroit à voir toutes les dialogues. Voir `ofullscreenkeeper.h`.
+    OFullScreenKeeper::Install();
 
 }
 

@@ -127,6 +127,8 @@ enum class VShortcutAction : quint8
     ToolPleat,
     ToolFlounceSpiral,
     ToolPleatMid,
+    FullScreen,
+
     LAST_ONE_DO_NOT_USE
 };
 

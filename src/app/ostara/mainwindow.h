@@ -559,6 +559,13 @@ private slots:
     void ActionExportRecipe_triggered();
     void ActionNewDraw_triggered();
     void ActionSavePiece_triggered();
+
+    /// @brief Prend l'écran pour la fenêtre, ou le rend — le plein écran que l'application possède.
+    ///
+    /// Ce n'est pas le plein écran du gestionnaire de fenêtres : sous X11 la fenêtre perd son cadre et
+    /// prend la géométrie de l'écran, si bien qu'aucun état n'est confié à personne et qu'une dialogue
+    /// ne peut plus le lui reprendre. Voir `core/ofullscreen.h`.
+    void ActionFullScreen_triggered(bool checked);
     void ActionTable_triggered();
     void ActionFinalMeasurements_triggered();
     void ActionInfoBlock_triggered(int page);
@@ -801,6 +808,12 @@ private:
     bool m_pickingClick{false};
 
     QMultiHash<VShortcutAction, QAction *> m_shortcutActions{};
+
+    /// @brief L'entrée « Full screen » du menu Display.
+    ///
+    /// Gardée ici pour que `changeEvent()` puisse lui dire ce qui s'est réellement passé sans passer
+    /// par `ui`, qui n'existe pas encore quand les premiers événements d'état de fenêtre arrivent.
+    QAction *m_actionFullScreen{nullptr};
 
     bool IsNodePickingActive() const;
 
