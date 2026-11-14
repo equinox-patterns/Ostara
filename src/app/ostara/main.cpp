@@ -41,6 +41,7 @@
 #include "core/oexporttemplatestorage.h"
 #include "core/opiecelibrary.h"
 #include "core/opatternlibrary.h"
+#include "core/oupdatecheck.h"
 #include "core/othumbnailtextbuilder.h"
 #include "core/ofoldlinelabelbuilder.h"
 
@@ -223,6 +224,11 @@ auto main(int argc, char *argv[]) -> int
         OPatternLibrary::EnsureDirectory();
 
         mw->show();
+
+        // L'annonce d'une nouvelle version, une fois la fenêtre à l'écran : elle lit un fichier d'une
+        // ligne sur le site et se tait si elle n'y arrive pas. Différée d'un tour de boucle pour que
+        // le premier dessin passe avant — une boîte collée à `show()` retarderait l'ouverture.
+        QTimer::singleShot(0, mw, [mw] { OUpdateCheck::Check(mw); });
 
         // The main window closes without the window server's snapshot animation: that animation is played from an
         // image of the window taken after it stopped drawing, and on this application it reads as a blurred fade
