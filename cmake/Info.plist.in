@@ -20,12 +20,19 @@
 	<string>${MACOSX_BUNDLE_SHORT_VERSION_STRING}</string>
 
 	<!--
-	  LSMinimumSystemVersion a été retiré le 26-10-2026 : ${CMAKE_OSX_DEPLOYMENT_TARGET} n'est pas
-	  défini dans ce projet, donc la clé partait avec une valeur VIDE, et une version minimale vide
-	  n'est pas une absence de contrainte — c'est une métadonnée invalide que LaunchServices lit de
-	  travers. Le jour où un minimum sera voulu, il faudra le poser explicitement dans le CMake et
-	  le réintroduire ici.
+	  Réintroduite le 14-11-2026. Elle avait été retirée le 26-10-2026 parce que
+	  ${CMAKE_OSX_DEPLOYMENT_TARGET} n'était alors défini NULLE PART : la clé partait avec une valeur
+	  VIDE, et une version minimale vide n'est pas une absence de contrainte — c'est une métadonnée
+	  invalide que LaunchServices lit de travers. Depuis le 13-11-2026, la cible est une POLITIQUE DU
+	  PROJET (CMakeLists.txt:16-18) : 13.0 par défaut, pour tout build, local ou CI.
+
+	  Ce qu'elle fait : sur un macOS plus ANCIEN que 13.0, LaunchServices refuse le lancement et le
+	  dit, au lieu de laisser l'application mourir sur une erreur dyld (« built for macOS 13.0 »).
+	  Elle est INFORMATIVE et ne remplace pas le vrai contrôle, qui est le `minos 13.0` des tranches
+	  Mach-O — vérifié avant chaque livraison par Build_Ostara/check_minos.sh.
 	-->
+	<key>LSMinimumSystemVersion</key>
+	<string>${CMAKE_OSX_DEPLOYMENT_TARGET}</string>
 
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2026 Sophie Denys</string>
