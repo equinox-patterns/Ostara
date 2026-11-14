@@ -7900,12 +7900,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>&amp;重做</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="188"/>
+        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="189"/>
         <source>Pattern piece:</source>
         <translation>纸样衣片:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="190"/>
+        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="191"/>
         <source>Enter a new label for the pattern piece.</source>
         <translation>为该纸样衣片输入新名称。</translation>
     </message>
@@ -14741,18 +14741,18 @@ Choose another name.</source>
 <context>
     <name>OExportTemplateWindow</name>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="55"/>
-        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="140"/>
+        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="72"/>
+        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="157"/>
         <source>Export templates</source>
         <translation>导出模板</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="161"/>
+        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="178"/>
         <source>Unsaved template</source>
         <translation>模板未保存</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="162"/>
+        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="179"/>
         <source>This template has been changed and not saved.
 
 Save it before closing?</source>
@@ -15650,39 +15650,39 @@ Choose another name.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="280"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="427"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="429"/>
         <source>fabric</source>
         <translation>面料</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="282"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="429"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="431"/>
         <source>interfacing</source>
         <translation>衬布</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="284"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="431"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="433"/>
         <source>lining</source>
         <translation>里料</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="303"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="407"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="445"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="409"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="447"/>
         <source>Cut %1</source>
         <translation>裁剪 %1 次</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="308"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="412"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="450"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="414"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="452"/>
         <source> on fold</source>
         <translation> 对折</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="310"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="452"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="454"/>
         <source> (%1)</source>
         <translation> (%1)</translation>
     </message>
@@ -15788,18 +15788,18 @@ It may be open in another program, or the folder may not allow deleting.</source
 <context>
     <name>OInfoBlockWindow</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="48"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="113"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="65"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="143"/>
         <source>Information block[*]</source>
         <translation>信息块[*]</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="84"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="114"/>
         <source>Information block</source>
         <translation>信息块</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="84"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="114"/>
         <source>The template has unsaved changes. Do you want to save them?</source>
         <translation>模板包含未保存的修改。要保存吗？</translation>
     </message>
@@ -16322,91 +16322,103 @@ Link the folder to it?</source>
 <context>
     <name>OPatternInfoWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="72"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="75"/>
         <source>Pattern</source>
         <translation>样板</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="77"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="348"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="80"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="365"/>
         <source>Pattern name:</source>
         <translation>纸样名称:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="81"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="352"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="84"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="369"/>
         <source>Client:</source>
         <translation>客户:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="85"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="88"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="373"/>
         <source>Collection:</source>
         <translation>系列:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="89"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="360"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="92"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="377"/>
         <source>Fabric info:</source>
         <translation>面料信息:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="117"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="113"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="421"/>
+        <source>Pattern with several versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="115"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="425"/>
+        <source>Manage versions…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="128"/>
         <source>Seam Allowances</source>
         <translation>缝份</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="124"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="153"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="374"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="395"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="135"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="164"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="391"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="412"/>
         <source>Applies to all pieces, including those created afterwards. Not retroactive: existing pieces are left unchanged.</source>
         <translation>应用于所有衣片,包括之后创建的衣片。不追溯:已有衣片不会被修改。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="131"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="379"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="142"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="396"/>
         <source>Activate seam allowances</source>
         <translation>启用缝份</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="133"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="383"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="144"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="400"/>
         <source>Hide main path</source>
         <translation>隐藏主轮廓</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="135"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="387"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="146"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="404"/>
         <source>Show the second passmark on seam line</source>
         <translation>在缝合线上显示第二个对位记号</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="137"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="391"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="148"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="408"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
         <translation>随图形导出缝合线 (DXF-AAMA)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="160"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="400"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="171"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="417"/>
         <source>Activate information block</source>
         <translation>启用信息块</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="147"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="158"/>
         <source>Information block</source>
         <translation>信息块</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="255"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="364"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="268"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="381"/>
         <source>No client</source>
         <translation>无客户</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="281"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="369"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="294"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="386"/>
         <source>No collection</source>
         <translation>无系列</translation>
     </message>
@@ -16717,6 +16729,102 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
+    <name>OPatternVersionsDialog</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="74"/>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="112"/>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="386"/>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="475"/>
+        <source>Pattern versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="122"/>
+        <source>Pattern with several versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="126"/>
+        <source>A piece belongs to one version. A group belongs to every version of its members.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="153"/>
+        <source>Add a version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="213"/>
+        <source>Every piece that belongs to no particular version belongs to this one. It cannot be deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="224"/>
+        <source>Delete this version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="332"/>
+        <source>One piece wears the version &quot;%1&quot;. Move it to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="333"/>
+        <source>%1 pieces wear the version &quot;%2&quot;. Move them to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="345"/>
+        <source>One piece wears the version &quot;%1&quot;. Move it to &quot;%2&quot; and delete the version?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="347"/>
+        <source>%1 pieces wear the version &quot;%2&quot;. Move them all to &quot;%3&quot; and delete the version?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="387"/>
+        <source>A version needs a name, and two versions cannot share one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="446"/>
+        <source>One piece wears a version. Move it to &quot;%1&quot; and switch the versions off?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="449"/>
+        <source>%1 pieces wear a version. Move them all to &quot;%2&quot; and switch the versions off?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="478"/>
+        <source>The pieces stay in &quot;%1&quot; — the one every piece of the pattern belongs to.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="481"/>
+        <source>Yes, move them</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="483"/>
+        <source>No, keep the version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="500"/>
+        <source>Move the pieces to &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="539"/>
+        <source>Version %1</source>
+        <translation type="unfinished">版本 %1</translation>
+    </message>
+</context>
+<context>
     <name>OPieceAutomation</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/opieceautomation.cpp" line="714"/>
@@ -16831,22 +16939,22 @@ This action cannot be undone.</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="212"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="215"/>
         <source>Cannot calculate curve %1.</source>
         <translation>无法计算曲线 %1。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="220"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="223"/>
         <source>You need more points!</source>
         <translation>需要选择更多的点！</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="225"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="228"/>
         <source>You have to choose points in a clockwise direction!</source>
         <translation>必须按顺时针方向选择点！</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="286"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="290"/>
         <source>Select main path objects clockwise, &lt;b&gt;%1&lt;/b&gt; - finish creation</source>
         <translation>按顺时针方向选择主轮廓对象，&lt;b&gt;%1&lt;/b&gt; - 完成创建</translation>
     </message>
@@ -17056,52 +17164,58 @@ Load a measurement table that defines them, then insert the piece.</source>
 <context>
     <name>OPieceInfoWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="63"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="285"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="64"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="349"/>
+        <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="78"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="365"/>
         <source>Exclude from total</source>
         <translation>不计入总计</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="67"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="273"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="82"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="353"/>
         <source>Number</source>
         <translation>编号</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="73"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="290"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="88"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="370"/>
         <source>Fabric</source>
         <translation>面料</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="74"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="291"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="89"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="371"/>
         <source>Interfacing</source>
         <translation>衬布</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="75"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="292"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="90"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="372"/>
         <source>Lining</source>
         <translation>里料</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="79"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="288"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="94"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="368"/>
         <source>Free text</source>
         <translation>自由文本</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="182"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="279"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="210"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="359"/>
         <source>Quantity</source>
         <translation>数量</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="187"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="282"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="283"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="284"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="215"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="362"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="363"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="364"/>
         <source>On fold</source>
         <translation>对折</translation>
     </message>
@@ -17387,67 +17501,82 @@ Name the piece entering:</source>
 <context>
     <name>OPiecePatternStep</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="59"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="63"/>
         <source>Pattern name</source>
         <translation>纸样名称</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="66"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="70"/>
         <source>No client</source>
         <translation>无客户</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="88"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="92"/>
         <source>Client</source>
         <translation>客户</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="96"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="100"/>
         <source>No collection</source>
         <translation>无系列</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="119"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="123"/>
         <source>Collection</source>
         <translation>系列</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="134"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="138"/>
         <source>Fabric info</source>
         <translation>面料信息</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="144"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="150"/>
+        <source>Versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="152"/>
+        <source>Pattern with several versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="155"/>
+        <source>Manage versions…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="182"/>
         <source>Seam Allowances</source>
         <translation>缝份</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="146"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="184"/>
         <source>Activate seam allowances for all pieces</source>
         <translation>为所有衣片启用缝份</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="149"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="187"/>
         <source>Hide main path for all pieces</source>
         <translation>为所有衣片隐藏主轮廓</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="152"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="190"/>
         <source>Show the second passmark on seam line for all pieces</source>
         <translation>为所有衣片在缝合线上显示第二个对位记号</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="155"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="193"/>
         <source>Export the sew line with the drawings for all pieces (DXF-AAMA)</source>
         <translation>为所有衣片导出缝合线与图形（DXF-AAMA）</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="166"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="204"/>
         <source>Information block</source>
         <translation>信息块</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="169"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="207"/>
         <source>Activate information block for all pieces</source>
         <translation>为所有衣片启用信息块</translation>
     </message>
@@ -17455,42 +17584,47 @@ Name the piece entering:</source>
 <context>
     <name>OPiecePieceStep</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="61"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="66"/>
         <source>Piece name</source>
         <translation>衣片名称</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="78"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="83"/>
         <source>Piece number</source>
         <translation>衣片编号</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="84"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="89"/>
+        <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="98"/>
         <source>Fabric</source>
         <translation>面料</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="85"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="99"/>
         <source>Interfacing</source>
         <translation>衬布</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="86"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="100"/>
         <source>Lining</source>
         <translation>里料</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="103"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="117"/>
         <source>Free text</source>
         <translation>自由文本</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="126"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="140"/>
         <source>Show mirrored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="127"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="141"/>
         <source>Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17507,22 +17641,22 @@ Name the piece entering:</source>
         <translation type="vanished">强制衣片在排料中始终翻转。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="130"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="144"/>
         <source>Symmetrical copy</source>
         <translation>对称复制</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="131"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="145"/>
         <source>When the number of copies is greater than 1 and &apos;Show mirrored&apos; is set, each even-numbered copy is flipped the other way.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="148"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="218"/>
         <source>Quantity</source>
         <translation>数量</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="152"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="222"/>
         <source>On fold</source>
         <translation>对折</translation>
     </message>
@@ -18366,7 +18500,7 @@ Save it before leaving it?</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="589"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="198"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="210"/>
         <source>A logo from your library (add logos in the Logo page).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18418,7 +18552,7 @@ Save it before leaving it?</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="70"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="192"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="204"/>
         <source>Measurement</source>
         <translation>尺寸</translation>
     </message>
@@ -18438,7 +18572,7 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="90"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="588"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="93"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="197"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="209"/>
         <source>Logo</source>
         <translation>Logo</translation>
     </message>
@@ -18454,90 +18588,105 @@ Save it before leaving it?</source>
         <translation>裁剪</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="132"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="134"/>
+        <source>Hide for &quot;All versions&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="139"/>
         <source>Rename the axis and its values</source>
         <translation>重命名轴及其值</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="149"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="156"/>
         <source>Rename the measurement</source>
         <translation>重命名尺寸</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="583"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="161"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="168"/>
         <source>Pattern name</source>
         <translation>纸样名称</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="584"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="162"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="169"/>
         <source>The name of the pattern (set in the pattern toolbar).</source>
         <translation>纸样名称（在纸样工具栏中设置）。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="164"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="171"/>
         <source>Client</source>
         <translation>客户</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="165"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="172"/>
         <source>The client&apos;s name, birth date and email from the document.</source>
         <translation>文档中客户的姓名、出生日期和电子邮件。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="167"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="174"/>
         <source>Piece name</source>
         <translation>衣片名称</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="168"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="175"/>
         <source>The name of the piece (from the piece options).</source>
         <translation>衣片名称（来自衣片选项）。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="170"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="177"/>
         <source>Piece number</source>
         <translation>衣片编号</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="171"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="178"/>
         <source>The piece number and its total, e.g. 1 of 10. The total shown here is an example - it is computed automatically from the number of pieces in the layout.</source>
         <translation>衣片编号及其总数，例如 1/10。此处显示的总数只是示例 - 它会根据排料中的衣片数量自动计算。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="175"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="182"/>
         <source>Cut (Fabric / Interfacing / Lining)</source>
         <translation>裁剪（面料 / 衬布 / 里料）</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="176"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="183"/>
         <source>One section covers all three fabrics - no need to add Cut several times. The values here are only an example so you can see how the section renders: in the pieces, the cut quantities are entered per piece and are empty by default.</source>
         <translation>一个区段涵盖三种面料 - 无需多次添加“裁剪”。这里的值只是示例，用于查看该区段的呈现效果：在衣片中，裁剪数量按衣片录入，默认留空。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="188"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="189"/>
+        <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="190"/>
+        <source>The version of the pattern this piece belongs to, as named in the pattern versions. A group shows the versions of its members.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="200"/>
         <source>Requires a multi-size table (.omt). Shows the size axes you tick, each with its value under a name of your own. With a single-size table, this information is simply ignored.</source>
         <translation>需要多尺码表（.omt）。显示您勾选的尺码轴，每个轴以其值显示在您自定的名称下。使用单一尺码表时，此信息会被直接忽略。</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="597"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="182"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="194"/>
         <source>Free text</source>
         <translation>自由文本</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="183"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="195"/>
         <source>Free text entered per piece in the information block. It can span several lines.</source>
         <translation>在标题栏中按衣片录入的自由文本。它可以跨多行。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="187"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="199"/>
         <source>Sizes (Height, Commercial size, Group...)</source>
         <translation>尺码（身高、商业尺码、组...）</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="193"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="205"/>
         <source>Read from the pattern&apos;s size table. Shows the measurement&apos;s full name, its calculated value at the reference size and its unit.</source>
         <translation>从纸样的尺码表中读取。显示尺寸的完整名称、其在基准尺码处的计算值及其单位。</translation>
     </message>
@@ -18546,22 +18695,22 @@ Save it before leaving it?</source>
         <translation type="vanished">资料库中的一个 Logo（在“Logo”页面中添加您的 SVG Logo）。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="201"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="213"/>
         <source>Collection</source>
         <translation>系列</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="202"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="214"/>
         <source>The collection name.</source>
         <translation>系列名称。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="204"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="216"/>
         <source>Fabric info</source>
         <translation>面料信息</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="205"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="217"/>
         <source>Fabric information (nature, material, weight…).</source>
         <translation>面料信息（性质、材料、重量…）。</translation>
     </message>
@@ -19033,6 +19182,21 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/dialogs/otransferlayersdialog.cpp" line="58"/>
         <source>Move to:</source>
         <translation>转移到:</translation>
+    </message>
+</context>
+<context>
+    <name>OUpdateCheck</name>
+    <message>
+        <location filename="../../src/app/ostara/core/oupdatecheck.cpp" line="95"/>
+        <source>Version %1 is available.
+
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/oupdatecheck.cpp" line="144"/>
+        <source>Update</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19863,17 +20027,17 @@ to %2</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="629"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="680"/>
         <source>mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="638"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="689"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="631"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="682"/>
         <source>inch</source>
         <translation>英寸</translation>
     </message>
@@ -19891,7 +20055,7 @@ to %2</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="633"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="684"/>
         <source>px</source>
         <translation>px</translation>
     </message>
@@ -19949,7 +20113,7 @@ to %2</source>
         <translation>衣片 &apos;%1&apos;。点 &apos;%2&apos; 处的对位记号不可见。手动设置角度值。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="238"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="240"/>
         <source>Cannot get tokens from formula &apos;%1&apos;. Parser error: %2.</source>
         <translation>公式 &apos;%1&apos; 中输入的字段有误。公式错误：%2。</translation>
     </message>
@@ -19984,8 +20148,8 @@ to %2</source>
         <translation>解析错误：%1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="444"/>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3429"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="448"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3434"/>
         <source>Piece &apos;%1&apos;. Seam allowance is not valid.</source>
         <translation>衣片 &apos;%1&apos;。缝份无效。</translation>
     </message>
@@ -20116,7 +20280,7 @@ to %2</source>
         <translation>无法在衣片 &apos;%2&apos; 中配置对位记号 &apos;%1&apos;。该对位记号不存在。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="244"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="246"/>
         <source>Cannot get tokens from formula &apos;%1&apos;. Formula error: %2.</source>
         <translation>公式 &apos;%1&apos; 中输入的字段有误。公式错误：%2。</translation>
     </message>
@@ -20136,29 +20300,29 @@ to %2</source>
         <translation>无法计算衣片 &apos;%1&apos; 中折线的中心位置。原因：%2。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1582"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1587"/>
         <source>Piece &apos;%1&apos;. Grainline is not valid.</source>
         <translation>衣片 &apos;%1&apos;。纱向无效。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="4237"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="4242"/>
         <source>Piece &apos;%1&apos;. Fold line is not valid.</source>
         <translation>衣片 &apos;%1&apos;。折线无效。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1796"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1869"/>
         <source>Invalid global value for a passmark length. Piece &apos;%1&apos;. Length is less than minimal allowed.</source>
         <translation>对位记号长度的默认值无效。衣片 &apos;%1&apos;。长度小于允许的最小长度。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="749"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="393"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="749"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too small. Optimize it to minimal value.</source>
         <translation>曲线 &apos;%1&apos;。曲线分段值过小。设置的数值至少应等于所需最小值。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="767"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="410"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="767"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too big. Optimize it to maximal value.</source>
         <translation>曲线 &apos;%1&apos;。曲线分段值过大。设置的数值最大应等于可能的最大值。</translation>
     </message>
@@ -20215,34 +20379,34 @@ to %2</source>
         <translation>确实要删除吗？</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="743"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="387"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="743"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too small. Optimize it to minimal value.</source>
         <translation>曲线 &apos;%1&apos;。分段部分 (%2) 长度不足。设置的数值至少应等于所需最小值。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="762"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="405"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="762"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too big. Optimize it to maximal value.</source>
         <translation>曲线 &apos;%1&apos;。分段部分 (%2) 长度过大。设置的数值最大应等于可能的最大值。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2043"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2116"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; intersects with internal path &apos;%3&apos;.</source>
         <translation>衣片 &apos;%1&apos;。内部路径 &apos;%2&apos; 与内部路径 &apos;%3&apos; 相交。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1958"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2031"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; intersects with cutting contour.</source>
         <translation>衣片 &apos;%1&apos;。内部路径 &apos;%2&apos; 与裁剪轮廓相交。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1831"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1904"/>
         <source>Invalid global value for a passmark width. Piece &apos;%1&apos;. Width is less than minimal allowed.</source>
         <translation>对位记号宽度的全局值无效。衣片 &apos;%1&apos;。宽度小于允许的最小值。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1969"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2042"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; not inside of cutting contour.</source>
         <translation>衣片 &apos;%1&apos;。内部路径 &apos;%2&apos; 不在裁剪轮廓内。</translation>
     </message>
@@ -21402,12 +21566,12 @@ Do you want to continue?</source>
 <context>
     <name>VAbstractOperation</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1995"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2017"/>
         <source>Length</source>
         <translation>长度</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2008"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2030"/>
         <source>Layer</source>
         <translation>图层</translation>
     </message>
@@ -21417,13 +21581,13 @@ Do you want to continue?</source>
         <translation>默认</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1449"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1471"/>
         <source>delete operation</source>
         <translation>撤销操作</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1401"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2157"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1423"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2179"/>
         <source>save tool options</source>
         <translation>保存</translation>
     </message>
@@ -21431,35 +21595,40 @@ Do you want to continue?</source>
 <context>
     <name>VAbstractPattern</name>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="1761"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="1359"/>
+        <source>All versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2080"/>
         <source>Can&apos;t find tool in table.</source>
         <translation>未在表中找到该工具。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2348"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2668"/>
         <source>Error creating or updating group</source>
         <translation>创建或修改组时出错</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2370"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2690"/>
         <source>measurement</source>
         <translation>量体</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2702"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3588"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3655"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3026"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3913"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3980"/>
         <source>New layer</source>
         <translation>新图层</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2879"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3117"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3204"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3442"/>
         <source>Group</source>
         <translation>组</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="805"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="903"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>标签名 &apos;%1&apos; 错误。</translation>
     </message>
@@ -22849,296 +23018,296 @@ Do you want to continue?</source>
 <context>
     <name>VDependencyTreeModel</name>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="301"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="302"/>
         <source>Dependency tree</source>
         <translation>依赖树</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="909"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="910"/>
         <source>Piece &apos;%1&apos;</source>
         <translation>衣片 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="994"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="995"/>
         <source>True darts</source>
         <comment>operation</comment>
         <translation>自动省道</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="996"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="997"/>
         <source>Rotation</source>
         <comment>operation</comment>
         <translation>旋转</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="998"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="999"/>
         <source>Dart rotation</source>
         <comment>operation</comment>
         <translation>省道旋转</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1000"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1066"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1001"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1067"/>
         <source>Dart cap</source>
         <comment>operation</comment>
         <translation>省尖</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1002"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1003"/>
         <source>Rectangle</source>
         <comment>tool</comment>
         <translation>矩形</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1004"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1005"/>
         <source>Flipping by line</source>
         <comment>operation</comment>
         <translation>对象沿线条镜像</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1006"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1007"/>
         <source>Flipping by axis</source>
         <comment>operation</comment>
         <translation>对象沿轴镜像</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1008"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1009"/>
         <source>Move</source>
         <comment>operation</comment>
         <translation>对象移动</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1010"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1011"/>
         <source>Transfer</source>
         <comment>operation</comment>
         <translation>转移</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1012"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1013"/>
         <source>Slash and spread</source>
         <comment>operation</comment>
         <translation>剪切并旋转</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1014"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1015"/>
         <source>Move by batch</source>
         <comment>operation</comment>
         <translation>批量移动</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1016"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1017"/>
         <source>Pleat</source>
         <comment>operation</comment>
         <translation>褶</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1018"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1060"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1019"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1061"/>
         <source>Middle pleat</source>
         <comment>operation</comment>
         <translation>中间褶</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1020"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1062"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1021"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1063"/>
         <source>Flounce spiral</source>
         <comment>operation</comment>
         <translation>螺旋荷叶边</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1022"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1023"/>
         <source>Union details</source>
         <comment>operation</comment>
         <translation>合并衣片</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1038"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1039"/>
         <source>Base point</source>
         <translation>起点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1040"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1041"/>
         <source>Point at distance and angle</source>
         <translation>距离与角度点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1042"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1043"/>
         <source>Point along line</source>
         <translation>线段轴向上的定距点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1044"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1045"/>
         <source>Shoulder point</source>
         <translation>肩点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1046"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1047"/>
         <source>Point along perpendicular</source>
         <translation>垂线上的点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1048"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1049"/>
         <source>Bisector</source>
         <translation>角平分线上的点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1050"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1051"/>
         <source>Rectangle</source>
         <translation>矩形</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1052"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1053"/>
         <source>Transfer</source>
         <translation>转移</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1054"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1055"/>
         <source>Slash and spread</source>
         <translation>剪切并旋转</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1056"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1057"/>
         <source>Move by batch</source>
         <translation>批量移动</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1058"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1059"/>
         <source>Pleat</source>
         <translation>褶</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1068"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1069"/>
         <source>Point at line intersection</source>
         <translation>两条线条的交点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1072"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1073"/>
         <source>Spline</source>
         <translation>曲线</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1074"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1075"/>
         <source>Arc</source>
         <translation>圆弧</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1076"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1117"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1077"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1118"/>
         <source>Elliptical arc with given length</source>
         <translation>给定长度的椭圆弧</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1078"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1079"/>
         <source>Parallel curve</source>
         <translation>平行曲线</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1080"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1081"/>
         <source>Graduated curve</source>
         <translation>曲线放码</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1082"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1083"/>
         <source>Spiral</source>
         <translation>螺线</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1085"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1086"/>
         <source>Spline path</source>
         <translation>以点为控制柄的曲线</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1087"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1088"/>
         <source>Point of intersection circle and segment</source>
         <translation>圆与线段的交点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1089"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1090"/>
         <source>Perpendicular point along line</source>
         <translation>线段轴上的垂足点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1091"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1092"/>
         <source>Point located at the triangle&apos;s right-angled corner, lying along the axis</source>
         <translation>&apos;三角形&apos;工具的点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1093"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1094"/>
         <source>Point from X and Y of two other points</source>
         <translation>X 取自一点、Y 取自另一点的点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1095"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1096"/>
         <source>Point segmenting an arc</source>
         <translation>分割圆弧的点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1097"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1098"/>
         <source>Point segmenting a spline</source>
         <translation>分割曲线的点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1099"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1100"/>
         <source>Point segmenting a spline path</source>
         <translation>分割以点为控制柄的曲线的点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1101"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1102"/>
         <source>Point of intersection line and axis</source>
         <translation>线条与轴的交点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1103"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1104"/>
         <source>Point of intersection curve and axis</source>
         <translation>曲线与轴的交点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1105"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1106"/>
         <source>Point of intersection arcs</source>
         <translation>两段圆弧的交点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1107"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1108"/>
         <source>Point of intersection circles</source>
         <translation>两个圆的交点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1109"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1110"/>
         <source>Point of intersection curves</source>
         <translation>两条曲线的交点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1111"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1112"/>
         <source>Point from circle and tangent</source>
         <translation>圆与切线的交点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1113"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1114"/>
         <source>Point from arc and tangent</source>
         <translation>圆弧与切线的交点</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1115"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1116"/>
         <source>Elliptical arc</source>
         <translation>椭圆弧</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1119"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1120"/>
         <source>Line connecting two points</source>
         <translation>连接两点的线条</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1143"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1144"/>
         <source>Union details operation creating piece &apos;%1&apos;. Source objects cannot be deleted while this operation exists</source>
         <translation>由合并衣片创建的衣片 &apos;%1&apos;。此操作存在期间，源对象不能被删除</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1153"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1154"/>
         <source>Union details operation. Source objects cannot be deleted while this operation exists</source>
         <translation>衣片合并操作。此操作存在期间，源对象不能被删除</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1167"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1168"/>
         <source>Line_%1_%2</source>
         <translation>线条_%1_%2</translation>
     </message>
@@ -23291,52 +23460,52 @@ Do you want to continue?</source>
 <context>
     <name>VFormula</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="362"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="369"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="247"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="252"/>
         <source>Data container is empty</source>
         <translation>数据容器为空</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="262"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="267"/>
         <source>Math parser error: %1</source>
         <translation>数学解析器错误：%1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="270"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="275"/>
         <source>Result is infinite</source>
         <translation>结果为无穷</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="274"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="279"/>
         <source>Result is NaN</source>
         <translation>结果不是数值（NAN）</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="278"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="283"/>
         <source>Result is zero</source>
         <translation>结果为零</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="282"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="287"/>
         <source>Result less than zero</source>
         <translation>结果小于零</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="292"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="299"/>
         <source>Formula is empty</source>
         <translation>公式为空</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="354"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="361"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
         <translation>此公式使用了没有名称的对象。为其命名后才能在公式中使用。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="365"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="373"/>
         <source>Not evaluated</source>
         <translation>未计算</translation>
     </message>
@@ -23344,18 +23513,19 @@ Do you want to continue?</source>
 <context>
     <name>VFormulaData</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="76"/>
-        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="84"/>
+        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="83"/>
+        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="91"/>
         <source>Not evaluated</source>
         <translation>未计算</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="57"/>
+        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="60"/>
+        <location filename="../../src/test/OstaraTest/tst_linerolenames.cpp" line="234"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="65"/>
+        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="72"/>
         <source>Formula is empty</source>
         <translation>公式为空</translation>
     </message>
@@ -23501,7 +23671,7 @@ Do you want to continue?</source>
 <context>
     <name>VLayoutPiece</name>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="461"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="465"/>
         <source>Piece %1 doesn&apos;t have shape.</source>
         <translation>衣片 %1 没有形状。</translation>
     </message>
@@ -23907,51 +24077,61 @@ Do you want to continue?</source>
 <context>
     <name>VPattern</name>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="277"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="280"/>
         <source>The formula uses a name the pattern does not define: %1.</source>
         <translation>公式使用了纸样未定义的名称：%1。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="934"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="937"/>
         <source>Two objects would carry the same identifier, so the file was not written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1034"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1078"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1043"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1071"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="92"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="120"/>
         <source>Error parsing file.</source>
         <translation>文件解析错误。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1045"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1050"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="99"/>
         <source>Error can&apos;t convert value.</source>
         <translation>错误：值无法转换。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1056"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1057"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="106"/>
         <source>Error empty parameter.</source>
         <translation>错误：参数为空。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1067"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1064"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="113"/>
         <source>Error wrong id.</source>
         <translation>错误:编码错误.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1089"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1078"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="127"/>
         <source>Error parsing file (std::bad_alloc).</source>
         <translation>文件解析错误（std::bad_alloc）。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1108"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1093"/>
         <source>Error updating scene after parsing.</source>
         <translation>解析后无法更新场景。</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1142"/>
+        <source>Change undone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1143"/>
+        <source>This change could not be applied to the pattern, so it was undone. Your pattern is unchanged and you can keep working.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error creating or updating detail</source>
@@ -24217,8 +24397,8 @@ Do you want to continue?</source>
         <translation>无法创建或更新自动省道</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1402"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1471"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1435"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1504"/>
         <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="113"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>标签名 &apos;%1&apos; 错误。</translation>
@@ -24244,7 +24424,7 @@ Do you want to continue?</source>
         <translation>未知的工具类型 &apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="939"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="942"/>
         <source>Error not unique id.</source>
         <translation>错误，Id 不唯一。</translation>
     </message>
@@ -24332,7 +24512,7 @@ Do you want to continue?</source>
         <translation>纸样衣片</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="383"/>
+        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="387"/>
         <source>The piece &apos;%1&apos; could not be rebuilt and was removed from the pattern: %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24443,20 +24623,20 @@ Do you want to continue?</source>
 <context>
     <name>VPiece</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="302"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="319"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="313"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="330"/>
         <source>Main path of piece %1</source>
         <translation>衣片 %1 的主轮廓</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1463"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1503"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1582"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1536"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1576"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1655"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;.</source>
         <translation>无法为衣片 &apos;%2&apos; 中的点 &apos;%1&apos; 计算剪口。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1635"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1708"/>
         <source>Notch for point &apos;%1&apos; in piece &apos;%2&apos; will be disabled. Manual length is less than allowed value.</source>
         <translation>衣片 &apos;%2&apos; 中点 &apos;%1&apos; 的剪口将被禁用。手动长度小于允许值。</translation>
     </message>
@@ -26318,92 +26498,92 @@ Do you want to continue?</source>
         <translation>默认缝份</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1615"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1620"/>
         <source>move grainline</source>
         <translation>移动纱向</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1628"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1633"/>
         <source>resize grainline</source>
         <translation>调整纱向大小</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1640"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1645"/>
         <source>rotate grainline</source>
         <translation>旋转纱向</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1730"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1735"/>
         <source>move information block</source>
         <translation>移动信息块</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1760"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1765"/>
         <source>resize information block</source>
         <translation>调整信息块大小</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2008"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2013"/>
         <source>move thumbnail</source>
         <translation>移动缩略图</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2166"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2171"/>
         <source>Delete place labels</source>
         <translation>删除对位记号</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2221"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2226"/>
         <source>move annotation</source>
         <translation>移动标注</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2242"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2247"/>
         <source>move seam allowance value</source>
         <translation>移动缝合线数值</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2256"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2261"/>
         <source>move seam allowance legend</source>
         <translation>移动缝合线图例</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2305"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2310"/>
         <source>resize annotation</source>
         <translation>调整标注大小</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2899"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2904"/>
         <source>In layout</source>
         <translation>在排料中</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2900"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2905"/>
         <source>Hide main path</source>
         <translation>隐藏主轮廓</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2901"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2906"/>
         <source>Show mirrored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2903"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2908"/>
         <source>Show full piece</source>
         <translation>显示展开的衣片</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2920"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2925"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2656"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2661"/>
         <source>apply save detail options</source>
         <translation>应用修改</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3005"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3010"/>
         <source>multi deletion</source>
         <translation>多重删除</translation>
     </message>
@@ -26412,17 +26592,17 @@ Do you want to continue?</source>
         <translation type="vanished">强制镜像放置</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2665"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2670"/>
         <source>This id (%1) is not unique.</source>
         <translation>此标识 (%1) 不唯一。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3112"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3117"/>
         <source>Press Escape to leave the thumbnail</source>
         <translation>按 Esc 退出缩略图</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3901"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3906"/>
         <source>Tool was used after deleting.</source>
         <translation>该工具在删除后仍被使用。</translation>
     </message>
@@ -27354,27 +27534,27 @@ Do you want to continue?</source>
         <translation>移动到历史记录中最晚的位置</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="712"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="713"/>
         <source>Expand All</source>
         <translation>全部展开</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="713"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="714"/>
         <source>Collapse All</source>
         <translation>全部折叠</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="715"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="716"/>
         <source>Copy ID</source>
         <translation>复制 ID</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="717"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="718"/>
         <source>Go to Object</source>
         <translation>转到对象</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="719"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="720"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
@@ -28331,44 +28511,44 @@ Do you want to continue?</source>
         <translation>只读</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="601"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="587"/>
         <source>untitled.vwm</source>
         <translation>无标题.vwm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="617"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="603"/>
         <source>Confirm format rewriting</source>
         <translation>确认格式重写</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="618"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="604"/>
         <source>This file is using previous format version v%1. The current is v%2. Saving the file with this app version will update the format version for this file. This may prevent you from be able to open the file with older app versions. Do you really want to continue?</source>
         <translation>此文件使用旧格式版本 v%1。当前版本为 v%2。用此程序版本保存该文件将更新该文件的格式版本。这可能导致您无法用较旧的程序版本打开该文件。是否确实要继续？</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="658"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="644"/>
         <source>File saved</source>
         <translation>文件已保存</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="701"/>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="707"/>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="714"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="687"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="693"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="700"/>
         <source>Locking file</source>
         <translation>锁定文件(只读)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="702"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="688"/>
         <source>This file already opened in another window. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>该文件已在另一个窗口中打开。如要继续请选择忽略（不推荐，可能导致数据损坏）。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="708"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="694"/>
         <source>The lock file could not be created, for lack of permissions. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>因权限不足，无法创建锁定文件。如要继续请选择忽略（不推荐，可能导致数据损坏）。</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="715"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="701"/>
         <source>Unknown error happened, for instance a full partition prevented writing out the lock file. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>发生未知错误，例如分区已满导致无法写入锁定文件。如要继续请选择忽略（不推荐，可能导致数据损坏）。</translation>
     </message>

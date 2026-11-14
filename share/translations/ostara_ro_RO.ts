@@ -7911,12 +7911,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>&amp;Refă</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="188"/>
+        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="189"/>
         <source>Pattern piece:</source>
         <translation>Piesă de tipar:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="190"/>
+        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="191"/>
         <source>Enter a new label for the pattern piece.</source>
         <translation>Introduceți un nume nou pentru această piesă de tipar.</translation>
     </message>
@@ -14759,18 +14759,18 @@ Alegeți alt nume.</translation>
 <context>
     <name>OExportTemplateWindow</name>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="55"/>
-        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="140"/>
+        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="72"/>
+        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="157"/>
         <source>Export templates</source>
         <translation>Șabloane de export</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="161"/>
+        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="178"/>
         <source>Unsaved template</source>
         <translation>Model nesalvat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="162"/>
+        <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="179"/>
         <source>This template has been changed and not saved.
 
 Save it before closing?</source>
@@ -15668,39 +15668,39 @@ Alegeți un alt nume.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="280"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="427"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="429"/>
         <source>fabric</source>
         <translation>țesătură</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="282"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="429"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="431"/>
         <source>interfacing</source>
         <translation>întăritură</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="284"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="431"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="433"/>
         <source>lining</source>
         <translation>căptușeală</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="303"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="407"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="445"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="409"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="447"/>
         <source>Cut %1</source>
         <translation>Taie de %1 ori</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="308"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="412"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="450"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="414"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="452"/>
         <source> on fold</source>
         <translation> pe pliu</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="310"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="452"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="454"/>
         <source> (%1)</source>
         <translation> (%1)</translation>
     </message>
@@ -15806,18 +15806,18 @@ It may be open in another program, or the folder may not allow deleting.</source
 <context>
     <name>OInfoBlockWindow</name>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="48"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="113"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="65"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="143"/>
         <source>Information block[*]</source>
         <translation>Bloc de informații[*]</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="84"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="114"/>
         <source>Information block</source>
         <translation>Bloc de informații</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="84"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="114"/>
         <source>The template has unsaved changes. Do you want to save them?</source>
         <translation>Șablonul are modificări nesalvate. Doriți să le salvați?</translation>
     </message>
@@ -16340,91 +16340,103 @@ Legați dosarul de ea?</translation>
 <context>
     <name>OPatternInfoWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="72"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="75"/>
         <source>Pattern</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="77"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="348"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="80"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="365"/>
         <source>Pattern name:</source>
         <translation>Numele tiparului:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="81"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="352"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="84"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="369"/>
         <source>Client:</source>
         <translation>Client:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="85"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="88"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="373"/>
         <source>Collection:</source>
         <translation>Colecție:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="89"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="360"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="92"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="377"/>
         <source>Fabric info:</source>
         <translation>Info țesătură:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="117"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="113"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="421"/>
+        <source>Pattern with several versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="115"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="425"/>
+        <source>Manage versions…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="128"/>
         <source>Seam Allowances</source>
         <translation>Adaosuri de cusătură</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="124"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="153"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="374"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="395"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="135"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="164"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="391"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="412"/>
         <source>Applies to all pieces, including those created afterwards. Not retroactive: existing pieces are left unchanged.</source>
         <translation>Se aplică tuturor pieselor, inclusiv celor create ulterior. Nu este retroactiv: piesele existente nu sunt modificate.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="131"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="379"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="142"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="396"/>
         <source>Activate seam allowances</source>
         <translation>Activează adaosurile de cusătură</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="133"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="383"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="144"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="400"/>
         <source>Hide main path</source>
         <translation>Ascunde conturul principal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="135"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="387"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="146"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="404"/>
         <source>Show the second passmark on seam line</source>
         <translation>Afișează al doilea reper de asamblare pe linia de cusătură</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="137"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="391"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="148"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="408"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
         <translation>Exportă linia de cusătură împreună cu desenele (DXF-AAMA)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="160"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="400"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="171"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="417"/>
         <source>Activate information block</source>
         <translation>Activează blocul de informații</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="147"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="158"/>
         <source>Information block</source>
         <translation>Bloc de informații</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="255"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="364"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="268"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="381"/>
         <source>No client</source>
         <translation>Niciun client</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="281"/>
-        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="369"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="294"/>
+        <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="386"/>
         <source>No collection</source>
         <translation>Nicio colecție</translation>
     </message>
@@ -16735,6 +16747,102 @@ Această acțiune este ireversibilă.</translation>
     </message>
 </context>
 <context>
+    <name>OPatternVersionsDialog</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="74"/>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="112"/>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="386"/>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="475"/>
+        <source>Pattern versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="122"/>
+        <source>Pattern with several versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="126"/>
+        <source>A piece belongs to one version. A group belongs to every version of its members.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="153"/>
+        <source>Add a version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="213"/>
+        <source>Every piece that belongs to no particular version belongs to this one. It cannot be deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="224"/>
+        <source>Delete this version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="332"/>
+        <source>One piece wears the version &quot;%1&quot;. Move it to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="333"/>
+        <source>%1 pieces wear the version &quot;%2&quot;. Move them to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="345"/>
+        <source>One piece wears the version &quot;%1&quot;. Move it to &quot;%2&quot; and delete the version?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="347"/>
+        <source>%1 pieces wear the version &quot;%2&quot;. Move them all to &quot;%3&quot; and delete the version?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="387"/>
+        <source>A version needs a name, and two versions cannot share one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="446"/>
+        <source>One piece wears a version. Move it to &quot;%1&quot; and switch the versions off?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="449"/>
+        <source>%1 pieces wear a version. Move them all to &quot;%2&quot; and switch the versions off?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="478"/>
+        <source>The pieces stay in &quot;%1&quot; — the one every piece of the pattern belongs to.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="481"/>
+        <source>Yes, move them</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="483"/>
+        <source>No, keep the version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="500"/>
+        <source>Move the pieces to &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opatternversionsdialog.cpp" line="539"/>
+        <source>Version %1</source>
+        <translation type="unfinished">Versiunea %1</translation>
+    </message>
+</context>
+<context>
     <name>OPieceAutomation</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/opieceautomation.cpp" line="714"/>
@@ -16849,22 +16957,22 @@ Această acțiune este ireversibilă.</translation>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="212"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="215"/>
         <source>Cannot calculate curve %1.</source>
         <translation>Nu se poate calcula curba %1.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="220"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="223"/>
         <source>You need more points!</source>
         <translation>Ai nevoie de mai multe puncte!</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="225"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="228"/>
         <source>You have to choose points in a clockwise direction!</source>
         <translation>Trebuie să alegi punctele în sensul acelor de ceasornic!</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="286"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="290"/>
         <source>Select main path objects clockwise, &lt;b&gt;%1&lt;/b&gt; - finish creation</source>
         <translation>Selectați obiectele conturului principal în sens orar, &lt;b&gt;%1&lt;/b&gt; - terminați crearea</translation>
     </message>
@@ -17078,52 +17186,58 @@ Lipsesc: %1
 <context>
     <name>OPieceInfoWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="63"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="285"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="64"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="349"/>
+        <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="78"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="365"/>
         <source>Exclude from total</source>
         <translation>Exclude din total</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="67"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="273"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="82"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="353"/>
         <source>Number</source>
         <translation>Număr</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="73"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="290"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="88"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="370"/>
         <source>Fabric</source>
         <translation>Țesătură</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="74"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="291"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="89"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="371"/>
         <source>Interfacing</source>
         <translation>Interfaţare</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="75"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="292"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="90"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="372"/>
         <source>Lining</source>
         <translation>Căptușeală</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="79"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="288"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="94"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="368"/>
         <source>Free text</source>
         <translation>Text liber</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="182"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="279"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="210"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="359"/>
         <source>Quantity</source>
         <translation>Cantitate</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="187"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="282"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="283"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="284"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="215"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="362"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="363"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="364"/>
         <source>On fold</source>
         <translation>Pe pliu</translation>
     </message>
@@ -17414,67 +17528,82 @@ Numiți piesa care intră:</translation>
 <context>
     <name>OPiecePatternStep</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="59"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="63"/>
         <source>Pattern name</source>
         <translation>Numele modelului</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="66"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="70"/>
         <source>No client</source>
         <translation>Niciun client</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="88"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="92"/>
         <source>Client</source>
         <translation>Client</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="96"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="100"/>
         <source>No collection</source>
         <translation>Nicio colecție</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="119"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="123"/>
         <source>Collection</source>
         <translation>Colecție</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="134"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="138"/>
         <source>Fabric info</source>
         <translation>Informații țesătură</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="144"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="150"/>
+        <source>Versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="152"/>
+        <source>Pattern with several versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="155"/>
+        <source>Manage versions…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="182"/>
         <source>Seam Allowances</source>
         <translation>Adaosuri de cusătură</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="146"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="184"/>
         <source>Activate seam allowances for all pieces</source>
         <translation>Activează adaosurile de cusătură pentru toate piesele</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="149"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="187"/>
         <source>Hide main path for all pieces</source>
         <translation>Ascunde conturul principal pentru toate piesele</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="152"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="190"/>
         <source>Show the second passmark on seam line for all pieces</source>
         <translation>Afișează a doua crestătură de asamblare pe linia de cusătură pentru toate piesele</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="155"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="193"/>
         <source>Export the sew line with the drawings for all pieces (DXF-AAMA)</source>
         <translation>Exportă linia de cusătură împreună cu desenele pentru toate piesele (DXF-AAMA)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="166"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="204"/>
         <source>Information block</source>
         <translation>Bloc de informații</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="169"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="207"/>
         <source>Activate information block for all pieces</source>
         <translation>Activează blocul de informații pentru toate piesele</translation>
     </message>
@@ -17482,42 +17611,47 @@ Numiți piesa care intră:</translation>
 <context>
     <name>OPiecePieceStep</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="61"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="66"/>
         <source>Piece name</source>
         <translation>Numele piesei</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="78"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="83"/>
         <source>Piece number</source>
         <translation>Numărul piesei</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="84"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="89"/>
+        <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="98"/>
         <source>Fabric</source>
         <translation>Țesătură</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="85"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="99"/>
         <source>Interfacing</source>
         <translation>Interfaţare</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="86"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="100"/>
         <source>Lining</source>
         <translation>Căptușeală</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="103"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="117"/>
         <source>Free text</source>
         <translation>Text liber</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="126"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="140"/>
         <source>Show mirrored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="127"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="141"/>
         <source>Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17534,22 +17668,22 @@ Numiți piesa care intră:</translation>
         <translation type="vanished">Forțează întoarcerea piesei în planul de croială.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="130"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="144"/>
         <source>Symmetrical copy</source>
         <translation>Copie simetrică</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="131"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="145"/>
         <source>When the number of copies is greater than 1 and &apos;Show mirrored&apos; is set, each even-numbered copy is flipped the other way.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="148"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="218"/>
         <source>Quantity</source>
         <translation>Cantitate</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="152"/>
+        <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="222"/>
         <source>On fold</source>
         <translation>Pe pliu</translation>
     </message>
@@ -18393,7 +18527,7 @@ Save it before leaving it?</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="589"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="198"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="210"/>
         <source>A logo from your library (add logos in the Logo page).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18445,7 +18579,7 @@ Save it before leaving it?</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="70"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="192"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="204"/>
         <source>Measurement</source>
         <translation>Măsură</translation>
     </message>
@@ -18465,7 +18599,7 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="90"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="588"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="93"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="197"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="209"/>
         <source>Logo</source>
         <translation>Logo</translation>
     </message>
@@ -18481,90 +18615,105 @@ Save it before leaving it?</source>
         <translation>Croială</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="132"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="134"/>
+        <source>Hide for &quot;All versions&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="139"/>
         <source>Rename the axis and its values</source>
         <translation>Redenumește axa și valorile ei</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="149"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="156"/>
         <source>Rename the measurement</source>
         <translation>Redenumește măsura</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="583"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="161"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="168"/>
         <source>Pattern name</source>
         <translation>Numele modelului</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="584"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="162"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="169"/>
         <source>The name of the pattern (set in the pattern toolbar).</source>
         <translation>Numele tiparului (definit în bara de instrumente a tiparului).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="164"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="171"/>
         <source>Client</source>
         <translation>Client</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="165"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="172"/>
         <source>The client&apos;s name, birth date and email from the document.</source>
         <translation>Numele clientului, data de naștere și emailul, preluate din document.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="167"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="174"/>
         <source>Piece name</source>
         <translation>Numele piesei</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="168"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="175"/>
         <source>The name of the piece (from the piece options).</source>
         <translation>Numele piesei (preluat din opțiunile piesei).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="170"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="177"/>
         <source>Piece number</source>
         <translation>Numărul piesei</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="171"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="178"/>
         <source>The piece number and its total, e.g. 1 of 10. The total shown here is an example - it is computed automatically from the number of pieces in the layout.</source>
         <translation>Numărul piesei și totalul ei, ex. 1 din 10. Totalul afișat aici este un exemplu - este calculat automat din numărul de piese ale planului de croială.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="175"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="182"/>
         <source>Cut (Fabric / Interfacing / Lining)</source>
         <translation>Croială (Țesătură / Întăritură / Căptușeală)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="176"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="183"/>
         <source>One section covers all three fabrics - no need to add Cut several times. The values here are only an example so you can see how the section renders: in the pieces, the cut quantities are entered per piece and are empty by default.</source>
         <translation>O secțiune acoperă toate cele trei țesături - nu e nevoie să adăugați Croială de mai multe ori. Valorile de aici sunt doar un exemplu ca să vedeți cum se afișează secțiunea: în piese, cantitățile de croială se introduc pentru fiecare piesă și sunt goale în mod implicit.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="188"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="189"/>
+        <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="190"/>
+        <source>The version of the pattern this piece belongs to, as named in the pattern versions. A group shows the versions of its members.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="200"/>
         <source>Requires a multi-size table (.omt). Shows the size axes you tick, each with its value under a name of your own. With a single-size table, this information is simply ignored.</source>
         <translation>Necesită un tabel multi-dimensiune (.omt). Afișează axele de dimensiuni pe care le bifați, fiecare cu valoarea ei sub un nume al dumneavoastră. Cu un tabel cu o singură dimensiune, această informație este pur și simplu ignorată.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="597"/>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="182"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="194"/>
         <source>Free text</source>
         <translation>Text liber</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="183"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="195"/>
         <source>Free text entered per piece in the information block. It can span several lines.</source>
         <translation>Text liber introdus pentru fiecare piesă în blocul de informații. Poate ocupa mai multe linii.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="187"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="199"/>
         <source>Sizes (Height, Commercial size, Group...)</source>
         <translation>Dimensiuni (Înălțime, Dimensiune comercială, Grup...)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="193"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="205"/>
         <source>Read from the pattern&apos;s size table. Shows the measurement&apos;s full name, its calculated value at the reference size and its unit.</source>
         <translation>Citit din tabelul de dimensiuni al tiparului. Afișează numele complet al măsurii, valoarea ei calculată la dimensiunea de referință și unitatea ei.</translation>
     </message>
@@ -18573,22 +18722,22 @@ Save it before leaving it?</source>
         <translation type="vanished">Un logo din biblioteca dumneavoastră (adăugați logo-urile SVG în pagina Logo).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="201"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="213"/>
         <source>Collection</source>
         <translation>Colecție</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="202"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="214"/>
         <source>The collection name.</source>
         <translation>Numele colecției.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="204"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="216"/>
         <source>Fabric info</source>
         <translation>Informații țesătură</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="205"/>
+        <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="217"/>
         <source>Fabric information (nature, material, weight…).</source>
         <translation>Informații despre țesătură (natură, material, greutate…).</translation>
     </message>
@@ -19060,6 +19209,21 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/dialogs/otransferlayersdialog.cpp" line="58"/>
         <source>Move to:</source>
         <translation>Transferă în:</translation>
+    </message>
+</context>
+<context>
+    <name>OUpdateCheck</name>
+    <message>
+        <location filename="../../src/app/ostara/core/oupdatecheck.cpp" line="95"/>
+        <source>Version %1 is available.
+
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/oupdatecheck.cpp" line="144"/>
+        <source>Update</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19890,17 +20054,17 @@ la %2</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="629"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="680"/>
         <source>mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="638"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="689"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="631"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="682"/>
         <source>inch</source>
         <translation>Țol</translation>
     </message>
@@ -19918,7 +20082,7 @@ la %2</translation>
         <translation>Valoare</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="633"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="684"/>
         <source>px</source>
         <translation>px</translation>
     </message>
@@ -19976,7 +20140,7 @@ la %2</translation>
         <translation>Piesa &apos;%1&apos;. Crestătură de montaj la punctul &apos;%2&apos;, nevizibilă. Setați manual valoarea unghiului.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="238"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="240"/>
         <source>Cannot get tokens from formula &apos;%1&apos;. Parser error: %2.</source>
         <translation>Câmpurile introduse în formula &apos;%1&apos; sunt eronate. Eroare de formulă: %2.</translation>
     </message>
@@ -20011,8 +20175,8 @@ la %2</translation>
         <translation>Eroare Parser: %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="444"/>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3429"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="448"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3434"/>
         <source>Piece &apos;%1&apos;. Seam allowance is not valid.</source>
         <translation>Piesa &apos;%1&apos;. Adaosul de cusătură este invalid.</translation>
     </message>
@@ -20143,7 +20307,7 @@ la %2</translation>
         <translation>Imposibil de configurat crestătura de asamblare &apos;%1&apos; în piesa &apos;%2&apos;. Crestătura de asamblare lipsește.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="244"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="246"/>
         <source>Cannot get tokens from formula &apos;%1&apos;. Formula error: %2.</source>
         <translation>Câmpurile introduse în formula &apos;%1&apos; sunt eronate. Eroare de formulă: %2.</translation>
     </message>
@@ -20163,29 +20327,29 @@ la %2</translation>
         <translation>Imposibil de calculat poziția centrală a liniei de pliu în piesa &apos;%1&apos;. Motiv: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1582"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1587"/>
         <source>Piece &apos;%1&apos;. Grainline is not valid.</source>
         <translation>Piesa &apos;%1&apos;. Firul drept nu este valid.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="4237"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="4242"/>
         <source>Piece &apos;%1&apos;. Fold line is not valid.</source>
         <translation>Piesa &apos;%1&apos;. Linia de pliu este invalidă.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1796"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1869"/>
         <source>Invalid global value for a passmark length. Piece &apos;%1&apos;. Length is less than minimal allowed.</source>
         <translation>Valoare implicită invalidă pentru lungimea crestăturii de asamblare. Piesa &apos;%1&apos;. Lungimea este mai mică decât lungimea minimă permisă.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="749"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="393"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="749"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too small. Optimize it to minimal value.</source>
         <translation>Curba &apos;%1&apos;. Valoare de segmentare a curbei insuficientă. Setați o valoare cel puțin egală cu minimul necesar.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="767"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="410"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="767"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too big. Optimize it to maximal value.</source>
         <translation>Curba &apos;%1&apos;. Valoare de segmentare a curbei prea mare. Setați o valoare cel mult egală cu maximul posibil.</translation>
     </message>
@@ -20242,34 +20406,34 @@ la %2</translation>
         <translation>Sigur doriți să ștergeți?</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="743"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="387"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="743"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too small. Optimize it to minimal value.</source>
         <translation>Curba &apos;%1&apos;. Partea segmentată (%2) are o lungime insuficientă. Setați o valoare cel puțin egală cu minimul necesar.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="762"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="405"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="762"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too big. Optimize it to maximal value.</source>
         <translation>Curba &apos;%1&apos;. Partea segmentată (%2) are o lungime prea mare. Setați o valoare cel mult egală cu maximul posibil.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2043"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2116"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; intersects with internal path &apos;%3&apos;.</source>
         <translation>Piesa &apos;%1&apos;. Calea internă &apos;%2&apos; se intersectează cu calea internă &apos;%3&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1958"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2031"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; intersects with cutting contour.</source>
         <translation>Piesa &apos;%1&apos;. Calea internă &apos;%2&apos; se intersectează cu conturul de decupare.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1831"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1904"/>
         <source>Invalid global value for a passmark width. Piece &apos;%1&apos;. Width is less than minimal allowed.</source>
         <translation>Valoare globală invalidă pentru lățimea crestăturilor de asamblare. Piesa &apos;%1&apos;. Lățimea este mai mică decât minimul alocat.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1969"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2042"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; not inside of cutting contour.</source>
         <translation>Piesa &apos;%1&apos;. Calea internă &apos;%2&apos; nu se află în interiorul conturului de decupare.</translation>
     </message>
@@ -21430,12 +21594,12 @@ Doriți să continuați?</translation>
 <context>
     <name>VAbstractOperation</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1995"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2017"/>
         <source>Length</source>
         <translation>Lungime</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2008"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2030"/>
         <source>Layer</source>
         <translation>Strat</translation>
     </message>
@@ -21445,13 +21609,13 @@ Doriți să continuați?</translation>
         <translation>implicit</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1449"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1471"/>
         <source>delete operation</source>
         <translation>anulează operațiunea</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1401"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2157"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1423"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="2179"/>
         <source>save tool options</source>
         <translation>Salvează</translation>
     </message>
@@ -21459,35 +21623,40 @@ Doriți să continuați?</translation>
 <context>
     <name>VAbstractPattern</name>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="1761"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="1359"/>
+        <source>All versions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2080"/>
         <source>Can&apos;t find tool in table.</source>
         <translation>Instrumentul nu a fost găsit în tabel.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2348"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2668"/>
         <source>Error creating or updating group</source>
         <translation>Eroare la crearea sau modificarea grupului</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2370"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2690"/>
         <source>measurement</source>
         <translation>măsurătoare</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2702"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3588"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3655"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3026"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3913"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3980"/>
         <source>New layer</source>
         <translation>Strat nou</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2879"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3117"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3204"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3442"/>
         <source>Group</source>
         <translation>Grup</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="805"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="903"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>Nume de tag „%1” eronat.</translation>
     </message>
@@ -22877,296 +23046,296 @@ Doriți să continuați?</translation>
 <context>
     <name>VDependencyTreeModel</name>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="301"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="302"/>
         <source>Dependency tree</source>
         <translation>Arborele dependențelor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="909"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="910"/>
         <source>Piece &apos;%1&apos;</source>
         <translation>Piesă &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="994"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="995"/>
         <source>True darts</source>
         <comment>operation</comment>
         <translation>Pensă automată</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="996"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="997"/>
         <source>Rotation</source>
         <comment>operation</comment>
         <translation>Rotație</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="998"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="999"/>
         <source>Dart rotation</source>
         <comment>operation</comment>
         <translation>Pivot de pensă</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1000"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1066"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1001"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1067"/>
         <source>Dart cap</source>
         <comment>operation</comment>
         <translation>Cap de pensă</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1002"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1003"/>
         <source>Rectangle</source>
         <comment>tool</comment>
         <translation>Dreptunghi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1004"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1005"/>
         <source>Flipping by line</source>
         <comment>operation</comment>
         <translation>Oglindirea obiectelor față de o linie</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1006"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1007"/>
         <source>Flipping by axis</source>
         <comment>operation</comment>
         <translation>Oglindirea obiectelor față de o axă</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1008"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1009"/>
         <source>Move</source>
         <comment>operation</comment>
         <translation>Deplasarea obiectelor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1010"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1011"/>
         <source>Transfer</source>
         <comment>operation</comment>
         <translation>Transfer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1012"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1013"/>
         <source>Slash and spread</source>
         <comment>operation</comment>
         <translation>Tăiere și rotire</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1014"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1015"/>
         <source>Move by batch</source>
         <comment>operation</comment>
         <translation>Deplasare pe lot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1016"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1017"/>
         <source>Pleat</source>
         <comment>operation</comment>
         <translation>Pliu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1018"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1060"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1019"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1061"/>
         <source>Middle pleat</source>
         <comment>operation</comment>
         <translation>Pliu din mijloc</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1020"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1062"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1021"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1063"/>
         <source>Flounce spiral</source>
         <comment>operation</comment>
         <translation>Volan spiralat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1022"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1023"/>
         <source>Union details</source>
         <comment>operation</comment>
         <translation>Piesă fuzionată</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1038"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1039"/>
         <source>Base point</source>
         <translation>Punct de bază</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1040"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1041"/>
         <source>Point at distance and angle</source>
         <translation>Punct la distanță și unghi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1042"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1043"/>
         <source>Point along line</source>
         <translation>Punct la distanță pe axa unui segment</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1044"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1045"/>
         <source>Shoulder point</source>
         <translation>Punct umăr</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1046"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1047"/>
         <source>Point along perpendicular</source>
         <translation>Punct de-a lungul unei perpendiculare</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1048"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1049"/>
         <source>Bisector</source>
         <translation>Punct pe bisectoare</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1050"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1051"/>
         <source>Rectangle</source>
         <translation>Dreptunghi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1052"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1053"/>
         <source>Transfer</source>
         <translation>Transfer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1054"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1055"/>
         <source>Slash and spread</source>
         <translation>Tăiere și rotire</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1056"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1057"/>
         <source>Move by batch</source>
         <translation>Deplasare pe lot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1058"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1059"/>
         <source>Pleat</source>
         <translation>Pliu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1068"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1069"/>
         <source>Point at line intersection</source>
         <translation>Punct la linia de intersecție</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1072"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1073"/>
         <source>Spline</source>
         <translation>Curbă</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1074"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1075"/>
         <source>Arc</source>
         <translation>Curbura</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1076"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1117"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1077"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1118"/>
         <source>Elliptical arc with given length</source>
         <translation>Arc eliptic cu lungime dată</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1078"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1079"/>
         <source>Parallel curve</source>
         <translation>Curbă paralelă</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1080"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1081"/>
         <source>Graduated curve</source>
         <translation>Gradație de curbă</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1082"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1083"/>
         <source>Spiral</source>
         <translation>Spirală</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1085"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1086"/>
         <source>Spline path</source>
         <translation>Curbă care folosește punctele ca mânere de control</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1087"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1088"/>
         <source>Point of intersection circle and segment</source>
         <translation>Punct la intersecția unui cerc și a unui segment</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1089"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1090"/>
         <source>Perpendicular point along line</source>
         <translation>Punct perpendicular pe linie</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1091"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1092"/>
         <source>Point located at the triangle&apos;s right-angled corner, lying along the axis</source>
         <translation>Punct al instrumentului „Triunghi”</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1093"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1094"/>
         <source>Point from X and Y of two other points</source>
         <translation>Punct la X-ul unui punct și Y-ul altuia</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1095"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1096"/>
         <source>Point segmenting an arc</source>
         <translation>Punct care segmentează un arc</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1097"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1098"/>
         <source>Point segmenting a spline</source>
         <translation>Punct care segmentează o curbă</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1099"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1100"/>
         <source>Point segmenting a spline path</source>
         <translation>Punct care segmentează o curbă ce folosește punctele ca mânere de control</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1101"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1102"/>
         <source>Point of intersection line and axis</source>
         <translation>Punct la intersecția unei linii și a unei axe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1103"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1104"/>
         <source>Point of intersection curve and axis</source>
         <translation>Punct de intersecție a unei curbe și a unei axe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1105"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1106"/>
         <source>Point of intersection arcs</source>
         <translation>Punct la intersecția a 2 arce</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1107"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1108"/>
         <source>Point of intersection circles</source>
         <translation>Punct la intersecția a 2 cercuri</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1109"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1110"/>
         <source>Point of intersection curves</source>
         <translation>Punct la intersecția a 2 curbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1111"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1112"/>
         <source>Point from circle and tangent</source>
         <translation>Punct la intersecția unui cerc și a unei tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1113"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1114"/>
         <source>Point from arc and tangent</source>
         <translation>Punct la intersecția unui arc și a unei tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1115"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1116"/>
         <source>Elliptical arc</source>
         <translation>Arc eliptic</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1119"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1120"/>
         <source>Line connecting two points</source>
         <translation>Linie între 2 puncte</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1143"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1144"/>
         <source>Union details operation creating piece &apos;%1&apos;. Source objects cannot be deleted while this operation exists</source>
         <translation>Piesa &apos;%1&apos; creată prin fuziunea pieselor. Obiectele incluse în această operație nu pot fi șterse cât timp această fuziune există</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1153"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1154"/>
         <source>Union details operation. Source objects cannot be deleted while this operation exists</source>
         <translation>Operație de fuziune a pieselor. Obiectele incluse în această operație nu pot fi șterse cât timp această fuziune există</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1167"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1168"/>
         <source>Line_%1_%2</source>
         <translation>Linie_%1_%2</translation>
     </message>
@@ -23319,52 +23488,52 @@ Doriți să continuați?</translation>
 <context>
     <name>VFormula</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="362"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="369"/>
         <source>Error</source>
         <translation>Eroare</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="247"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="252"/>
         <source>Data container is empty</source>
         <translation>Containerul de date este gol</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="262"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="267"/>
         <source>Math parser error: %1</source>
         <translation>Eroare analizor matematic: %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="270"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="275"/>
         <source>Result is infinite</source>
         <translation>Rezultatul este infinit</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="274"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="279"/>
         <source>Result is NaN</source>
         <translation>Rezultatul nu este un număr (NAN)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="278"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="283"/>
         <source>Result is zero</source>
         <translation>Rezultatul este zero</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="282"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="287"/>
         <source>Result less than zero</source>
         <translation>Rezultat mai mic decât zero</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="292"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="299"/>
         <source>Formula is empty</source>
         <translation>Formula este goală</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="354"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="361"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
         <translation>Această formulă folosește un obiect care nu are nume. Dați-i un nume pentru a-l folosi într-o formulă.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="365"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="373"/>
         <source>Not evaluated</source>
         <translation>Neevaluat</translation>
     </message>
@@ -23372,18 +23541,19 @@ Doriți să continuați?</translation>
 <context>
     <name>VFormulaData</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="76"/>
-        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="84"/>
+        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="83"/>
+        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="91"/>
         <source>Not evaluated</source>
         <translation>Neevaluat</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="57"/>
+        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="60"/>
+        <location filename="../../src/test/OstaraTest/tst_linerolenames.cpp" line="234"/>
         <source>Error</source>
         <translation>Eroare</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="65"/>
+        <location filename="../../src/libs/vpatterndb/vformula_p.h" line="72"/>
         <source>Formula is empty</source>
         <translation>Formula este goală</translation>
     </message>
@@ -23529,7 +23699,7 @@ Doriți să continuați?</translation>
 <context>
     <name>VLayoutPiece</name>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="461"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="465"/>
         <source>Piece %1 doesn&apos;t have shape.</source>
         <translation>Piesa %1 nu are formă.</translation>
     </message>
@@ -23935,51 +24105,61 @@ Doriți să continuați?</translation>
 <context>
     <name>VPattern</name>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="277"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="280"/>
         <source>The formula uses a name the pattern does not define: %1.</source>
         <translation>Formula folosește un nume pe care tiparul nu îl definește: %1.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="934"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="937"/>
         <source>Two objects would carry the same identifier, so the file was not written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1034"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1078"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1043"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1071"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="92"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="120"/>
         <source>Error parsing file.</source>
         <translation>Eroare de interpretare a fișierului.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1045"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1050"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="99"/>
         <source>Error can&apos;t convert value.</source>
         <translation>Eroare: valoare neconvertibilă.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1056"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1057"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="106"/>
         <source>Error empty parameter.</source>
         <translation>Eroare: parametru gol.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1067"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1064"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="113"/>
         <source>Error wrong id.</source>
         <translation>Eroare: id eronat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1089"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1078"/>
         <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="127"/>
         <source>Error parsing file (std::bad_alloc).</source>
         <translation>Eroare de interpretare a fișierului. (std::bad_alloc).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1108"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1093"/>
         <source>Error updating scene after parsing.</source>
         <translation>Actualizarea fișierului după analiză nu este posibilă.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1142"/>
+        <source>Change undone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1143"/>
+        <source>This change could not be applied to the pattern, so it was undone. Your pattern is unchanged and you can keep working.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error creating or updating detail</source>
@@ -24245,8 +24425,8 @@ Doriți să continuați?</translation>
         <translation>Imposibil de creat sau de actualizat o pensă automată</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1402"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1471"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1435"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1504"/>
         <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="113"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>Nume de tag „%1” eronat.</translation>
@@ -24272,7 +24452,7 @@ Doriți să continuați?</translation>
         <translation>Tip de instrument necunoscut „%1”.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="939"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="942"/>
         <source>Error not unique id.</source>
         <translation>Eroare, Id neunic.</translation>
     </message>
@@ -24360,7 +24540,7 @@ Doriți să continuați?</translation>
         <translation>Detalii</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="383"/>
+        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="387"/>
         <source>The piece &apos;%1&apos; could not be rebuilt and was removed from the pattern: %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24471,20 +24651,20 @@ Doriți să continuați?</translation>
 <context>
     <name>VPiece</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="302"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="319"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="313"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="330"/>
         <source>Main path of piece %1</source>
         <translation>Conturul principal al piesei %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1463"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1503"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1582"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1536"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1576"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1655"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;.</source>
         <translation>Nu se poate calcula un cran de asamblare pentru punctul „%1” în piesa „%2”.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1635"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1708"/>
         <source>Notch for point &apos;%1&apos; in piece &apos;%2&apos; will be disabled. Manual length is less than allowed value.</source>
         <translation>Cranul de asamblare pentru punctul „%1” din piesa „%2” va fi dezactivat. Lungimea manuală specificată este mai mică decât lungimea permisă.</translation>
     </message>
@@ -26346,92 +26526,92 @@ Doriți să continuați?</translation>
         <translation>Adaos de cusătură implicit</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1615"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1620"/>
         <source>move grainline</source>
         <translation>deplasați firul drept</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1628"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1633"/>
         <source>resize grainline</source>
         <translation>redimensionați firul drept</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1640"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1645"/>
         <source>rotate grainline</source>
         <translation>rotiți firul drept</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1730"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1735"/>
         <source>move information block</source>
         <translation>deplasați blocul de informații</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1760"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1765"/>
         <source>resize information block</source>
         <translation>redimensionați blocul de informații</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2008"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2013"/>
         <source>move thumbnail</source>
         <translation>deplasați miniatura</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2166"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2171"/>
         <source>Delete place labels</source>
         <translation>Ștergeți reperele</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2221"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2226"/>
         <source>move annotation</source>
         <translation>deplasați adnotarea</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2242"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2247"/>
         <source>move seam allowance value</source>
         <translation>deplasați valoarea adaosului de cusătură</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2256"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2261"/>
         <source>move seam allowance legend</source>
         <translation>deplasați legenda adaosului de cusătură</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2305"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2310"/>
         <source>resize annotation</source>
         <translation>redimensionați adnotarea</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2899"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2904"/>
         <source>In layout</source>
         <translation>În planul de croială</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2900"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2905"/>
         <source>Hide main path</source>
         <translation>Ascundeți conturul principal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2901"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2906"/>
         <source>Show mirrored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2903"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2908"/>
         <source>Show full piece</source>
         <translation>Afișați piesa desfășurată</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2920"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2925"/>
         <source>Delete</source>
         <translation>Șterge</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2656"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2661"/>
         <source>apply save detail options</source>
         <translation>Aplicați modificările</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3005"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3010"/>
         <source>multi deletion</source>
         <translation>Ștergere multiplă</translation>
     </message>
@@ -26440,17 +26620,17 @@ Doriți să continuați?</translation>
         <translation type="vanished">Forțați plasarea în oglindă</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2665"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2670"/>
         <source>This id (%1) is not unique.</source>
         <translation>Acest identificator (%1) nu este unic.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3112"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3117"/>
         <source>Press Escape to leave the thumbnail</source>
         <translation>Apăsați Esc pentru a părăsi miniatura</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3901"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3906"/>
         <source>Tool was used after deleting.</source>
         <translation>Instrumentul a fost utilizat după ștergere.</translation>
     </message>
@@ -27382,27 +27562,27 @@ Doriți să continuați?</translation>
         <translation>Coboară cât mai jos posibil în istoric</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="712"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="713"/>
         <source>Expand All</source>
         <translation>Extinde tot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="713"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="714"/>
         <source>Collapse All</source>
         <translation>Restrânge tot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="715"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="716"/>
         <source>Copy ID</source>
         <translation>Copiază ID</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="717"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="718"/>
         <source>Go to Object</source>
         <translation>Mergi la obiect</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="719"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="720"/>
         <source>Delete</source>
         <translation>Șterge</translation>
     </message>
@@ -28361,44 +28541,44 @@ Doriți să continuați?</translation>
         <translation>Doar citire</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="601"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="587"/>
         <source>untitled.vwm</source>
         <translation>neintitulat.vwm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="617"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="603"/>
         <source>Confirm format rewriting</source>
         <translation>Confirmați rescrierea formatului</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="618"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="604"/>
         <source>This file is using previous format version v%1. The current is v%2. Saving the file with this app version will update the format version for this file. This may prevent you from be able to open the file with older app versions. Do you really want to continue?</source>
         <translation>Acest fișier utilizează versiunea anterioară în format v%1. Curentul este v%2. Salvarea fișierului cu această versiune de aplicație va actualiza versiunea de format pentru acest fișier. Acest lucru vă poate împiedica să puteți deschide fișierul cu versiuni mai vechi ale aplicației. Chiar vrei să continui?</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="658"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="644"/>
         <source>File saved</source>
         <translation>Fișier salvat</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="701"/>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="707"/>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="714"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="687"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="693"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="700"/>
         <source>Locking file</source>
         <translation>Blochează fișierul (doar citire)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="702"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="688"/>
         <source>This file already opened in another window. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>Acest fișier s-a deschis deja într-o altă fereastră. Ignorați dacă doriți să continuați (nerecomandat, poate provoca o deteriorare a datelor).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="708"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="694"/>
         <source>The lock file could not be created, for lack of permissions. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>Imposibil de creat fișierul de blocare, din lipsă de permisiuni. Ignorați dacă doriți să continuați (nerecomandat, poate provoca o deteriorare a datelor).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="715"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="701"/>
         <source>Unknown error happened, for instance a full partition prevented writing out the lock file. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>S-a întâmplat o eroare necunoscută, de exemplu, o partiție completă a împiedicat scrierea fișierului de blocare. Ignorați dacă doriți să continuați (nerecomandat, poate provoca o deteriorare a datelor).</translation>
     </message>
