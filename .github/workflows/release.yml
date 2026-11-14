@@ -42,7 +42,7 @@ jobs:
           cache: true
 
       - name: Trame
-        run: git clone --depth 1 --branch v0.1.0 https://github.com/equinox-patterns/Trame.git ../Trame
+        run: git clone --depth 1 --branch v0.1.1 https://github.com/equinox-patterns/Trame.git ../Trame
 
       # Homebrew ne livre que l'arm64 du runner : pour x86_64 la bibliothèque est compilée
       # depuis les sources, avec la même architecture et le même minimum macOS que l'app.
@@ -107,7 +107,7 @@ jobs:
           cache: true
 
       - name: Trame
-        run: git clone --depth 1 --branch v0.1.0 https://github.com/equinox-patterns/Trame.git ..\Trame
+        run: git clone --depth 1 --branch v0.1.1 https://github.com/equinox-patterns/Trame.git ..\Trame
 
       - name: zlib et xerces
         run: vcpkg install zlib:x64-windows xerces-c:x64-windows
@@ -248,7 +248,7 @@ jobs:
           sudo apt-get install -y libgl1-mesa-dev libxerces-c-dev librsvg2-bin
 
       - name: Trame
-        run: git clone --depth 1 --branch v0.1.0 https://github.com/equinox-patterns/Trame.git ../Trame
+        run: git clone --depth 1 --branch v0.1.1 https://github.com/equinox-patterns/Trame.git ../Trame
 
       - name: Configurer
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release
